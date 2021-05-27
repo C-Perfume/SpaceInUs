@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class BottleFall : MonoBehaviour
 
 {
-    GameObject cam;
+    GameObject black;
 
     GameObject target;
 
@@ -19,7 +19,7 @@ public class BottleFall : MonoBehaviour
     void Start()
 
     {
-        cam = GameObject.Find("Main Camera");
+        black = GameObject.Find("blacks");
 
         target = GameObject.Find("player");
 
@@ -43,23 +43,23 @@ public class BottleFall : MonoBehaviour
     {
         if(other.gameObject.tag == "Player")
         {
-        StartCoroutine(Cam());
+        StartCoroutine(Black_());
         Destroy(gameObject, 3);
         }
     }
-    IEnumerator Cam()
+    IEnumerator Black_()
 
     {
         
         {
-            cam.gameObject.SetActive(false);
+            black.gameObject.SetActive(true);
 
             yield return new WaitForSeconds(1);
 
-            cam.gameObject.SetActive(true);
+            black.gameObject.SetActive(false);
 
         }
 
     }
-
+    
 }

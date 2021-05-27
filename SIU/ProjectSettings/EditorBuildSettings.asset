@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/JKU/Scenes/SpaceShip.unity
+    guid: 9ca6c8e413495994e84d645b0bfa20a0
+  - enabled: 1
     path: Assets/JKU/Scenes/Lv1.unity
     guid: 1e3f6583dfa6fc343b73ae2727c158d3
   - enabled: 1

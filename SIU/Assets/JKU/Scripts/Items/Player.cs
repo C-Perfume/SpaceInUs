@@ -11,7 +11,10 @@ public class Player : MonoBehaviour
     float currtime = 0;
     float createTime = 2;
 
- 
+    //속도값 얻기
+    private Vector3 m_LastPosition;
+    Vector3 dir;
+
     void Start()
     {
         currentHp = maxHp;
@@ -25,15 +28,23 @@ public class Player : MonoBehaviour
 
         if (currtime > createTime)
         {
-
+        
         TimeDamage(2);
         currtime = 0;
-     
+            
         }
     }
     void TimeDamage(int Damage)
     {
         currentHp -= Damage;
+        HpBar.SetHpBar(currentHp);
+    }
+
+    void SpeedDamage(int sDamage)
+    {
+        GetSpeed();
+        
+        currentHp -= sDamage;
         HpBar.SetHpBar(currentHp);
     }
 
@@ -50,4 +61,22 @@ public class Player : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
+
+
+    //속도값 얻기
+
+    float GetSpeed()
+    {
+        float speed = (((transform.position - m_LastPosition).magnitude) / Time.deltaTime);
+        m_LastPosition = transform.position;
+
+
+        if(speed > 0)
+        {
+            SpeedDamage(10);
+        }
+        return speed;
+    }
+
+    
 }

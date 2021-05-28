@@ -612,7 +612,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1314788284
 RectTransform:
   m_ObjectHideFlags: 0
@@ -653,7 +653,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: 385dce3fc9f7d434cb640e4d4d497263, type: 3}
+    m_Font: {fileID: 12800000, guid: 8c90b69bda2c53340b88d498de59c03c, type: 3}
     m_FontSize: 40
     m_FontStyle: 1
     m_BestFit: 0
@@ -664,8 +664,9 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
-    m_LineSpacing: 1
-  m_Text: "\uB2F9\uC2E0\uC740 \uC6B0\uC8FC\uC5D0\uC11C \uAE38\uC744 \uC783\uC5C8\uB2E4."
+    m_LineSpacing: 1.31
+  m_Text: "\uB2F9\uC2E0\uC740 \uC6B0\uC8FC \uBBF8\uC544\uAC00 \uB418\uC5C8\uB2E4.\n-The
+    End-"
 --- !u!222 &1314788286
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -835,7 +836,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1617473396
 RectTransform:
   m_ObjectHideFlags: 0

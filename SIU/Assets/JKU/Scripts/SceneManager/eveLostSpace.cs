@@ -8,6 +8,7 @@ public class eveLostSpace : MonoBehaviour
 
     public float speed;
 
+    public float speedy = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +19,7 @@ public class eveLostSpace : MonoBehaviour
     void Update()
     {
         Vector3 dir = transform.position += Vector3.forward * speed * Time.deltaTime;
-
+        Vector3 dirs = transform.position += Vector3.right * speedy * Time.deltaTime;
         transform.Rotate(0, 0, rotSpeed * Time.deltaTime);
     }
 }

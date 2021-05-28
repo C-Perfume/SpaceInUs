@@ -53,7 +53,7 @@ public class BottleFall : MonoBehaviour
         {
             black.gameObject.SetActive(true);
 
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(1);
 
             black.gameObject.SetActive(false);
 

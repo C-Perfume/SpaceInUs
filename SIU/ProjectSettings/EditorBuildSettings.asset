@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/JKU/Scenes/Lv1.unity
     guid: 1e3f6583dfa6fc343b73ae2727c158d3
   - enabled: 1
+    path: Assets/JKU/Scenes/LostSpace.unity
+    guid: 9f17ce9c4c790b64a99289de6880ca59
+  - enabled: 1
     path: Assets/JKU/Scenes/GameOver.unity
     guid: 71c0ccd0b8abd8b4aaeca242cdde5d92
   m_configObjects: {}

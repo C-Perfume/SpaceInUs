@@ -25,7 +25,7 @@ public class MeteoFall : MonoBehaviour
 
     {
 
-        target = GameObject.Find("player");
+        target = GameObject.Find("Player");
 
         dir = target.transform.position - transform.position;
 
@@ -43,9 +43,10 @@ public class MeteoFall : MonoBehaviour
         Vector3 dir1 = transform.position += dir * speed * Time.deltaTime;
     }
 
-    private void OnCollisionEnter(Collision other)
+   
+    private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "Player")
+        if (other.gameObject.name == "Player")
         {
             SceneManager.LoadScene("GameOver");
         }

@@ -1044,6 +1044,10 @@ PrefabInstance:
       propertyPath: yRotation
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114743501660792774, guid: e6befcf183056214bbc7cb055f062e04, type: 3}
+      propertyPath: zRotation
+      value: 7.5
+      objectReference: {fileID: 0}
     - target: {fileID: 198031905675074124, guid: e6befcf183056214bbc7cb055f062e04, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
       value: 0.1415094

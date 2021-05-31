@@ -64,6 +64,7 @@ public class Player : MonoBehaviour
         {
             SceneManager.LoadScene("LostSpace");
         }
+
         //if (canvas_.activeself == true)
         //{
         //    color bgcolor = loadingbg.color;

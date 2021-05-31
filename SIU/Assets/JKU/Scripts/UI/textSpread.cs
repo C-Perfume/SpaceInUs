@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine.UI;
 public class textSpread : MonoBehaviour
 {
+    //사운드
+    public AudioSource audiosource;
+
 
     public GameObject howto;
 
@@ -18,6 +21,8 @@ public class textSpread : MonoBehaviour
     //텍스트 속도
     void Awake()
     {
+        audiosource.Play();
+        audiosource.loop = true;
 
         StartCoroutine("TextFuntion");
         //코루틴 시작
@@ -25,7 +30,7 @@ public class textSpread : MonoBehaviour
 
     void Update()
     {
-
+        
         //현재 string 순서까지 출력한다
         this.GetComponent<Text>().text = str.Substring(0, strNum);
         if (strNum > str.Length)
@@ -50,6 +55,10 @@ public class textSpread : MonoBehaviour
     {
         if (strNum == str.Length)
         {
+            //소리끄기
+            audiosource.Stop();
+
+            //텍스트
             yield return new WaitForSeconds(1);
 
             howto.gameObject.SetActive(true);

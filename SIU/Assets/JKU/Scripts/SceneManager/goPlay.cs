@@ -11,12 +11,12 @@ public class goPlay : MonoBehaviour
         
     }
 
-    private void OnCollisionEnter(Collision other)
+  
+    private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name == "Player")
+        if (other.gameObject.name == "Player")
         {
             SceneManager.LoadScene("Lv1");
         }
-        
     }
 }

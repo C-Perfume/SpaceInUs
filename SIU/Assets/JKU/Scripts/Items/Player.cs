@@ -20,6 +20,11 @@ public class Player : MonoBehaviour
     public Image BlackBg;
 
     Rigidbody rb;
+
+    //소리 
+   public AudioSource Grap;
+   public AudioSource Breath;
+
     void Start()
     {
         currentHp = maxHp;
@@ -69,6 +74,9 @@ public class Player : MonoBehaviour
         //        loading.setactive(false);
         //    }
         //}
+
+        
+
     }
     void TimeDamage(int Damage)
     {
@@ -81,13 +89,24 @@ public class Player : MonoBehaviour
         currentHp += plusHp;
         HpBar.SetHpBar(currentHp);
     }
-    private void OnCollisionEnter(Collision other)
+ 
+    private void OnTriggerEnter(Collider other)
     {
+        //산소통 먹으면 나는 소리
         if (other.gameObject.tag == "Item")
         {
             PlusHp(10);
+            Breath.Play();
             Destroy(other.gameObject);
         }
+        
+       
+        //잡으면 나는 소리
+        if (other.gameObject.tag == "Step")
+        {
+            Grap.Play();
+        }
+
     }
 
 

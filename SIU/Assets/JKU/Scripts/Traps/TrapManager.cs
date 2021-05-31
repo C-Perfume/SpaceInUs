@@ -1,27 +1,22 @@
 using System.Collections;
-
 using System.Collections.Generic;
-
 using UnityEngine;
 
 
 
 public class TrapManager : MonoBehaviour
-
 {
 
-    public GameObject ObjFactory;
+   public GameObject meteorFactory;
+    
+    //현재 테스트용으로 can에 item태그를 붙여놔서 맞으면 피도 참
 
+    public GameObject canFactory;
 
-
-    public float speed = 5f;
-
-
-
+  
+    float speed = 5f;
     float currtime = 0;
-
-    public float creatTime = 2;
-
+    float creatTime = 2;
 
 
     void Start()
@@ -32,34 +27,30 @@ public class TrapManager : MonoBehaviour
 
     }
 
-
-
-    // Update is called once per frame
-
     void Update()
 
     {
-
         currtime += Time.deltaTime;
 
         if (currtime > creatTime)
 
         {
+            //  Create(meteorFactory);
 
+              Create(canFactory);
 
-
-            GameObject obj = Instantiate(ObjFactory);
-
-            obj.transform.position = transform.position;
-
-
-
+            
             currtime = 0;
-
         }
 
+    }
 
-        
+    public void Create(GameObject clone)
+    {
+
+        GameObject obj = Instantiate(clone);
+
+        obj.transform.position = transform.position;
     }
 
 }

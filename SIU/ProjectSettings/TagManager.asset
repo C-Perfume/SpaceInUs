@@ -6,6 +6,7 @@ TagManager:
   tags:
   - red
   - Item
+  - Step
   layers:
   - Default
   - TransparentFX

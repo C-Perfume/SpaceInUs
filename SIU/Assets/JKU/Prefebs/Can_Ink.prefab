@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5533552218221298354}
   - component: {fileID: 4653956054181440883}
   m_Layer: 0
-  m_Name: Can
+  m_Name: Can_Ink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,7 +104,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9222657547876200188}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.06328648

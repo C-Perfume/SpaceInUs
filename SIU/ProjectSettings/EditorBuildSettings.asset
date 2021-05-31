@@ -17,4 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/JKU/Scenes/Clear.unity
     guid: 71c0ccd0b8abd8b4aaeca242cdde5d92
-  m_configObjects: {}
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: ba3797f3fccd0354997ed8a2d076c788, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: e8e7e6372f3c59a43b3b85d2bb485855, type: 2}

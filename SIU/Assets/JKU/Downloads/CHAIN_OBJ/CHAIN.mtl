@@ -1,0 +1,15 @@
+# Blender MTL File: 'catena2.blend'
+# Material Count: 1
+
+newmtl Material.001
+Ns 444.285404
+Ka 0.904318 0.904318 0.904318
+Kd 0.052500 0.052500 0.052500
+Ks 0.431818 0.431818 0.431818
+Ke 0.000000 0.000000 0.000000
+Ni 2.950000
+d 1.000000
+illum 3
+map_Bump C:\\Users\\giacc\\Downloads\\CHAIN_OBJ\\TEXTURE\\NORMAL.png
+map_Kd C:\\Users\\giacc\\Downloads\\CHAIN_OBJ\\TEXTURE\\ALBEDO.png
+map_Ns C:\\Users\giacc\\Downloads\\CHAIN_OBJ\\TEXTURE\\ROUGHNESS.png

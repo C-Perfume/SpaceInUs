@@ -26,7 +26,6 @@ public class ExploParticle : MonoBehaviour
     }
     IEnumerator explo()
     {
-        Rigidbody rb = spaceship.GetComponent<Rigidbody>();
         
         yield return new WaitForSeconds(0.5f);
         Explo1.gameObject.SetActive(false);
@@ -49,7 +48,7 @@ public class ExploParticle : MonoBehaviour
                     if(Explo4.gameObject.activeSelf == true)
                     {
                         yield return new WaitForSeconds(0.5f);
-                        rb.useGravity = true;
+                        spaceship.gameObject.SetActive(false);
                     }
                 }
             }

@@ -28,7 +28,7 @@ public class Timer : MonoBehaviour
 
         if(timerTxt.text == "0")
         {
-            SceneManager.LoadScene("LostSpace");
+            SceneManager.LoadScene("ExploScene");
         }
     }
 }

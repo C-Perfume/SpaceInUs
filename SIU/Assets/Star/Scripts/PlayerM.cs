@@ -227,10 +227,11 @@ public class PlayerM : MonoBehaviour
 
         if (getDTchTmbL)
         {
-
+           
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
+            SoundM.instance.playS(0);
 
         }
         if (walkL)
@@ -242,6 +243,7 @@ public class PlayerM : MonoBehaviour
         }
         if (getUTchTmbL)
         {
+          SoundM.instance.StopS(0);
             walkL = false;
         }
 
@@ -250,20 +252,22 @@ public class PlayerM : MonoBehaviour
             walkL = false;
             walkR = true;
             origin = my[(int)Parts.RHand].position;
+            SoundM.instance.playS(0);
 
         }
 
         if (walkR)
         {
-
             transform.position += origin - my[(int)Parts.RHand].position;
             pos = transform.position;
             pos.y = 0;
             transform.position = pos;
         }
+
         if (getUTchTmbR)
         {
             walkR = false;
+           SoundM.instance.StopS(0);
         }
 
     }

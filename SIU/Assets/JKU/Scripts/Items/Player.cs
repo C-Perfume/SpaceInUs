@@ -22,8 +22,8 @@ public class Player : MonoBehaviour
     Rigidbody rb;
 
     //소리 
-   public AudioSource Grap;
-   public AudioSource Breath;
+    
+    public AudioSource Breath;
 
     void Start()
     {
@@ -34,7 +34,6 @@ public class Player : MonoBehaviour
 
     }
 
-    // Update is called once per frame
     void Update()
     {
         currtime += Time.deltaTime;
@@ -44,7 +43,7 @@ public class Player : MonoBehaviour
 
             TimeDamage(2);
             currtime = 0;
-
+            print(currentHp);
         }
 
         float mspeed = GetSpeed();
@@ -54,16 +53,19 @@ public class Player : MonoBehaviour
         if (rb.isKinematic == false)
         {
 
-            if (mspeed > 10)
+            if (mspeed > 3)
             {
                 TimeDamage(10);
             }
 
         }
+
         if (currentHp == 0)
         {
-            SceneManager.LoadScene("LostSpace");
+           // SceneManager.LoadScene("LostSpace");
         }
+
+        #region canvas GameOver
 
         //if (canvas_.activeself == true)
         //{
@@ -76,8 +78,7 @@ public class Player : MonoBehaviour
         //    }
         //}
 
-        
-
+        #endregion
     }
     void TimeDamage(int Damage)
     {
@@ -85,29 +86,12 @@ public class Player : MonoBehaviour
         HpBar.SetHpBar(currentHp);
     }
 
-    void PlusHp(int plusHp)
+    public void PlusHp(int plusHp)
     {
+        Breath.Play();
         currentHp += plusHp;
+        if (currentHp > maxHp) { currentHp = maxHp; }
         HpBar.SetHpBar(currentHp);
-    }
- 
-    private void OnTriggerEnter(Collider other)
-    {
-        //산소통 먹으면 나는 소리
-        if (other.gameObject.tag == "Item")
-        {
-            PlusHp(10);
-            Breath.Play();
-            Destroy(other.gameObject);
-        }
-        
-       
-        //잡으면 나는 소리
-        if (other.gameObject.tag == "Step")
-        {
-            Grap.Play();
-        }
-
     }
 
 
@@ -115,7 +99,7 @@ public class Player : MonoBehaviour
 
     float GetSpeed()
     {
-        float speed = (((transform.position - m_LastPosition).magnitude) / Time.deltaTime);
+        float speed = (transform.position - m_LastPosition).magnitude / Time.deltaTime;
         m_LastPosition = transform.position;
         return speed;
     }

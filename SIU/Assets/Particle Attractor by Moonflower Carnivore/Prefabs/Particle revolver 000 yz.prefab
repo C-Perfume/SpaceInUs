@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1290555943186320}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8068, y: 0.8068, z: 0.8068}
   m_Children: []
   m_Father: {fileID: 4238404732653984}
   m_RootOrder: 0
@@ -187,7 +187,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 0.93590266, b: 0.41911763, a: 1}
+      maxColor: {r: 0.04325382, g: 0.06584108, b: 0.1415094, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 0.14473684, b: 0, a: 1}
@@ -4705,8 +4705,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xRotation: 0
-  yRotation: 3.33
-  zRotation: 4.33
+  yRotation: 0
+  zRotation: 7.5
 --- !u!1 &1475198933509334
 GameObject:
   m_ObjectHideFlags: 0
@@ -4734,7 +4734,7 @@ Transform:
   m_GameObject: {fileID: 1475198933509334}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.2041765, y: 0.2041765, z: 0.2041765}
   m_Children:
   - {fileID: 4327889225554778}
   m_Father: {fileID: 0}
@@ -4760,7 +4760,6 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
   - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0

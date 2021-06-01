@@ -45,7 +45,7 @@ public class PlayerM : MonoBehaviour
     public GameObject doorIndi2;
 
     // 속력
-    public bool f = true;
+    public bool floating = true;
     float vPower = 1f;
 
     //잡은거 위치
@@ -154,7 +154,7 @@ public class PlayerM : MonoBehaviour
 
             case State.GameStart:
                 //플로팅
-                if (f) Float();
+                if (floating) Float();
 
                 if (!tM.bH) { Grab(); }
                 Rot();
@@ -217,7 +217,7 @@ public class PlayerM : MonoBehaviour
 
     void Float()
     {
-        transform.position += (transform.up - transform.forward) * 0.02f * Time.deltaTime;
+       transform.position += (transform.up - transform.forward) * 0.02f * Time.deltaTime;
 
     }
 
@@ -457,7 +457,7 @@ public class PlayerM : MonoBehaviour
                 if (hitTF.IsChildOf(rock))
                 {
                     Rocks r = hits[0].GetComponent<Rocks>();
-                    f = false;
+                    floating = false;
                     rb.isKinematic = true;
 
                     if (tM.up)
@@ -623,7 +623,7 @@ public class PlayerM : MonoBehaviour
                 if (hitTF.IsChildOf(rock))
                 {
                     Rocks r = hits[0].GetComponent<Rocks>();
-                    f = false;
+                    floating = false;
                     rb.isKinematic = true;
 
                     // 트랩 작동

@@ -1550,6 +1550,7 @@ MonoBehaviour:
   shield: {fileID: 2795271186296236860, guid: ac171ac94626940479d191d5eb0996b8, type: 3}
   oxy: {fileID: 8579832223223586287, guid: de96e38a282967e43b423e5327c5e692, type: 3}
   myItem: []
+  Grap: {fileID: 0}
 --- !u!114 &469106673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1557,7 +1558,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1613034123662559446}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 05d580536de4d0a418b5cd048f3a20b0, type: 3}
   m_Name: 

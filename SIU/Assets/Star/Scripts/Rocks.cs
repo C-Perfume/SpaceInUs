@@ -74,7 +74,7 @@ public class Rocks : MonoBehaviour
         if (tRand == 1) { itNum = 0; } 
         else if (tRand == 2) { itNum = 1; } 
         else if (tRand == 3) { itNum = 2; } 
-        else { itNum = 1; } // 3
+        else { itNum = 0; } // 3
 
     }
 

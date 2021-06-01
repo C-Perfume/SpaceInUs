@@ -46,7 +46,7 @@ public class PlayerM : MonoBehaviour
 
     // 속력
     public bool floating = true;
-    float vPower = 1f;
+    float vPower = .5f;
 
     //잡은거 위치
     Transform hitTF;
@@ -149,7 +149,7 @@ public class PlayerM : MonoBehaviour
             case State.Ready:
                 Walk();
                 Rot();
-                Open(0.5f, "Game");
+                Open(0.1f, "Game");
                 break;
 
             case State.GameStart:
@@ -730,8 +730,9 @@ public class PlayerM : MonoBehaviour
                         {
                             // 획득리스트에 넣는다.
                             myItem.Add(hItem);
+                            myItem[0].transform.position = Vector3.zero;
                             // 안보이게 한다.
-                            hItem.GetComponent<MeshRenderer>().enabled = false;
+                            //hItem.GetComponent<MeshRenderer>().enabled = false;
                             hItem.SetActive(false);
                         }
                         //아니면 없엔다.

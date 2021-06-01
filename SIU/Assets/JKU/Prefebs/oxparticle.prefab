@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 5075866727144701186}
   - component: {fileID: 5130585293680823582}
   - component: {fileID: 5048668573918108190}
-  - component: {fileID: 2607106254673376509}
   m_Layer: 0
   m_Name: oxparticle
   m_TagString: Untagged
@@ -4991,19 +4990,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.05
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2607106254673376509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5185316045968436810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ac2538590d702d4b95f8af7eacafaf8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StepItem: {fileID: 5222729058937882571, guid: 82fed77f5aa1d2c45a9d02dd0937003c, type: 3}
 --- !u!1 &5185769330232727036
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class Timer : MonoBehaviour
 {
     public Text timerTxt;
@@ -23,6 +24,11 @@ public class Timer : MonoBehaviour
         {
             selectCountdown -= Time.deltaTime;
             timerTxt.text = Mathf.Floor(selectCountdown).ToString();
+        }
+
+        if(timerTxt.text == "0")
+        {
+            SceneManager.LoadScene("LostSpace");
         }
     }
 }

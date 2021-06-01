@@ -41,7 +41,8 @@ public class ItemM : MonoBehaviour
                     lr.enabled = true;
                     lr.SetPosition(0, pm.my[(int)PlayerM.Parts.RHand].position);
                     lr.SetPosition(1, hit.point);
-                    Vector3 dir = p1.transform.position -  hit.point;
+                    Vector3 dir = hit.point - p1.transform.position;
+                    dir.Normalize();
                     p1.transform.position += dir * ropeSpd * Time.deltaTime;
                 }
                 print("Active rope");
@@ -65,7 +66,7 @@ public class ItemM : MonoBehaviour
         }
     }
     IEnumerator StopActive() {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         active = false;
         if (shield.activeSelf) { shield.SetActive(false); }
         print("StopActive working..");

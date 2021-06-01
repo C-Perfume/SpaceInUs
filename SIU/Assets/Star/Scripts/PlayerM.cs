@@ -45,8 +45,8 @@ public class PlayerM : MonoBehaviour
     public GameObject doorIndi2;
 
     // 속력
-    public bool f = true;
-    float vPower = 1f;
+    public bool floating = true;
+    float vPower = .5f;
 
     //잡은거 위치
     Transform hitTF;
@@ -149,12 +149,12 @@ public class PlayerM : MonoBehaviour
             case State.Ready:
                 Walk();
                 Rot();
-                Open(0.5f, "Game");
+                Open(0.1f, "Game");
                 break;
 
             case State.GameStart:
                 //플로팅
-                if (f) Float();
+                if (floating) Float();
 
                 if (!tM.bH) { Grab(); }
                 Rot();
@@ -217,7 +217,7 @@ public class PlayerM : MonoBehaviour
 
     void Float()
     {
-        transform.position += (transform.up - transform.forward) * 0.02f * Time.deltaTime;
+       transform.position += (transform.up - transform.forward) * 0.02f * Time.deltaTime;
 
     }
 
@@ -457,7 +457,7 @@ public class PlayerM : MonoBehaviour
                 if (hitTF.IsChildOf(rock))
                 {
                     Rocks r = hits[0].GetComponent<Rocks>();
-                    f = false;
+                    floating = false;
                     rb.isKinematic = true;
 
                     if (tM.up)
@@ -623,7 +623,7 @@ public class PlayerM : MonoBehaviour
                 if (hitTF.IsChildOf(rock))
                 {
                     Rocks r = hits[0].GetComponent<Rocks>();
-                    f = false;
+                    floating = false;
                     rb.isKinematic = true;
 
                     // 트랩 작동
@@ -730,8 +730,9 @@ public class PlayerM : MonoBehaviour
                         {
                             // 획득리스트에 넣는다.
                             myItem.Add(hItem);
+                            myItem[0].transform.position = Vector3.zero;
                             // 안보이게 한다.
-                            hItem.GetComponent<MeshRenderer>().enabled = false;
+                            //hItem.GetComponent<MeshRenderer>().enabled = false;
                             hItem.SetActive(false);
                         }
                         //아니면 없엔다.

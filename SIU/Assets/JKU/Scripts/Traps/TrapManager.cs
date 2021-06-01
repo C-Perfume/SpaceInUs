@@ -92,7 +92,7 @@ public class TrapManager : MonoBehaviour
                 pm.state = PlayerM.State.GameOver;
             }
             else { gameObject.transform.position = Vector3.zero;
-                GetComponent<PlayerM>().f = true;
+                GetComponent<PlayerM>().floating = true;
             }
 
         }

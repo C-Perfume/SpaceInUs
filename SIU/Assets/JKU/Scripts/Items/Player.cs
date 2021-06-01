@@ -15,10 +15,6 @@ public class Player : MonoBehaviour
     //속도값 얻기
     private Vector3 m_LastPosition;
 
-    //죽었을 때 페이드아웃
-    public GameObject Canvas_;
-    public Image BlackBg;
-
     Rigidbody rb;
 
     //소리 

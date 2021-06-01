@@ -11,7 +11,7 @@ public class Billboard : MonoBehaviour
         Ray ray = new Ray(
             Camera.main.transform.position,
             Camera.main.transform.forward);
-        //2. 부딪힌 지점에 crosshair를 위치시킨다
+        //2. 부딪힌 지점에 캔버스를 위치시킨다
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {

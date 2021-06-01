@@ -44,11 +44,11 @@ public class MeteoFall : MonoBehaviour
     }
 
    
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.name == "Player")
-        {
-            SceneManager.LoadScene("GameOver");
-        }
-    }
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.gameObject.name == "Player")
+    //    {
+    //        SceneManager.LoadScene("GameOver");
+    //    }
+    //}
 }

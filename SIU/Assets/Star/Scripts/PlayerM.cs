@@ -73,7 +73,10 @@ public class PlayerM : MonoBehaviour
     TrapManager tM;
 
     RaycastHit hit;
+    GameObject hitObj;
 
+    //잡는소리
+    public AudioSource Grap;
     #region 컨트롤러 bool Vector3설정
     bool getTchTmbL;
     bool getDTchTmbL;
@@ -146,7 +149,7 @@ public class PlayerM : MonoBehaviour
             case State.Ready:
                 Walk();
                 Rot();
-                Open(hit.transform.gameObject.name == "Door", 0.5f, "Game");
+                Open(0.5f, "Game");
                 break;
 
             case State.GameStart:
@@ -200,11 +203,11 @@ public class PlayerM : MonoBehaviour
                 break;
 
             case State.GameOver:
-              //  Open(hit.transform.gameObject.layer == LayerMask.NameToLayer("UI"), 100, "Ready");
+                //Click( 100, "Ready");
                 break;
 
             case State.End:
-               // Open(hit.transform.gameObject.layer == LayerMask.NameToLayer("UI"), 100, "Ready");
+                //Click( 100, "Ready");
                 break;
         }
 
@@ -286,12 +289,14 @@ public class PlayerM : MonoBehaviour
 
     }
 
-    void Open(bool condition, float m, string scene)
-    {
+    void Open( float m, string scene)
+    {  
+
         if (Physics.Raycast(origin: my[(int)Parts.LHand].position, direction: my[(int)Parts.LHand].forward, out hit, m))// 0.5f))
         {
-            if (condition)
-//                hit.transform.gameObject.name == "Door")
+
+        hitObj = hit.transform.gameObject;
+            if (hitObj.name == "Door")
             {
 
                 doorIndi.SetActive(true);
@@ -319,8 +324,8 @@ public class PlayerM : MonoBehaviour
 
         if (Physics.Raycast(origin: my[(int)Parts.RHand].position, direction: my[(int)Parts.RHand].forward, out hit, m ))//0.5f))
         {
-            if (condition)
-                //hit2.transform.gameObject.name == "Door")
+          hitObj = hit.transform.gameObject;
+            if (hitObj.name == "Door")
             {
                 doorIndi2.SetActive(true);
                 doorIndi2.transform.position = hit.point;
@@ -346,6 +351,69 @@ public class PlayerM : MonoBehaviour
 
     }
 
+    void Click(float m, string scene)
+    {
+
+        if (Physics.Raycast(origin: my[(int)Parts.LHand].position, direction: my[(int)Parts.LHand].forward, out hit, m))
+        {
+
+            hitObj = hit.transform.gameObject;
+            if (hitObj.layer == LayerMask.NameToLayer("UI"))
+            {
+
+                doorIndi.SetActive(true);
+                doorIndi.transform.position = hit.point;
+                float dist = Vector3.Distance(
+              Camera.main.transform.position, hit.point);
+                doorIndi.transform.localScale = Vector3.one * dist;
+
+                if (getDBtnIdxL)
+                {
+                    SceneManager.LoadScene(scene);
+                }
+            }
+            else
+            {
+                doorIndi.SetActive(false);
+            }
+        }
+        else
+        {
+            doorIndi.SetActive(false);
+        }
+
+
+
+        if (Physics.Raycast(origin: my[(int)Parts.RHand].position, direction: my[(int)Parts.RHand].forward, out hit, m))
+        {
+            hitObj = hit.transform.gameObject;
+            if (hitObj.layer == LayerMask.NameToLayer("UI"))
+            {
+                doorIndi2.SetActive(true);
+                doorIndi2.transform.position = hit.point;
+                float dist = Vector3.Distance(
+             Camera.main.transform.position, hit.point);
+                doorIndi2.transform.localScale = Vector3.one * dist;
+
+                if (getDBtnIdxR)
+                {
+                    SceneManager.LoadScene(scene);
+                }
+            }
+            else
+            {
+                doorIndi2.SetActive(false);
+            }
+        }
+        else
+        {
+            doorIndi2.SetActive(false);
+        }
+
+
+    }
+
+
     void CreateItem(GameObject clone, Transform hand)
     {
         GameObject a = Instantiate(clone);
@@ -367,6 +435,7 @@ public class PlayerM : MonoBehaviour
 
         if (getDBtnIdxL)
         {
+            Grap.Play();
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
@@ -532,6 +601,7 @@ public class PlayerM : MonoBehaviour
         // 오른손 움직임
         if (getDBtnIdxR)
         {
+            Grap.Play();
             walkR = true;
             walkL = false;
             origin = my[(int)Parts.RHand].position;

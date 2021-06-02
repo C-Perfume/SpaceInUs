@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     private Vector3 m_LastPosition;
 
     Rigidbody rb;
+    PlayerM pm;
+    ItemM[] iM;
 
     //소리 
     
@@ -27,13 +29,13 @@ public class Player : MonoBehaviour
         HpBar.SetMaxHpBar(maxHp);
 
         rb = GetComponent<Rigidbody>();
-
+        pm = GetComponent<PlayerM>();
+       
     }
 
     void Update()
     {
         currtime += Time.deltaTime;
-
         if (currtime > createTime)
         {
 
@@ -46,19 +48,53 @@ public class Player : MonoBehaviour
 
         //rigidbody의 iskinematic이 꺼져있을때만 발동해라.
 
-        if (rb.isKinematic == false)
+        if (pm.myItem.Count > 0)
         {
+            iM[0] = pm.myItem[0].GetComponent<ItemM>();
 
-            if (mspeed > 3)
+            if (!iM[0].active && rb.isKinematic == false)
             {
-                TimeDamage(10);
+
+                if (mspeed > 3)
+                {
+                    TimeDamage(10);
+                }
+
+            }
+
+            if (pm.myItem.Count > 1)
+            {
+                iM[1] = pm.myItem[1].GetComponent<ItemM>();
+                if (!iM[1].active && rb.isKinematic == false)
+                {
+
+                    if (mspeed > 3)
+                    {
+                        TimeDamage(10);
+                    }
+
+                }
+            }
+            else
+            {
+                if (rb.isKinematic == false)
+                {
+
+                    if (mspeed > 3)
+                    {
+                        TimeDamage(10);
+                    }
+
+                }
             }
 
         }
 
+
+       
         if (currentHp == 0)
         {
-           // SceneManager.LoadScene("LostSpace");
+           SceneManager.LoadScene("LostSpace");
         }
 
         #region canvas GameOver
@@ -76,6 +112,7 @@ public class Player : MonoBehaviour
 
         #endregion
     }
+
     void TimeDamage(int Damage)
     {
         currentHp -= Damage;

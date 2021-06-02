@@ -23,10 +23,10 @@ public class Rocket : MonoBehaviour
     }
     IEnumerator aboost()
     {
+        rb.AddForce(transform.up * boost);
         rb.AddForce(-transform.forward * boost);
-        yield return null;
-        //rb.AddForce(-transform.forward * boost);
        transform.rotation = rot.transform.rotation; 
-      //  Destroy(gameObject, 2);
+        yield return null;
+       
     }
 }

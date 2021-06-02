@@ -12,6 +12,7 @@ public class ItemM : MonoBehaviour
     Rigidbody rb;
     public float ropeSpd = 10;
     GameObject shield;
+    public float firespeed;
     void Start()
     {
         p1 = GameObject.Find("Player");
@@ -29,7 +30,8 @@ public class ItemM : MonoBehaviour
             {
                 print("Active fire");
                 rb.isKinematic = false;
-                rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward, ForceMode.Impulse);
+                rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward*firespeed, ForceMode.Impulse);
+
             }
 
             if (gameObject.name.Contains("Rope"))

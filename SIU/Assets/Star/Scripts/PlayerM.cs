@@ -48,8 +48,14 @@ public class PlayerM : MonoBehaviour
     public bool floating = true;
     float vPower = .5f;
 
-    //잡은거 위치
-    Transform hitTF;
+    //잡은거 손위치
+    Transform[] hitTF = new Transform[2];
+
+    //손에 잡은 오브젝트의 트랜스폼
+    Transform catchHoldL;
+    Transform catchHoldR;
+    Transform catchItem;
+
     // 홀드찾기용
     public Transform rock;
 
@@ -73,7 +79,10 @@ public class PlayerM : MonoBehaviour
     TrapManager tM;
 
     RaycastHit hit;
+    
+    // open 함수에 쓰이는 손에 잡은 오브젝트
     GameObject hitObj;
+
 
     //잡는소리
     public AudioSource Grap;
@@ -157,6 +166,7 @@ public class PlayerM : MonoBehaviour
                 if (floating) Float();
 
                 if (!tM.bH) { Grab(); }
+                SetFree();
                 Rot();
                 PwUp();
 
@@ -186,12 +196,12 @@ public class PlayerM : MonoBehaviour
                     for (int i = 0; i < free.childCount; i++)
                     {
 
-                        if (free.GetChild(i).position.x > transform.position.x * 5
-                            || free.GetChild(i).position.x < transform.position.x * -5
-                            || free.GetChild(i).position.y > transform.position.y * 5
-                            || free.GetChild(i).position.y < transform.position.y * -5
-                            || free.GetChild(i).position.z > transform.position.z * 5
-                            || free.GetChild(i).position.z < transform.position.z * -5
+                        if (free.GetChild(i).position.x > transform.position.x * 10
+                            || free.GetChild(i).position.x < transform.position.x * -10
+                            || free.GetChild(i).position.y > transform.position.y * 10
+                            || free.GetChild(i).position.y < transform.position.y * -10
+                            || free.GetChild(i).position.z > transform.position.z * 10
+                            || free.GetChild(i).position.z < transform.position.z * -10
 
                             )
                         {
@@ -418,12 +428,6 @@ public class PlayerM : MonoBehaviour
     }
 
 
-    void CreateItem(GameObject clone, Transform hand)
-    {
-        GameObject a = Instantiate(clone);
-        a.transform.SetParent(hand);
-        a.transform.localPosition = Vector3.zero;
-    }
 
     void PwUp()
     { //수정필요
@@ -436,7 +440,6 @@ public class PlayerM : MonoBehaviour
 
     void Grab()
     {
-
         if (getDBtnIdxL)
         {
 
@@ -447,182 +450,32 @@ public class PlayerM : MonoBehaviour
 
         if (walkL)
         {
-
-            Collider[] hits = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.05f);
-
-
-            if (hits.Length > 0)
+            Collider[] hitsL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.05f);
+            
+            if (hitsL.Length > 0)
             {
-                hitTF = hits[0].transform;
-                GameObject hitObj = hitTF.gameObject;
+                hitTF[0] = hitsL[0].transform;
 
-                if (hitObj.name.Contains("Rock_01")) { }
+                if (hitTF[0].gameObject.name.Contains("Rock_01"))                 {                }
+
                 //홀드 잡고 있는 중
-                if (hitTF.IsChildOf(rock))
+                if (hitTF[0].IsChildOf(rock)) 
                 {
-                    Grap.Play();
-                    Rocks r = hits[0].GetComponent<Rocks>();
-                    floating = false;
-                    rb.isKinematic = true;
-                    int childNum = hitTF.childCount;
-                    print(childNum);
-
-                    if (r.num == (int)Rocks.Type.Trap)
-                    {
-
-                        if (tM.up)
-                        {
-
-                            if (r.trapNum < (int)Rocks.TrapType.Meteor)
-                            {
-                                tM.BHole(r);
-                            }
-                            else
-
-                            if (r.trapNum == (int)Rocks.TrapType.Meteor)
-                            {
-                                tM.Create(tM.meteorFactory);
-                            }
-
-                            else //(r.trapType == (int)Rocks.TrapType.Can)
-                            {
-                                tM.Create(tM.canFactory);
-
-                            }
-                            tM.up = false;
-
-                        }
-
-                    }
-                    else
-                    {
-                        tM.up = true; 
-                    }
-
-                    if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-                    else { transform.position += origin - my[(int)Parts.LHand].position; }
+                    //양손 홀드를 각각 구분하기 위한 변수 catchHoldL / catchHoldR
+                    catchHoldL = hitTF[0];
+                    if (catchHoldL != catchHoldR) { tM.up = true; }
+                   GrabHold(hitsL[0], my[(int)Parts.LHand]);
 
                 }
 
-
-                // 아이템 잡을 때
-                if (hitTF.IsChildOf(item))
-                {
-                    Grap.Play();
-                    print(hitTF + " 잡기");
-                    if (hitObj.name.Contains("Fire")) { CreateItem(fire, my[(int)Parts.LHand]); }
-                    if (hitObj.name.Contains("Oxy")) { CreateItem(oxy, my[(int)Parts.LHand]); }
-                    if (hitObj.name.Contains("Rope")) { CreateItem(rope, my[(int)Parts.LHand]); }
-                    if (hitObj.name.Contains("Shield")) { CreateItem(shield, my[(int)Parts.LHand]); }
-
-                    hitObj.SetActive(false);
-                }
-
-                if (hitTF.IsChildOf(free) || hitTF.IsChildOf(my[(int)Parts.RHand]))
-                {
-                    Grap.Play();
-                    Rigidbody itemRb = hitObj.GetComponent<Rigidbody>();
-                    itemRb.isKinematic = true;
-                    hitTF.SetParent(my[(int)Parts.LHand]);
-                    hitTF.localPosition = Vector3.zero;
-                }
-
+                GrabItem(hitTF[0], my[(int)Parts.LHand], my[(int)Parts.RHand]);
 
             }
         }
-
-
-        if (getUBtnIdxL)
-        {
-            walkL = false;
-
-            // 잡은게 없으면 리턴
-            if (hitTF == null)
-            {
-                return;
-            }
-
-            // 홀드라면
-            if (hitTF.IsChildOf(rock))
-            {
-
-                rb.isKinematic = false;
-                rb.velocity = -transform.TransformDirection(getVelL) * vPower;
-                hitTF = null;
-
-            }
-
-            // 아이템 잡았다면
-            if (my[(int)Parts.LHand].childCount > 2)
-            {
-                // 손의 마지막 자식은 hitem
-                GameObject hItem = my[(int)Parts.LHand].GetChild(my[(int)Parts.LHand].childCount - 1).gameObject;
-                Collider[] objs = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.1f);
-
-                // 손반경으로 걸리는 오브젝트가 1개이상이면
-                if (objs.Length > 0)
-                {
-                    Transform objTF = objs[0].transform;
-                    print(objs[0].name + " 0번");
-
-                    //0번째가 몸이라면
-                    if (objTF == my[(int)Parts.Body])
-                    {
-
-                        // 획득 아이템이 2개 미만이면
-                        if (myItem.Count < 2)
-                        {
-                            // 획득리스트에 넣는다.
-                            myItem.Add(hItem);
-                            myItem[0].transform.position = Vector3.zero;
-                            // 안보이게 한다.
-                            Color c = new Color();
-                            c.a = 0;
-                            myItem[0].GetComponent<MeshRenderer>().material.color = c;
-                            myItem[0].SetActive(false);
-                            if (myItem[1] != null)
-                            {
-                                myItem[1].transform.position = Vector3.zero;
-                                myItem[1].GetComponent<MeshRenderer>().material.color = c;
-                                myItem[1].SetActive(false);
-                            }
-                        }
-                        //아니면 없엔다.
-                        else
-                        {
-                            Destroy(hItem);
-                        }
-
-                    }
-                    //몸에 넣지 않으면
-                    else
-                    {
-
-                        //던지자
-                        Rigidbody itemRb = hItem.GetComponent<Rigidbody>();
-                        itemRb.isKinematic = false;
-
-                        itemRb.velocity = getVelL * vPower;
-                        itemRb.angularVelocity = getAngVelL;
-
-
-                        hItem.transform.SetParent(free);
-                        print(hItem);
-                    }
-
-
-                    objTF = null;
-                }
-
-            }
-
-        }
-
 
         // 오른손 움직임
         if (getDBtnIdxR)
         {
-
             walkR = true;
             walkL = false;
             origin = my[(int)Parts.RHand].position;
@@ -630,126 +483,193 @@ public class PlayerM : MonoBehaviour
 
         if (walkR)
         {
+            Collider[] hitsR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.05f);
 
-            Collider[] hits = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.05f);
-
-
-            if (hits.Length > 0)
+            if (hitsR.Length > 0)
             {
-                hitTF = hits[0].transform;
-                GameObject hitObj = hitTF.gameObject;
+                hitTF [1] = hitsR[0].transform;
 
-                if (hitObj.name.Contains("Rock_01")) { }
-                //홀드 잡고 있는 중
-                if (hitTF.IsChildOf(rock))
+                if (hitTF[1].gameObject.name.Contains("Rock_01")) { }
+
+                //오른손 홀드 잡고 있는 중
+                if (hitTF[1].IsChildOf(rock))
                 {
-                    Grap.Play();
-                    Rocks r = hits[0].GetComponent<Rocks>();
-                    floating = false;
-                    rb.isKinematic = true;
+                    catchHoldR = hitTF[1];
+                    if (catchHoldL != catchHoldR) { tM.up = true; }
+                    GrabHold(hitsR[0], my[(int)Parts.RHand]);
 
-                    if (r.num == (int)Rocks.Type.Trap)
-                    {
-
-                        // 트랩 작동
-                        if (tM.up)
-                        {
-
-
-                            if (r.trapNum < (int)Rocks.TrapType.Meteor)
-                            {
-                                tM.BHole(r);
-                            }
-                            else
-
-                            if (r.trapNum == (int)Rocks.TrapType.Meteor)
-                            {
-                                tM.Create(tM.meteorFactory);
-                            }
-
-                            else //(r.trapType == (int)Rocks.TrapType.Can)
-                            {
-                                tM.Create(tM.canFactory);
-
-                            }
-                            tM.up = false;
-                        }
-
-                    }
-                    else {
-                        tM.up = true;
-                    }
-
-                   
-                    if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-                    else { transform.position += origin - my[(int)Parts.RHand].position; }
                 }
 
-
-
-
-                // 아이템 잡을 때
-                if (hitTF.IsChildOf(item))
-                {
-                    Grap.Play();
-                    if (hitObj.name.Contains("Fire")) { CreateItem(fire, my[(int)Parts.RHand]); }
-                    if (hitObj.name.Contains("Oxy")) { CreateItem(oxy, my[(int)Parts.RHand]); }
-                    if (hitObj.name.Contains("Rope")) { CreateItem(rope, my[(int)Parts.RHand]); }
-                    if (hitObj.name.Contains("Shield")) { CreateItem(shield, my[(int)Parts.RHand]); }
-
-                    hitObj.SetActive(false);
-                }
-
-                if (hitTF.IsChildOf(free) || hitTF.IsChildOf(my[(int)Parts.LHand]))
-                {
-                    Grap.Play();
-                    Rigidbody itemRb = hitObj.GetComponent<Rigidbody>();
-                    itemRb.isKinematic = true;
-                    hitTF.SetParent(my[(int)Parts.RHand]);
-                    hitTF.localPosition = Vector3.zero;
-                }
-
-
+                GrabItem(hitTF[1], my[(int)Parts.RHand], my[(int)Parts.LHand]);
 
 
             }
+
         }
 
+    }
+
+        //홀드 잡고 있는 중
+   void GrabHold(Collider hits, Transform hand)
+    {
+        
+            
+            Grap.Play();
+            Rocks r = hits.GetComponent<Rocks>();
+            floating = false;
+            rb.isKinematic = true;
+
+            if (r.num == (int)Rocks.Type.Trap)
+            {
+
+                if (tM.up)
+                {
+
+                    if (r.trapNum < (int)Rocks.TrapType.Meteor)
+                    {
+                        tM.BHole(r);
+                    }
+                    else
+
+                    if (r.trapNum == (int)Rocks.TrapType.Meteor)
+                    {
+                        tM.Create(tM.meteorFactory);
+                    }
+
+                    else //(r.trapType == (int)Rocks.TrapType.Can)
+                    {
+                        tM.Create(tM.canFactory);
+
+                    }
+                    tM.up = false;
+
+                }
+
+            }
+            //else
+            //{
+            //    tM.up = true;
+            //}
+           
+            if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
+            else { transform.position += origin - hand.position; }
+
+
+        
+
+    }
+
+    //아이템 잡는 중
+    void GrabItem(Transform hitTFN, Transform handG, Transform otherH) {
+
+        // 아이템 잡을 때 왼손 생성
+        if (hitTFN.IsChildOf(item))
+        {
+        
+            Grap.Play();
+        if (hitTFN.gameObject.name.Contains("Fire")) { CreateItem(fire, handG); }
+        if (hitTFN.gameObject.name.Contains("Oxy")) { CreateItem(oxy, handG); }
+        if (hitTFN.gameObject.name.Contains("Rope")) { CreateItem(rope, handG); }
+        if (hitTFN.gameObject.name.Contains("Shield")) { CreateItem(shield, handG); }
+
+            hitTFN.gameObject.SetActive(false);
+        
+        }
+
+        // 던져진 아이템이나 다른 손 아이템을 잡으면
+        if (hitTFN.IsChildOf(free) || hitTFN.IsChildOf(otherH))
+        {
+            catchItem = hitTFN;
+
+            Grap.Play();
+            // 잡은 손으로 자식 만들고 0점으로 이동시키기
+            catchItem.SetParent(handG);
+            hitTFN.localPosition = Vector3.zero;
+            
+            // 물리 작용 off
+            Rigidbody itemRb = hitTFN.gameObject.GetComponent<Rigidbody>();
+            itemRb.isKinematic = true;
+        }
+
+
+    }
+
+    //아이템 손에 만들기
+    void CreateItem(GameObject clone, Transform hand)
+    {
+        GameObject a = Instantiate(clone);
+        a.transform.SetParent(hand);
+        a.transform.localPosition = Vector3.zero;
+        catchItem = a.transform;
+    }
+
+
+
+
+    //놨을 때
+    void SetFree() {
+
+        //왼손
+        if (getUBtnIdxL)
+        {
+            walkL = false;
+
+            // 잡은게 없으면 리턴
+            if (hitTF[0] == null)
+            {
+                return;
+            }
+            
+            SetFree(hitTF[0], catchHoldL, my[(int)Parts.LHand], getVelL);
+        }
+
+        //오른손
         if (getUBtnIdxR)
         {
 
             walkR = false;
 
             // 잡은게 없으면 리턴
-            if (hitTF == null)
+            if (hitTF[1] == null)
             {
                 return;
             }
+            
+            SetFree(hitTF[1], catchHoldR, my[(int)Parts.RHand], getVelR);
+            
+        }
+    }
 
-            // 홀드라면
-            if (hitTF.IsChildOf(rock))
+
+
+    void SetFree( Transform hitTFN, Transform hold, Transform hand, Vector3 vel) {
+
+        // 홀드라면
+        if (hitTFN == hold)
             {
 
                 rb.isKinematic = false;
-                rb.velocity = -transform.TransformDirection(getVelR) * vPower;
-                hitTF = null;
+                rb.velocity = -transform.TransformDirection(vel) * vPower;
 
-            }
+            if (hitTFN == hitTF[0]) hitTF[0] = null;
+            else { hitTF[1] = null; }
+
+            
+
+        }
 
             // 아이템 잡았다면
-            if (my[(int)Parts.RHand].childCount > 3)
+            if (catchItem !=null && hitTFN == catchItem)
             {
-                // 손의 마지막 자식은 hitem
-                GameObject hItem = my[(int)Parts.RHand].GetChild(my[(int)Parts.RHand].childCount - 1).gameObject;
-                Collider[] objs = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.1f);
+            
+              Collider[] objs = Physics.OverlapSphere(hand.position, 0.1f, LayerMask.NameToLayer("Player") );
 
                 // 손반경으로 걸리는 오브젝트가 1개이상이면
                 if (objs.Length > 0)
                 {
                     Transform objTF = objs[0].transform;
-                    print(objs[0].name + " 0번 오른손 사용중");
-
-                    //0번째가 몸이라면
+                   
+                //0번째가 몸이라면
                     if (objTF == my[(int)Parts.Body])
                     {
 
@@ -757,45 +677,46 @@ public class PlayerM : MonoBehaviour
                         if (myItem.Count < 2)
                         {
                             // 획득리스트에 넣는다.
-                            myItem.Add(hItem);
-                            myItem[0].transform.position = Vector3.zero;
+                            myItem.Add(catchItem.gameObject);
+                            // 멀리 날려 안보이게 하자
+                            myItem[0].transform.position = new Vector3(1000, 1000, 1000);
 
                             // 안보이게 한다.
-                            Color c = new Color();
-                            c.a = 0;
-                            myItem[0].GetComponent<MeshRenderer>().material.color = c;
-                            myItem[0].SetActive(false);
+                            //Color c = new Color();
+                            //c.a = 0;
+                            //myItem[0].GetComponent<MeshRenderer>().material.color = c;
+                            //myItem[0].SetActive(false);
 
-                            if (myItem[1] != null)
+                            if (myItem.Count == 2)
                             {
-                                myItem[1].transform.position = Vector3.zero;
-                                myItem[1].GetComponent<MeshRenderer>().material.color = c;
-                                myItem[1].SetActive(false);
+                                myItem[1].transform.position = new Vector3(1000, 1000, 1000);
+                                //myItem[1].GetComponent<MeshRenderer>().material.color = c;
+                                //myItem[1].SetActive(false);
                             }
-
                         }
-                        //아니면 없엔다.
+                        // 2개 이상이면 없에자.
                         else
-                        {
-                            Destroy(hItem);
-
-                        }
-
+                    {
+                        catchItem.position = new Vector3(1000, 1000, 1000);
+                        catchItem.SetParent(free);
+                         print(catchItem+" 2개 이상");
                     }
+
+                }
                     //몸에 넣지 않으면
                     else
                     {
 
                         //던지자
-                        Rigidbody itemRb = hItem.GetComponent<Rigidbody>();
+                        Rigidbody itemRb = catchItem.GetComponent<Rigidbody>();
                         itemRb.isKinematic = false;
 
-                        itemRb.velocity = getVelR * vPower;
-                        itemRb.angularVelocity = getAngVelR;
+                        itemRb.velocity = getVelL * vPower;
+                        itemRb.angularVelocity = getAngVelL;
 
 
-                        hItem.transform.SetParent(free);
-                        print(hItem + "오른손 출발");
+                    catchItem.transform.SetParent(free);
+                         print(catchItem+" 공중부양");
                     }
 
 
@@ -803,6 +724,7 @@ public class PlayerM : MonoBehaviour
                 }
 
             }
+
         }
 
 
@@ -810,8 +732,4 @@ public class PlayerM : MonoBehaviour
 
 
 
-
-
-
-}
 

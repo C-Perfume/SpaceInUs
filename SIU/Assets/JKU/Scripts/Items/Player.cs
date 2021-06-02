@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
 
     Rigidbody rb;
     PlayerM pm;
-    ItemM[] iM;
+    ItemM[] iM = new ItemM[2];
 
     //¼Ò¸® 
     
@@ -67,19 +67,7 @@ public class Player : MonoBehaviour
             if (pm.myItem.Count > 1)
             {
                 iM[1] = pm.myItem[1].GetComponent<ItemM>();
-                if (!iM[1].active && rb.isKinematic == false)
-                {
-
-                    if (mspeed > 3)
-                    {
-                       TimeDamage(10);
-                    }
-
-                }
-            }
-            else
-            {
-                if (rb.isKinematic == false)
+                if (!iM[1].active && rb.isKinematic)
                 {
 
                     if (mspeed > 3)

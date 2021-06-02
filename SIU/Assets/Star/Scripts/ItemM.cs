@@ -10,7 +10,7 @@ public class ItemM : MonoBehaviour
     Player ps;
     PlayerM pm;
     Rigidbody rb;
-    public float ropeSpd = 10;
+    public float ropeSpd = .03f;
     GameObject shield;
     void Start()
     {
@@ -19,6 +19,7 @@ public class ItemM : MonoBehaviour
         pm = p1.GetComponent<PlayerM>();
         rb = p1.GetComponent<Rigidbody>();
         shield = GameObject.Find("Shield");
+        shield.SetActive(false);
     }
 
     void Update()
@@ -29,7 +30,7 @@ public class ItemM : MonoBehaviour
             {
                 print("Active fire");
                 rb.isKinematic = false;
-                rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward, ForceMode.Impulse);
+                rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd, ForceMode.Impulse);
             }
 
             if (gameObject.name.Contains("Rope"))
@@ -43,7 +44,7 @@ public class ItemM : MonoBehaviour
                     lr.SetPosition(1, hit.point);
                     Vector3 dir = hit.point - p1.transform.position;
                     dir.Normalize();
-                    p1.transform.position += dir * ropeSpd * Time.deltaTime;
+                    p1.transform.position += dir * ropeSpd*100 * Time.deltaTime;
                 }
                 print("Active rope");
             }

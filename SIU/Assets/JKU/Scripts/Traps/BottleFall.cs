@@ -37,15 +37,15 @@ public class BottleFall : MonoBehaviour
 
     }
 
-    //private void OnTriggerEnter(Collider other)
-    //{
-    //    if (other.gameObject.name == "Player")
-    //    {
-    //        StartCoroutine(Black_());
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "Player")
+        {
+            StartCoroutine(Black_());
 
-    //        Destroy(gameObject, 5);
-    //    }
-    //}
+            Destroy(gameObject);
+        }
+    }
     public IEnumerator Black_()
 
     {

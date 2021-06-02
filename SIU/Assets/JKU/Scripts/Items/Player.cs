@@ -35,6 +35,8 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        //10이하로 떨어지면 빨간색으로 바꾸기
+
         currtime += Time.deltaTime;
         if (currtime > createTime)
         {
@@ -70,7 +72,7 @@ public class Player : MonoBehaviour
 
                     if (mspeed > 3)
                     {
-                        TimeDamage(10);
+                       TimeDamage(10);
                     }
 
                 }

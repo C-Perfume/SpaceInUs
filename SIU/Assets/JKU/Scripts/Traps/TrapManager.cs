@@ -23,6 +23,9 @@ public class TrapManager : MonoBehaviour
     public float pullSpd = 0.1f;
 
     PlayerM pm;
+
+    public AudioSource[] trapS;
+
     void Start()
 
     {
@@ -40,17 +43,34 @@ public class TrapManager : MonoBehaviour
     public void Create(GameObject clone)
     {
 
-        GameObject obj = Instantiate(clone);
 
+        GameObject obj = Instantiate(clone);
+        
         obj.transform.position = transform.position
             + transform.up * 2
             + transform.forward * -2;
+   
+        if (clone.name.Contains("BH")) 
+        {
+            trapS[0].Play();
+        }
+        if (clone.name.Contains("Meteo"))
+        {
+            trapS[1].Play();
+        }
+        if (clone.name.Contains("Can"))
+        {
+            trapS[2].Play();
+        }
+
+      
     }
 
 
     // ºí·¢È¦ »ý¼º
     public void BHole(Rocks r)
-    {
+    {   
+        
         GameObject a = Instantiate(bHole);
         if (r.trapNum == (int)Rocks.TrapType.BHoleL)
         {

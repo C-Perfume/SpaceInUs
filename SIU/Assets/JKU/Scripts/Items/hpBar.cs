@@ -6,9 +6,10 @@ public class hpBar : MonoBehaviour
 {
     Color save = new Color();
     public Slider slider;
+    public Image Hp10;
      void Start()
     {
-         //save = slider.GetComponent<Color>();
+         save = Hp10.color;
     }
     public void SetMaxHpBar(int health)
     {
@@ -18,15 +19,17 @@ public class hpBar : MonoBehaviour
    public void SetHpBar(int health)
     {
         slider.value = health;
-           // Color b = Color.red;
+        Color b = Color.red;
+         Color a = Hp10.color;
        
-      //  Color a = slider.GetComponent<Color>();
-        //if (health < 10)
-        //{
-        //    a = b;
-        //}
-        //else { 
-        
-        //}
+        if (health < 30)
+        {
+            
+            Hp10.color = b;
+        }
+        else
+        {
+            Hp10.color = save;
+        }
     }
 }

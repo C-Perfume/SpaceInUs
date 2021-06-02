@@ -47,13 +47,9 @@ public class TrapManager : MonoBehaviour
         GameObject obj = Instantiate(clone);
         
         obj.transform.position = transform.position
-            + transform.up * 2
-            + transform.forward * -2;
+            + transform.up * 7
+            + transform.forward * -7;
    
-        if (clone.name.Contains("BH")) 
-        {
-            trapS[0].Play();
-        }
         if (clone.name.Contains("Meteo"))
         {
             trapS[1].Play();
@@ -61,16 +57,18 @@ public class TrapManager : MonoBehaviour
         if (clone.name.Contains("Can"))
         {
             trapS[2].Play();
+            
         }
+        StartCoroutine(Vibrate(.5f));
+        StopCoroutine(Vibrate(5));
 
-      
     }
 
 
     // 블랙홀 생성
     public void BHole(Rocks r)
     {   
-        
+        trapS[0].Play();
         GameObject a = Instantiate(bHole);
         if (r.trapNum == (int)Rocks.TrapType.BHoleL)
         {
@@ -85,10 +83,14 @@ public class TrapManager : MonoBehaviour
                 - transform.forward * Random.Range(0.5f, 2);
         }
 
+       
         a.transform.up = transform.position - a.transform.position;
         Destroy(a, 5);
         bH = true;
         StartCoroutine(Pull(a));
+
+        StartCoroutine(Vibrate(.5f));
+        StopCoroutine(Vibrate(1));
     }
 
     //당기는 방향 잡기
@@ -106,9 +108,11 @@ public class TrapManager : MonoBehaviour
         {
             if (other.gameObject.GetComponent<BholeRot>().value == 1)
             {
-                print("Lost Stars load");
+                GameObject SavTime = GameObject.Find("saveTime");
+                Destroy(SavTime);
+                
                 //우주미아씬 로드하기
-                //SceneManager.LoadScene("LostSpace");
+                SceneManager.LoadScene("LostSpace");
                 pm.state = PlayerM.State.GameOver;
             }
             else { gameObject.transform.position = Vector3.zero;
@@ -121,18 +125,33 @@ public class TrapManager : MonoBehaviour
         {
 
             BottleFall btf = other.gameObject.GetComponent<BottleFall>();
-
+            trapS[2].Stop();
             StartCoroutine(btf.Black_());
-
-            Destroy(gameObject, 5);
         }
 
-        if (other.gameObject.name.Contains("Meteor"))
+        if (other.gameObject.name.Contains("Meteo"))
         {
-            print("meteor load");
+            GameObject SavTime = GameObject.Find("saveTime");
+            Destroy(SavTime);
             //메테오씬 로드
-            //  SceneManager.LoadScene("Meteor");
+
+              SceneManager.LoadScene("Meteo");
             pm.state = PlayerM.State.GameOver;
+
+            Destroy(other.gameObject, 5);
         }
+    }
+
+    //진동 일으키기
+    IEnumerator Vibrate(float sec)
+    {
+
+        OVRInput.SetControllerVibration(1, 1, OVRInput.Controller.LTouch);
+        OVRInput.SetControllerVibration(1, 1, OVRInput.Controller.RTouch);
+
+        yield return new WaitForSeconds(sec);
+        OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.LTouch);
+        OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.RTouch);
+
     }
 }

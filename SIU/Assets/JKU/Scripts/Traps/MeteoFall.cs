@@ -43,12 +43,4 @@ public class MeteoFall : MonoBehaviour
         Vector3 dir1 = transform.position += dir * speed * Time.deltaTime;
     }
 
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.name == "Player")
-        {
-            SceneManager.LoadScene("GameOver");
-        }
-    }
 }

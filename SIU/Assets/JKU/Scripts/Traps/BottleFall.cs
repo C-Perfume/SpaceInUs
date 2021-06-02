@@ -25,25 +25,24 @@ public class BottleFall : MonoBehaviour
 
         dir = target.transform.position - transform.position;
 
-        dir.Normalize();
-
     }
 
 
     void Update()
 
     {
+
         Vector3 dir1 = transform.position += dir * speed * Time.deltaTime;
 
+        dir.Normalize();
     }
-
+    
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.gameObject.name.Contains("Player"))
         {
-            StartCoroutine(Black_());
 
-            Destroy(gameObject);
+            StartCoroutine(Black_());
         }
     }
     public IEnumerator Black_()
@@ -57,6 +56,7 @@ public class BottleFall : MonoBehaviour
 
             black.gameObject.SetActive(false);
 
+            Destroy(gameObject, 5);
         }
 
     }

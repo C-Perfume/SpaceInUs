@@ -22,7 +22,13 @@ public class loadTime : MonoBehaviour
         text_timer.text = "Time : " + Savetime.ToString("N2");
         TimeManager = GameObject.Find("saveTime");
         Destroy(TimeManager);
-        
+       
     }
-    
+    private void Update()
+    {
+        if(text_timer.text == null)
+        {
+            Destroy(TimeManager);
+        }
+    }
 }

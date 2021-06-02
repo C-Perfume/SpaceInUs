@@ -69,7 +69,7 @@ public class Rocks : MonoBehaviour
         if (num == 0) mat.color = Color.yellow;
         else if (num == 1) { mat.color = Color.red;
             if (tRand == 1) { trapNum = 0; } 
-            else if (tRand < 6) { trapNum = 1; } 
+            else if (tRand == 2 || tRand ==3) { trapNum = 1; } 
             else if (tRand == 6) { trapNum = 2; } 
             else { trapNum = 3; }
         }

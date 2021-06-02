@@ -20,8 +20,13 @@ public class saveTime : MonoBehaviour
     void Update()
     {
 
-        text_timer.text = "Time : " + timesave.ToString("N2");
 
+        if(SceneManager.GetActiveScene().name == "Meteo" || 
+            SceneManager.GetActiveScene().name == "LostSpace")
+        {
+            Destroy(gameObject);
+        }
+        text_timer.text = "Time : " + timesave.ToString("N2");
     }
 
    public IEnumerator Timesave()

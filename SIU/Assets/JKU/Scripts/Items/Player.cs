@@ -96,7 +96,10 @@ public class Player : MonoBehaviour
        
         if (currentHp == 0)
         {
-           SceneManager.LoadScene("LostSpace");
+            GameObject SavTime = GameObject.Find("saveTime");
+            Destroy(SavTime);
+
+            SceneManager.LoadScene("LostSpace");
         }
 
         #region canvas GameOver

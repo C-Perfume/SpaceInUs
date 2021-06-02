@@ -18,7 +18,7 @@ public class ItemM : MonoBehaviour
         ps = p1.GetComponent<Player>();
         pm = p1.GetComponent<PlayerM>();
         rb = p1.GetComponent<Rigidbody>();
-        shield = GameObject.Find("Shield");
+        shield = ps.skillShield;
         shield.SetActive(false);
     }
 

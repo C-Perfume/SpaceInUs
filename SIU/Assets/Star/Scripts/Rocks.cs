@@ -74,7 +74,7 @@ public class Rocks : MonoBehaviour
         if (tRand == 1) { itNum = 0; } 
         else if (tRand == 2) { itNum = 1; } 
         else if (tRand == 3) { itNum = 2; } 
-        else { itNum = 0; } // 3
+        else { itNum = 3; } // 3
 
     }
 
@@ -121,7 +121,7 @@ public class Rocks : MonoBehaviour
         a.transform.position =
             transform.position +
             //transform.right * Random.Range(0.05f, 0.15f)+
-            transform.up * 0.05f; 
+            transform.up * .1f; 
             //Random.Range(0.05f, 0.15f) + 
             //transform.forward*0.1f ;
         a.transform.SetParent(item);

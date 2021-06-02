@@ -11,14 +11,14 @@ public class ItemM : MonoBehaviour
     PlayerM pm;
     Rigidbody rb;
     public float ropeSpd = 10;
-
-    public GameObject shield;
+    GameObject shield;
     void Start()
     {
         p1 = GameObject.Find("Player");
         ps = p1.GetComponent<Player>();
         pm = p1.GetComponent<PlayerM>();
         rb = p1.GetComponent<Rigidbody>();
+        shield = GameObject.Find("Shield");
     }
 
     void Update()

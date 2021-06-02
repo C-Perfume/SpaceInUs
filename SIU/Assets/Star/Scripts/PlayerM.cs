@@ -227,10 +227,11 @@ public class PlayerM : MonoBehaviour
 
         if (getDTchTmbL)
         {
-
+           
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
+            SoundM.instance.playS(0);
 
         }
         if (walkL)
@@ -242,6 +243,7 @@ public class PlayerM : MonoBehaviour
         }
         if (getUTchTmbL)
         {
+          SoundM.instance.StopS(0);
             walkL = false;
         }
 
@@ -250,20 +252,22 @@ public class PlayerM : MonoBehaviour
             walkL = false;
             walkR = true;
             origin = my[(int)Parts.RHand].position;
+            SoundM.instance.playS(0);
 
         }
 
         if (walkR)
         {
-
             transform.position += origin - my[(int)Parts.RHand].position;
             pos = transform.position;
             pos.y = 0;
             transform.position = pos;
         }
+
         if (getUTchTmbR)
         {
             walkR = false;
+           SoundM.instance.StopS(0);
         }
 
     }
@@ -544,7 +548,7 @@ public class PlayerM : MonoBehaviour
             {
                 // 손의 마지막 자식은 hitem
                 GameObject hItem = my[(int)Parts.LHand].GetChild(my[(int)Parts.LHand].childCount - 1).gameObject;
-                Collider[] objs = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.2f);
+                Collider[] objs = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.1f);
 
                 // 손반경으로 걸리는 오브젝트가 1개이상이면
                 if (objs.Length > 0)
@@ -561,10 +565,16 @@ public class PlayerM : MonoBehaviour
                         {
                             // 획득리스트에 넣는다.
                             myItem.Add(hItem);
-                            // 안보이게 한다. 비활성화 하면 업데이트가 안돌아간다 ㅠㅠㅠㅠㅠㅠ
-                            // 꼭 안보이게 하는 것과 비활성화 하는 것의 차이를 알자!
-                            hItem.GetComponent<MeshRenderer>().enabled = false;
-                            hItem.SetActive(false);
+                            myItem[0].transform.position = Vector3.zero;
+                            // 안보이게 한다.
+                            Color c = new Color();
+                            c.a = 0;
+                            myItem[0].GetComponent<MeshRenderer>().material.color = c;
+                            myItem[0].SetActive(false);
+                            if (myItem[1] != null) { myItem[1].transform.position = Vector3.zero;
+                                myItem[1].GetComponent<MeshRenderer>().material.color = c;
+                                myItem[1].SetActive(false);
+                            }
                         }
                         //아니면 없엔다.
                         else
@@ -709,11 +719,11 @@ public class PlayerM : MonoBehaviour
             }
 
             // 아이템 잡았다면
-            if (my[(int)Parts.RHand].childCount > 2)
+            if (my[(int)Parts.RHand].childCount > 3)
             {
                 // 손의 마지막 자식은 hitem
                 GameObject hItem = my[(int)Parts.RHand].GetChild(my[(int)Parts.RHand].childCount - 1).gameObject;
-                Collider[] objs = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.3f);
+                Collider[] objs = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.1f);
 
                 // 손반경으로 걸리는 오브젝트가 1개이상이면
                 if (objs.Length > 0)
@@ -731,14 +741,26 @@ public class PlayerM : MonoBehaviour
                             // 획득리스트에 넣는다.
                             myItem.Add(hItem);
                             myItem[0].transform.position = Vector3.zero;
+                          
                             // 안보이게 한다.
-                            //hItem.GetComponent<MeshRenderer>().enabled = false;
-                            hItem.SetActive(false);
+                            Color c = new Color();
+                            c.a = 0;
+                            myItem[0].GetComponent<MeshRenderer>().material.color = c;
+                            myItem[0].SetActive(false);
+                            
+                            if (myItem[1] != null)
+                            {
+                                myItem[1].transform.position = Vector3.zero;
+                                myItem[1].GetComponent<MeshRenderer>().material.color = c;
+                                myItem[1].SetActive(false);
+                            }
+
                         }
                         //아니면 없엔다.
                         else
                         {
                             Destroy(hItem);
+
                         }
 
                     }

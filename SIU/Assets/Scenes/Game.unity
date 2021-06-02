@@ -12618,7 +12618,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 656793261}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
@@ -12666,7 +12666,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 656793261}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f1a9a1d119a5944aacfb87d1ec283a2, type: 3}
   m_Name: 
@@ -32793,7 +32793,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1783207181}
-  - component: {fileID: 1783207180}
   m_Layer: 0
   m_Name: ParticleManager
   m_TagString: Untagged
@@ -32801,20 +32800,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1783207180
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1783207179}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bc3b0102d8edf94295e9241ddcc4b55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StepItem: {fileID: 5222729058937882571, guid: 82fed77f5aa1d2c45a9d02dd0937003c, type: 3}
-  OxyFactory: {fileID: 0}
 --- !u!4 &1783207181
 Transform:
   m_ObjectHideFlags: 0
@@ -40145,6 +40130,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7319669023199975312, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7319669023199975312, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: canFactory
       value: 
       objectReference: {fileID: 6509656395141428426, guid: d5532719a4f25f141a628ab63bd47bf6, type: 3}
@@ -40170,7 +40159,7 @@ PrefabInstance:
       objectReference: {fileID: 773202302}
     - target: {fileID: 7319669023199975313, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7319669023199975318, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: Grap
@@ -40198,7 +40187,7 @@ PrefabInstance:
       objectReference: {fileID: 1415409351}
     - target: {fileID: 7319669023199975318, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7319669023199975324, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: m_Name

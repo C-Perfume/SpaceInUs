@@ -27,7 +27,7 @@ public class ExploParticle : MonoBehaviour
     IEnumerator explo()
     {
         
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(3);
         Explo1.gameObject.SetActive(false);
         if (Explo1.gameObject.activeSelf == false)
         {
@@ -47,7 +47,7 @@ public class ExploParticle : MonoBehaviour
 
                     if(Explo4.gameObject.activeSelf == true)
                     {
-                        yield return new WaitForSeconds(0.5f);
+                        yield return new WaitForSeconds(4);
                         spaceship.gameObject.SetActive(false);
                     }
                 }

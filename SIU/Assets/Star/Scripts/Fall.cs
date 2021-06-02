@@ -6,7 +6,7 @@ public class Fall : MonoBehaviour
 {
     void Start()
     {
-        Destroy(gameObject, 7);
+        Destroy(gameObject, 8);
     }
 
     void Update()

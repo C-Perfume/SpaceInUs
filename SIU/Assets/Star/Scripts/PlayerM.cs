@@ -203,11 +203,11 @@ public class PlayerM : MonoBehaviour
                 break;
 
             case State.GameOver:
-                //Click( 100, "Ready");
+                Click(100, "Ready");
                 break;
 
             case State.End:
-                //Click( 100, "Ready");
+                Click(100, "Ready");
                 break;
         }
 
@@ -217,7 +217,7 @@ public class PlayerM : MonoBehaviour
 
     void Float()
     {
-       transform.position += (transform.up - transform.forward) * 0.02f * Time.deltaTime;
+        transform.position += (transform.up - transform.forward) * 0.02f * Time.deltaTime;
 
     }
 
@@ -227,7 +227,7 @@ public class PlayerM : MonoBehaviour
 
         if (getDTchTmbL)
         {
-           
+
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
@@ -243,7 +243,7 @@ public class PlayerM : MonoBehaviour
         }
         if (getUTchTmbL)
         {
-          SoundM.instance.StopS(0);
+            SoundM.instance.StopS(0);
             walkL = false;
         }
 
@@ -267,7 +267,7 @@ public class PlayerM : MonoBehaviour
         if (getUTchTmbR)
         {
             walkR = false;
-           SoundM.instance.StopS(0);
+            SoundM.instance.StopS(0);
         }
 
     }
@@ -285,7 +285,7 @@ public class PlayerM : MonoBehaviour
         {
             transform.Rotate(joystickL.y * .2f, 0, 0);
         }
-        
+
         if (joystickL.x > 0 || joystickL.x < 0)
         {
             transform.Rotate(0, 0, joystickL.x * .2f);
@@ -293,20 +293,20 @@ public class PlayerM : MonoBehaviour
 
     }
 
-    void Open( float m, string scene)
-    {  
+    void Open(float m, string scene)
+    {
 
         if (Physics.Raycast(origin: my[(int)Parts.LHand].position, direction: my[(int)Parts.LHand].forward, out hit, m))// 0.5f))
         {
 
-        hitObj = hit.transform.gameObject;
+            hitObj = hit.transform.gameObject;
             if (hitObj.name == "Door")
             {
 
                 doorIndi.SetActive(true);
                 doorIndi.transform.position = hit.point;
                 float dist = Vector3.Distance(
-              Camera.main.transform.position,              hit.point);
+              Camera.main.transform.position, hit.point);
                 doorIndi.transform.localScale = Vector3.one * dist;
 
                 if (getDBtnIdxL)
@@ -326,15 +326,15 @@ public class PlayerM : MonoBehaviour
 
 
 
-        if (Physics.Raycast(origin: my[(int)Parts.RHand].position, direction: my[(int)Parts.RHand].forward, out hit, m ))//0.5f))
+        if (Physics.Raycast(origin: my[(int)Parts.RHand].position, direction: my[(int)Parts.RHand].forward, out hit, m))//0.5f))
         {
-          hitObj = hit.transform.gameObject;
+            hitObj = hit.transform.gameObject;
             if (hitObj.name == "Door")
             {
                 doorIndi2.SetActive(true);
                 doorIndi2.transform.position = hit.point;
                 float dist = Vector3.Distance(
-             Camera.main.transform.position,             hit.point);
+             Camera.main.transform.position, hit.point);
                 doorIndi2.transform.localScale = Vector3.one * dist;
 
                 if (getDBtnIdxR)
@@ -439,7 +439,7 @@ public class PlayerM : MonoBehaviour
 
         if (getDBtnIdxL)
         {
-            Grap.Play();
+
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
@@ -454,20 +454,23 @@ public class PlayerM : MonoBehaviour
             if (hits.Length > 0)
             {
                 hitTF = hits[0].transform;
-                    GameObject hitObj = hitTF.gameObject;
+                GameObject hitObj = hitTF.gameObject;
 
                 if (hitObj.name.Contains("Rock_01")) { }
                 //홀드 잡고 있는 중
                 if (hitTF.IsChildOf(rock))
                 {
+                    Grap.Play();
                     Rocks r = hits[0].GetComponent<Rocks>();
                     floating = false;
                     rb.isKinematic = true;
+                    int childNum = hitTF.childCount;
+                    print(childNum);
 
-                    if (tM.up)
+                    if (r.num == (int)Rocks.Type.Trap)
                     {
 
-                        if (r.num == (int)Rocks.Type.Trap)
+                        if (tM.up)
                         {
 
                             if (r.trapNum < (int)Rocks.TrapType.Meteor)
@@ -486,38 +489,44 @@ public class PlayerM : MonoBehaviour
                                 tM.Create(tM.canFactory);
 
                             }
+                            tM.up = false;
 
                         }
 
                     }
+                    else
+                    {
+                        tM.up = true; 
+                    }
 
-                    tM.up = false;
-                if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-                else { transform.position += origin - my[(int)Parts.LHand].position; }
-                
+                    if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
+                    else { transform.position += origin - my[(int)Parts.LHand].position; }
+
                 }
 
 
                 // 아이템 잡을 때
-                    if (hitTF.IsChildOf(item))
-                    {
+                if (hitTF.IsChildOf(item))
+                {
+                    Grap.Play();
                     print(hitTF + " 잡기");
-                        if (hitObj.name.Contains("Fire")) { CreateItem(fire, my[(int)Parts.LHand]); }
-                        if (hitObj.name.Contains("Oxy")) { CreateItem(oxy, my[(int)Parts.LHand]); }
-                        if (hitObj.name.Contains("Rope")) { CreateItem(rope, my[(int)Parts.LHand]); }
-                        if (hitObj.name.Contains("Shield")) { CreateItem(shield, my[(int)Parts.LHand]); }
+                    if (hitObj.name.Contains("Fire")) { CreateItem(fire, my[(int)Parts.LHand]); }
+                    if (hitObj.name.Contains("Oxy")) { CreateItem(oxy, my[(int)Parts.LHand]); }
+                    if (hitObj.name.Contains("Rope")) { CreateItem(rope, my[(int)Parts.LHand]); }
+                    if (hitObj.name.Contains("Shield")) { CreateItem(shield, my[(int)Parts.LHand]); }
 
-                        hitObj.SetActive(false);
-                    }
+                    hitObj.SetActive(false);
+                }
 
-                    if (hitTF.IsChildOf(free) || hitTF.IsChildOf(my[(int)Parts.RHand]))
-                    {
-                        Rigidbody itemRb = hitObj.GetComponent<Rigidbody>();
-                        itemRb.isKinematic = true;
-                        hitTF.SetParent(my[(int)Parts.LHand]);
-                        hitTF.localPosition = Vector3.zero;
-                    }
-                
+                if (hitTF.IsChildOf(free) || hitTF.IsChildOf(my[(int)Parts.RHand]))
+                {
+                    Grap.Play();
+                    Rigidbody itemRb = hitObj.GetComponent<Rigidbody>();
+                    itemRb.isKinematic = true;
+                    hitTF.SetParent(my[(int)Parts.LHand]);
+                    hitTF.localPosition = Vector3.zero;
+                }
+
 
             }
         }
@@ -571,7 +580,9 @@ public class PlayerM : MonoBehaviour
                             c.a = 0;
                             myItem[0].GetComponent<MeshRenderer>().material.color = c;
                             myItem[0].SetActive(false);
-                            if (myItem[1] != null) { myItem[1].transform.position = Vector3.zero;
+                            if (myItem[1] != null)
+                            {
+                                myItem[1].transform.position = Vector3.zero;
                                 myItem[1].GetComponent<MeshRenderer>().material.color = c;
                                 myItem[1].SetActive(false);
                             }
@@ -591,8 +602,8 @@ public class PlayerM : MonoBehaviour
                         Rigidbody itemRb = hItem.GetComponent<Rigidbody>();
                         itemRb.isKinematic = false;
 
-                            itemRb.velocity = getVelL * vPower;
-                            itemRb.angularVelocity = getAngVelL;
+                        itemRb.velocity = getVelL * vPower;
+                        itemRb.angularVelocity = getAngVelL;
 
 
                         hItem.transform.SetParent(free);
@@ -602,7 +613,7 @@ public class PlayerM : MonoBehaviour
 
                     objTF = null;
                 }
-                
+
             }
 
         }
@@ -611,7 +622,7 @@ public class PlayerM : MonoBehaviour
         // 오른손 움직임
         if (getDBtnIdxR)
         {
-            Grap.Play();
+
             walkR = true;
             walkL = false;
             origin = my[(int)Parts.RHand].position;
@@ -632,16 +643,18 @@ public class PlayerM : MonoBehaviour
                 //홀드 잡고 있는 중
                 if (hitTF.IsChildOf(rock))
                 {
+                    Grap.Play();
                     Rocks r = hits[0].GetComponent<Rocks>();
                     floating = false;
                     rb.isKinematic = true;
 
-                    // 트랩 작동
-                    if (tM.up)
+                    if (r.num == (int)Rocks.Type.Trap)
                     {
 
-                        if (r.num == (int)Rocks.Type.Trap)
+                        // 트랩 작동
+                        if (tM.up)
                         {
+
 
                             if (r.trapNum < (int)Rocks.TrapType.Meteor)
                             {
@@ -659,14 +672,17 @@ public class PlayerM : MonoBehaviour
                                 tM.Create(tM.canFactory);
 
                             }
-
+                            tM.up = false;
                         }
 
                     }
+                    else {
+                        tM.up = true;
+                    }
 
-                    tM.up = false;
-                if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-                else { transform.position += origin - my[(int)Parts.RHand].position; }
+                   
+                    if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
+                    else { transform.position += origin - my[(int)Parts.RHand].position; }
                 }
 
 
@@ -675,21 +691,23 @@ public class PlayerM : MonoBehaviour
                 // 아이템 잡을 때
                 if (hitTF.IsChildOf(item))
                 {
+                    Grap.Play();
                     if (hitObj.name.Contains("Fire")) { CreateItem(fire, my[(int)Parts.RHand]); }
                     if (hitObj.name.Contains("Oxy")) { CreateItem(oxy, my[(int)Parts.RHand]); }
                     if (hitObj.name.Contains("Rope")) { CreateItem(rope, my[(int)Parts.RHand]); }
                     if (hitObj.name.Contains("Shield")) { CreateItem(shield, my[(int)Parts.RHand]); }
 
                     hitObj.SetActive(false);
-                } 
+                }
 
                 if (hitTF.IsChildOf(free) || hitTF.IsChildOf(my[(int)Parts.LHand]))
                 {
+                    Grap.Play();
                     Rigidbody itemRb = hitObj.GetComponent<Rigidbody>();
                     itemRb.isKinematic = true;
                     hitTF.SetParent(my[(int)Parts.RHand]);
                     hitTF.localPosition = Vector3.zero;
-                } 
+                }
 
 
 
@@ -699,7 +717,7 @@ public class PlayerM : MonoBehaviour
 
         if (getUBtnIdxR)
         {
-           
+
             walkR = false;
 
             // 잡은게 없으면 리턴
@@ -741,13 +759,13 @@ public class PlayerM : MonoBehaviour
                             // 획득리스트에 넣는다.
                             myItem.Add(hItem);
                             myItem[0].transform.position = Vector3.zero;
-                          
+
                             // 안보이게 한다.
                             Color c = new Color();
                             c.a = 0;
                             myItem[0].GetComponent<MeshRenderer>().material.color = c;
                             myItem[0].SetActive(false);
-                            
+
                             if (myItem[1] != null)
                             {
                                 myItem[1].transform.position = Vector3.zero;
@@ -777,7 +795,7 @@ public class PlayerM : MonoBehaviour
 
 
                         hItem.transform.SetParent(free);
-                        print(hItem+"오른손 출발");
+                        print(hItem + "오른손 출발");
                     }
 
 
@@ -792,7 +810,7 @@ public class PlayerM : MonoBehaviour
 
 
 
-    
+
 
 
 }

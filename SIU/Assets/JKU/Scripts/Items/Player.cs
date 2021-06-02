@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     Rigidbody rb;
     PlayerM pm;
     ItemM[] iM = new ItemM[2];
+    public GameObject skillShield;
 
     //¼Ò¸® 
     

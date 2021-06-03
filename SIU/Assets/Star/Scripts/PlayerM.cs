@@ -56,7 +56,9 @@ public class PlayerM : MonoBehaviour
 
     //손에 잡은 오브젝트의 트랜스폼
     Transform catchHoldL;
+    Transform catchHoldLpre;
     Transform catchHoldR;
+    Transform catchHoldRpre;
     Transform catchItem;
 
     // 홀드찾기용
@@ -117,6 +119,7 @@ public class PlayerM : MonoBehaviour
     Vector3 getAngVelR;
     #endregion
 
+    goPlay gp;
     void Start()
     {
         if (SceneManager.GetActiveScene().name == "Game")
@@ -128,6 +131,7 @@ public class PlayerM : MonoBehaviour
 
         tM = GetComponent<TrapManager>();
         rb = GetComponent<Rigidbody>();
+        gp = GetComponent<goPlay>();
     }
 
     void Update()
@@ -165,7 +169,7 @@ public class PlayerM : MonoBehaviour
                 Rot();
                 if (SceneManager.GetActiveScene().name == "Ready") { Open(0.1f, "Game"); }
                 else { Open(0.1f, "Clear"); }
-
+                floating = false;
                 // 풋스텝에서 멀리 떨어지면 다시 게임스타트로 되돌아가기 - 나중에 하자.
                 //if (SceneManager.GetActiveScene().name != "Ready") { }
 
@@ -220,10 +224,13 @@ public class PlayerM : MonoBehaviour
                     }
                 }
 
+                if (gp.MenuManager.activeSelf) { state = State.GameOver; }
                 break;
 
             case State.GameOver:
                 Click(100);
+                if (!gp.MenuManager.activeSelf) { state = State.GameStart; }
+
                 break;
 
             case State.TowardsEnd:
@@ -428,7 +435,7 @@ public class PlayerM : MonoBehaviour
         {
 
             hitObj = hit.transform.gameObject;
-            if (hitObj.layer == LayerMask.NameToLayer("UI"))
+            if (hitObj.layer == LayerMask.NameToLayer("UI") )
             {
 
                 doorIndi.SetActive(true);
@@ -511,29 +518,24 @@ public class PlayerM : MonoBehaviour
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
+
+            tM.up = true;
+            if (catchHoldL != null &&
+               catchHoldR != null &&
+               catchHoldL == catchHoldR) { tM.up = false; }
+           
         }
 
         if (walkL)
         {
-            Collider[] hitsL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.05f);
+            Collider[] hitsL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.03f);
 
             if (hitsL.Length > 0)
             {
                 hitTF[0] = hitsL[0].transform;
 
                 if (hitTF[0].gameObject.name.Contains("Rock_01")) { }
-
-                //홀드 잡고 있는 중
-                if (hitTF[0].IsChildOf(rock))
-                {
-                    //양손 홀드를 각각 구분하기 위한 변수 catchHoldL / catchHoldR
-                    catchHoldL = hitTF[0];
-                    if (catchHoldL != catchHoldR) { tM.up = true; }
-                    GrabHold(hitsL[0], my[(int)Parts.LHand]);
-
-                }
-
-                GrabItem(hitTF[0], my[(int)Parts.LHand], my[(int)Parts.RHand]);
+                Grab(hitTF[0], my[(int)Parts.LHand], my[(int)Parts.RHand], ref catchHoldL, catchHoldLpre);
             }
         }
 
@@ -543,11 +545,17 @@ public class PlayerM : MonoBehaviour
             walkR = true;
             walkL = false;
             origin = my[(int)Parts.RHand].position;
+
+            tM.up = true;
+            if (catchHoldL != null &&
+               catchHoldR != null &&
+               catchHoldL == catchHoldR) { tM.up = false; }
+          
         }
 
         if (walkR)
         {
-            Collider[] hitsR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.05f);
+            Collider[] hitsR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.03f);
 
             if (hitsR.Length > 0)
             {
@@ -555,75 +563,67 @@ public class PlayerM : MonoBehaviour
 
                 if (hitTF[1].gameObject.name.Contains("Rock_01")) { }
 
-                //오른손 홀드 잡고 있는 중
-                if (hitTF[1].IsChildOf(rock))
-                {
-                    catchHoldR = hitTF[1];
-                    if (catchHoldL != catchHoldR) { tM.up = true; }
-                    GrabHold(hitsR[0], my[(int)Parts.RHand]);
-
-                }
-
-                GrabItem(hitTF[1], my[(int)Parts.RHand], my[(int)Parts.LHand]);
-
-
+                Grab(hitTF[1], my[(int)Parts.RHand], my[(int)Parts.LHand], ref catchHoldR, catchHoldRpre);
             }
 
         }
 
     }
 
-    //홀드 잡고 있는 중
-    void GrabHold(Collider hits, Transform hand)
+
+    void Grab(Transform hitTFN, Transform handG, Transform otherH, ref Transform Hold, Transform Holdpre )
     {
-
-
         Grap.Play();
-        Rocks r = hits.GetComponent<Rocks>();
-        floating = false;
-        rb.isKinematic = true;
 
-        if (r.num == (int)Rocks.Type.Trap)
+        // 홀드 잡고 있는 중
+        if (hitTFN.IsChildOf(rock))
         {
+            Hold = hitTFN;
+            if (Holdpre == Hold) { tM.up = false; }
 
-            if (tM.up)
+            Rocks r = hitTFN.GetComponent<Rocks>();
+            floating = false;
+            rb.isKinematic = true;
+
+            if (r.num == (int)Rocks.Type.Trap)
             {
 
-                if (r.trapNum < (int)Rocks.TrapType.Meteor)
+                if (tM.up)
                 {
-                    tM.BHole(r);
-                }
-                else
 
-                if (r.trapNum == (int)Rocks.TrapType.Meteor)
-                {
-                    tM.Create(tM.meteorFactory);
-                }
+                    if (r.trapNum < (int)Rocks.TrapType.Meteor)
+                    {
+                        tM.BHole(r);
 
-                else //(r.trapType == (int)Rocks.TrapType.Can)
-                {
-                    tM.Create(tM.canFactory);
+                    }
+                    else
+
+                    if (r.trapNum == (int)Rocks.TrapType.Meteor)
+                    {
+                        tM.Create(tM.meteorFactory);
+                    }
+
+                    else //(r.trapType == (int)Rocks.TrapType.Can)
+                    {
+                        tM.Create(tM.canFactory);
+                    }
+                    tM.up = false;
 
                 }
-                tM.up = false;
 
             }
 
-        }
-
-        if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-        else { transform.position += origin - hand.position; }
+            if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
+            else { transform.position += origin - handG.position; }
 
 
 
 
-    }
 
-    //아이템 잡는 중
-    void GrabItem(Transform hitTFN, Transform handG, Transform otherH)
-    {
+        }else
 
-        // 아이템 잡을 때 왼손 생성
+
+        // 아이템 잡을 때 손에 생성
         if (hitTFN.IsChildOf(item))
         {
 
@@ -635,7 +635,7 @@ public class PlayerM : MonoBehaviour
 
             hitTFN.gameObject.SetActive(false);
 
-        }
+        }else
 
         // 던져진 아이템이나 다른 손 아이템을 잡으면
         if (hitTFN.IsChildOf(free) || hitTFN.IsChildOf(otherH))
@@ -675,12 +675,11 @@ public class PlayerM : MonoBehaviour
             walkL = false;
 
             // 잡은게 없으면 리턴
-            if (hitTF[0] == null)
-            {
-                return;
-            }
+            if (hitTF[0] == null) { return; }
 
             SetFree(hitTF[0], catchHoldL, my[(int)Parts.LHand], getVelL, getAngVelL);
+            hitTF[0] = null;
+            catchHoldLpre = catchHoldL;
         }
 
         //오른손
@@ -696,7 +695,8 @@ public class PlayerM : MonoBehaviour
             }
 
             SetFree(hitTF[1], catchHoldR, my[(int)Parts.RHand], getVelR, getAngVelR);
-
+            hitTF[1] = null;
+            catchHoldRpre = catchHoldR;
         }
     }
 
@@ -710,61 +710,34 @@ public class PlayerM : MonoBehaviour
             rb.isKinematic = false;
             rb.velocity = -transform.TransformDirection(vel) * vPower;
 
-            if (hitTFN == hitTF[0]) hitTF[0] = null;
-            else { hitTF[1] = null; }
-
-
-
         }
 
         // 아이템 잡았다면
         if (catchItem != null && hitTFN == catchItem)
         {
-
-            Collider[] objs = Physics.OverlapSphere(hand.position, 0.1f, LayerMask.NameToLayer("Player"));
             Rigidbody itemRb = catchItem.GetComponent<Rigidbody>();
 
-            // 손반경으로 걸리는 오브젝트가 1개이상이면
-            if (objs.Length > 0)
+            //두개 이하
+            if (myItem.Count < 2)
             {
-                Transform objTF = objs[0].transform;
 
-                //0번째가 몸이라면
-                if (objTF == my[(int)Parts.Body])
-                {
+                Collider[] obj = Physics.OverlapSphere(my[(int)Parts.Body].position, 0.5f);
+                print(obj[0].name);
+                if (obj[0].transform.name == catchItem.name)
+                {  
+                 
 
-                    // 획득 아이템이 2개 미만이면
-                    if (myItem.Count < 2)
-                    {
-                        // 획득리스트에 넣는다.
-                        myItem.Add(catchItem.gameObject);
-                        // 멀리 날려 안보이게 하자
-                        myItem[0].transform.position = new Vector3(1000, 1000, 1000);
+                    // 획득리스트에 넣는다.
+                    myItem.Add(catchItem.gameObject);
 
-                        if (myItem.Count == 2)
-                        {
-                            myItem[1].transform.position = new Vector3(1000, 1000, 1000);
-                        }
-                        objTF = null;
-                        if (hitTFN == hitTF[0]) hitTF[0] = null;
-                        else { hitTF[1] = null; }
-                    }
-                    // 2개 이상이면 눈앞에서 없에자.
-                    else
-                    {
-                        catchItem.position = new Vector3(1000, 1000, 1000);
-                        catchItem.SetParent(free);
-                        print(catchItem + " 2개 이상");
-                        objTF = null;
-                    if (hitTFN == hitTF[0]) hitTF[0] = null;
-                    else { hitTF[1] = null; }
-                    }
+                    // 멀리 날려 안보이게 하자
+                    myItem[0].transform.position = new Vector3(1000, 1000, 1000);
+                    if (myItem.Count > 1) myItem[1].transform.position = new Vector3(1000, 1000, 1000);
+
                 }
-                //몸에 넣지 않으면
+                //아이템이 0번이 아니면 던지자
                 else
                 {
-
-                    //던지자
                     itemRb.isKinematic = false;
 
                     itemRb.velocity = vel * vPower;
@@ -772,16 +745,16 @@ public class PlayerM : MonoBehaviour
 
 
                     catchItem.transform.SetParent(free);
-                    print(catchItem + " 공중부양");
-                objTF = null;
-
-                if (hitTFN == hitTF[0]) hitTF[0] = null;
-                else { hitTF[1] = null; }
+                    print(obj[0].name + "이 먼저라 공중부양");
                 }
+
+
+
+
             }
-            // 걸리는게 없어도
-            else {
-                //던지자
+            // 2개 이상이면 던지자.
+            else
+            {
                 itemRb.isKinematic = false;
 
                 itemRb.velocity = vel * vPower;
@@ -789,19 +762,21 @@ public class PlayerM : MonoBehaviour
 
 
                 catchItem.transform.SetParent(free);
-                print(catchItem + " 닿은게 없어서 공중부양");
-
-            if (hitTFN == hitTF[0]) hitTF[0] = null;
-            else { hitTF[1] = null; }
+                print(catchItem + " 2개 이상");
             }
+
+
         }
+
 
         // 풋스텝을 잡고 놓은 상태라면
         if (hitTFN.gameObject.name.Contains("foot"))
         {
-           transform.position = FootStepTransform.position; 
-           transform.rotation = FootStepTransform.rotation; 
+         
+            Vector3.Lerp(transform.position, FootStepTransform.position, 3);
+            Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3);
            state = State.Ready;
+            
         }
         
 

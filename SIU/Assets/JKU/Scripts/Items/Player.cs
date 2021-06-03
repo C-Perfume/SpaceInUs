@@ -24,8 +24,11 @@ public class Player : MonoBehaviour
     
     public AudioSource Breath;
 
+    // 게임옵션
+    goPlay gp;
     void Start()
     {
+        gp = GetComponent<goPlay>();
         currentHp = maxHp;
         HpBar.SetMaxHpBar(maxHp);
 
@@ -41,10 +44,12 @@ public class Player : MonoBehaviour
         currtime += Time.deltaTime;
         if (currtime > createTime)
         {
-
-            TimeDamage(2);
+            if (gp.MenuManager.activeSelf) { TimeDamage(0); }
+            else
+            {
+                TimeDamage(2);
+            }
             currtime = 0;
-            print(currentHp);
         }
 
         float mspeed = GetSpeed();
@@ -87,8 +92,8 @@ public class Player : MonoBehaviour
         {
             GameObject SavTime = GameObject.Find("saveTime");
             Destroy(SavTime);
-
-            SceneManager.LoadScene("LostSpace");
+            print("Chock to death");
+           SceneManager.LoadScene("LostSpace");
         }
 
         #region canvas GameOver

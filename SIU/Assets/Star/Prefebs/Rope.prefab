@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1109826681581305846}
   - component: {fileID: 207814592958929912}
   - component: {fileID: 1852360295006456003}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 327800958724929774}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.01}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
+  m_LocalPosition: {x: -0.015, y: 0, z: -0.1}
+  m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
   m_Children: []
   m_Father: {fileID: 6195559985027474903}
   m_RootOrder: 0
@@ -40,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 327800958724929774}
-  m_Mesh: {fileID: -8704308304068383156, guid: 7790e4281a990da45aca9b9a7942f6e7, type: 3}
+  m_Mesh: {fileID: -2432090755550338912, guid: 30dfd9339a276e64d97dd1838c0d52c6, type: 3}
 --- !u!23 &207814592958929912
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 3433112065714188094}
   - component: {fileID: -478866053134965182}
   - component: {fileID: 7969795636658915565}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -141,8 +141,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.03, y: 0.07, z: 0.03}
-  m_Center: {x: 0, y: 0.035, z: 0}
+  m_Size: {x: 0.15, y: 0.12, z: 0.24}
+  m_Center: {x: 0, y: 0.025, z: 0}
 --- !u!54 &-478866053134965182
 Rigidbody:
   m_ObjectHideFlags: 0

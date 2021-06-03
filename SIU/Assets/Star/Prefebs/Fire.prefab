@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1758077086077923764}
   - component: {fileID: 1758077086077923753}
   - component: {fileID: 1758077086077923754}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: fireExtinguisher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 169153395958503115}
   - component: {fileID: -4172930185726004484}
   - component: {fileID: 5482352777864648783}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,4 +158,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 0
   ropeSpd: 10
-  firespeed: 0.03

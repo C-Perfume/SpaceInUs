@@ -27,7 +27,7 @@ public class UItest : MonoBehaviour
         //2. 부딪혔다면
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 10000))
+        if (Physics.Raycast(ray, out hit, 100))
         {
             //만약에 부딪힌 놈의 layer가 UI라면
             if (hit.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
@@ -53,7 +53,7 @@ public class UItest : MonoBehaviour
         //만약에 점이 활성화상태면
         if (dot.gameObject.activeSelf == true)
         {
-            if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
             {
                 //버튼 스크립트 가져오기
                 Button btn = hit.transform.GetComponent<Button>();

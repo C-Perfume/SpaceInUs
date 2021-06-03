@@ -8,6 +8,7 @@ public class goPlay : MonoBehaviour
     public GameObject MenuManager;
     public GameObject hpBar;
     bool a = false;
+
     void Start()
     {
 
@@ -40,5 +41,4 @@ public class goPlay : MonoBehaviour
     {
         Application.Quit();
     }
-
 }

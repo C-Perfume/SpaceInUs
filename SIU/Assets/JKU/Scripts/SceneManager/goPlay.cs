@@ -6,46 +6,39 @@ using UnityEngine.SceneManagement;
 public class goPlay : MonoBehaviour
 {
     public GameObject MenuManager;
-
+    public GameObject hpBar;
     bool a = false;
     void Start()
     {
-        
+
     }
 
     private void Update()
     {
-        if(OVRInput.GetDown(OVRInput.Button.Start, OVRInput.Controller.LTouch))
+        if (OVRInput.GetDown(OVRInput.Button.Start, OVRInput.Controller.LTouch))
+       
         {
-            MenuManager.gameObject.SetActive(true);
-            //a = true;
-            //if (a == true && OVRInput.GetDown(OVRInput.Button.Start, OVRInput.Controller.LTouch))
-            //{
-            //    MenuManager.gameObject.SetActive(false);
-            //    a = false;
-            //}
+            a = !a;
+            MenuManager.gameObject.SetActive(a);
+            hpBar.gameObject.SetActive(!a);
         }
     }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.name == "Player")
         {
-            SceneManager.LoadScene("Lv1");
+            SceneManager.LoadScene("Game");
         }
     }
 
 
     public void onClickRetry()
     {
-        SceneManager.LoadScene("SpaceShip");
+        SceneManager.LoadScene("Ready");
     }
     public void onClickExit()
     {
         Application.Quit();
     }
 
-    public void Exitmenu()
-    {
-       MenuManager.gameObject.SetActive(false);
-    }
 }

@@ -20,7 +20,7 @@ public class TrapManager : MonoBehaviour
     // 인력 방향
     public Vector3 dir;
     // 블랙홀 인력속도
-    public float pullSpd = 0.1f;
+    public  float pullSpd = 1f;
 
     PlayerM pm;
 
@@ -102,6 +102,7 @@ public class TrapManager : MonoBehaviour
         bH = false;
     }
 
+    // 함정에 부딪히면 처리되는 함수
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.name.Contains("BH"))

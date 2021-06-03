@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 
 
 public class PlayerM : MonoBehaviour
@@ -20,6 +22,7 @@ public class PlayerM : MonoBehaviour
         Ready,
         GameStart,
         GameOver,
+        TowardsEnd,
         End
     }
     public enum Parts
@@ -79,10 +82,12 @@ public class PlayerM : MonoBehaviour
     TrapManager tM;
 
     RaycastHit hit;
-    
+
     // open 함수에 쓰이는 손에 잡은 오브젝트
     GameObject hitObj;
 
+    // 클리어 도어로 가기 전 위치조정
+    public Transform FootStepTransform;
 
     //잡는소리
     public AudioSource Grap;
@@ -156,10 +161,15 @@ public class PlayerM : MonoBehaviour
         switch (state)
         {
             case State.Ready:
-                Walk();
+                if (SceneManager.GetActiveScene().name == "Ready") { Walk(); } else { Walk(0); }
                 Rot();
-                Open(0.1f, "Game");
-                break;
+                if (SceneManager.GetActiveScene().name == "Ready") { Open(0.1f, "Game"); }
+                else { Open(0.1f, "Clear"); }
+
+                // 풋스텝에서 멀리 떨어지면 다시 게임스타트로 되돌아가기 - 나중에 하자.
+                //if (SceneManager.GetActiveScene().name != "Ready") { }
+
+                    break;
 
             case State.GameStart:
                 //플로팅
@@ -213,11 +223,14 @@ public class PlayerM : MonoBehaviour
                 break;
 
             case State.GameOver:
-                Click(100, "Ready");
+                Click(100);
+                break;
+
+            case State.TowardsEnd:
                 break;
 
             case State.End:
-                Click(100, "Ready");
+                Click(100);
                 break;
         }
 
@@ -282,6 +295,49 @@ public class PlayerM : MonoBehaviour
 
     }
 
+    void Walk(int audioNum)  //움직임을 위한 불 변수가 있었어야 했는데 그걸 생각 못해서 몇시간 고생했다 에휴
+    {
+
+        if (getDTchTmbL)
+        {
+
+            walkR = false;
+            walkL = true;
+            origin = my[(int)Parts.LHand].position;
+            SoundM.instance.playS(audioNum);
+
+        }
+        if (walkL)
+        {
+            transform.position += origin - my[(int)Parts.LHand].position;
+        }
+        if (getUTchTmbL)
+        {
+            SoundM.instance.StopS(audioNum);
+            walkL = false;
+        }
+
+        if (getDTchTmbR)
+        {
+            walkL = false;
+            walkR = true;
+            origin = my[(int)Parts.RHand].position;
+            SoundM.instance.playS(audioNum);
+
+        }
+
+        if (walkR)
+        {
+            transform.position += origin - my[(int)Parts.RHand].position;
+        }
+
+        if (getUTchTmbR)
+        {
+            walkR = false;
+            SoundM.instance.StopS(audioNum);
+        }
+
+    }
     void Rot()
     {
         // 방향전환
@@ -365,7 +421,7 @@ public class PlayerM : MonoBehaviour
 
     }
 
-    void Click(float m, string scene)
+    void Click(float m)
     {
 
         if (Physics.Raycast(origin: my[(int)Parts.LHand].position, direction: my[(int)Parts.LHand].forward, out hit, m))
@@ -383,7 +439,12 @@ public class PlayerM : MonoBehaviour
 
                 if (getDBtnIdxL)
                 {
-                    SceneManager.LoadScene(scene);
+
+                     Button btn = hit.transform.GetComponent<Button>();
+                    if (btn != null)
+                    {
+                        btn.onClick.Invoke();
+                    }
                 }
             }
             else
@@ -411,7 +472,11 @@ public class PlayerM : MonoBehaviour
 
                 if (getDBtnIdxR)
                 {
-                    SceneManager.LoadScene(scene);
+                    Button btn = hit.transform.GetComponent<Button>();
+                    if (btn != null)
+                    {
+                        btn.onClick.Invoke();
+                    }
                 }
             }
             else
@@ -451,25 +516,24 @@ public class PlayerM : MonoBehaviour
         if (walkL)
         {
             Collider[] hitsL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.05f);
-            
+
             if (hitsL.Length > 0)
             {
                 hitTF[0] = hitsL[0].transform;
 
-                if (hitTF[0].gameObject.name.Contains("Rock_01"))                 {                }
+                if (hitTF[0].gameObject.name.Contains("Rock_01")) { }
 
                 //홀드 잡고 있는 중
-                if (hitTF[0].IsChildOf(rock)) 
+                if (hitTF[0].IsChildOf(rock))
                 {
                     //양손 홀드를 각각 구분하기 위한 변수 catchHoldL / catchHoldR
                     catchHoldL = hitTF[0];
                     if (catchHoldL != catchHoldR) { tM.up = true; }
-                   GrabHold(hitsL[0], my[(int)Parts.LHand]);
+                    GrabHold(hitsL[0], my[(int)Parts.LHand]);
 
                 }
 
                 GrabItem(hitTF[0], my[(int)Parts.LHand], my[(int)Parts.RHand]);
-
             }
         }
 
@@ -487,7 +551,7 @@ public class PlayerM : MonoBehaviour
 
             if (hitsR.Length > 0)
             {
-                hitTF [1] = hitsR[0].transform;
+                hitTF[1] = hitsR[0].transform;
 
                 if (hitTF[1].gameObject.name.Contains("Rock_01")) { }
 
@@ -509,71 +573,68 @@ public class PlayerM : MonoBehaviour
 
     }
 
-        //홀드 잡고 있는 중
-   void GrabHold(Collider hits, Transform hand)
+    //홀드 잡고 있는 중
+    void GrabHold(Collider hits, Transform hand)
     {
-        
-            
-            Grap.Play();
-            Rocks r = hits.GetComponent<Rocks>();
-            floating = false;
-            rb.isKinematic = true;
 
-            if (r.num == (int)Rocks.Type.Trap)
+
+        Grap.Play();
+        Rocks r = hits.GetComponent<Rocks>();
+        floating = false;
+        rb.isKinematic = true;
+
+        if (r.num == (int)Rocks.Type.Trap)
+        {
+
+            if (tM.up)
             {
 
-                if (tM.up)
+                if (r.trapNum < (int)Rocks.TrapType.Meteor)
                 {
+                    tM.BHole(r);
+                }
+                else
 
-                    if (r.trapNum < (int)Rocks.TrapType.Meteor)
-                    {
-                        tM.BHole(r);
-                    }
-                    else
-
-                    if (r.trapNum == (int)Rocks.TrapType.Meteor)
-                    {
-                        tM.Create(tM.meteorFactory);
-                    }
-
-                    else //(r.trapType == (int)Rocks.TrapType.Can)
-                    {
-                        tM.Create(tM.canFactory);
-
-                    }
-                    tM.up = false;
-
+                if (r.trapNum == (int)Rocks.TrapType.Meteor)
+                {
+                    tM.Create(tM.meteorFactory);
                 }
 
+                else //(r.trapType == (int)Rocks.TrapType.Can)
+                {
+                    tM.Create(tM.canFactory);
+
+                }
+                tM.up = false;
+
             }
-            //else
-            //{
-            //    tM.up = true;
-            //}
-           
-            if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-            else { transform.position += origin - hand.position; }
+
+        }
+
+        if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
+        else { transform.position += origin - hand.position; }
 
 
-        
+
 
     }
 
     //아이템 잡는 중
-    void GrabItem(Transform hitTFN, Transform handG, Transform otherH) {
+    void GrabItem(Transform hitTFN, Transform handG, Transform otherH)
+    {
 
         // 아이템 잡을 때 왼손 생성
         if (hitTFN.IsChildOf(item))
         {
-        
+
             Grap.Play();
-        if (hitTFN.gameObject.name.Contains("Fire")) { CreateItem(fire, handG); }
-        if (hitTFN.gameObject.name.Contains("Oxy")) { CreateItem(oxy, handG); }
-        if (hitTFN.gameObject.name.Contains("Rope")) { CreateItem(rope, handG); }
-        if (hitTFN.gameObject.name.Contains("Shield")) { CreateItem(shield, handG); }
+            if (hitTFN.gameObject.name.Contains("Fire")) { CreateItem(fire, handG); }
+            if (hitTFN.gameObject.name.Contains("Oxy")) { CreateItem(oxy, handG); }
+            if (hitTFN.gameObject.name.Contains("Rope")) { CreateItem(rope, handG); }
+            if (hitTFN.gameObject.name.Contains("Shield")) { CreateItem(shield, handG); }
 
             hitTFN.gameObject.SetActive(false);
-        
+
         }
 
         // 던져진 아이템이나 다른 손 아이템을 잡으면
@@ -585,7 +646,7 @@ public class PlayerM : MonoBehaviour
             // 잡은 손으로 자식 만들고 0점으로 이동시키기
             catchItem.SetParent(handG);
             hitTFN.localPosition = Vector3.zero;
-            
+
             // 물리 작용 off
             Rigidbody itemRb = hitTFN.gameObject.GetComponent<Rigidbody>();
             itemRb.isKinematic = true;
@@ -604,10 +665,9 @@ public class PlayerM : MonoBehaviour
     }
 
 
-
-
-    //놨을 때
-    void SetFree() {
+       //놨을 때
+    void SetFree()
+    {
 
         //왼손
         if (getUBtnIdxL)
@@ -619,8 +679,8 @@ public class PlayerM : MonoBehaviour
             {
                 return;
             }
-            
-            SetFree(hitTF[0], catchHoldL, my[(int)Parts.LHand], getVelL);
+
+            SetFree(hitTF[0], catchHoldL, my[(int)Parts.LHand], getVelL, getAngVelL);
         }
 
         //오른손
@@ -634,101 +694,121 @@ public class PlayerM : MonoBehaviour
             {
                 return;
             }
-            
-            SetFree(hitTF[1], catchHoldR, my[(int)Parts.RHand], getVelR);
-            
+
+            SetFree(hitTF[1], catchHoldR, my[(int)Parts.RHand], getVelR, getAngVelR);
+
         }
     }
 
-
-
-    void SetFree( Transform hitTFN, Transform hold, Transform hand, Vector3 vel) {
+    void SetFree(Transform hitTFN, Transform hold, Transform hand, Vector3 vel, Vector3 angVel)
+    {
 
         // 홀드라면
         if (hitTFN == hold)
-            {
+        {
 
-                rb.isKinematic = false;
-                rb.velocity = -transform.TransformDirection(vel) * vPower;
+            rb.isKinematic = false;
+            rb.velocity = -transform.TransformDirection(vel) * vPower;
 
             if (hitTFN == hitTF[0]) hitTF[0] = null;
             else { hitTF[1] = null; }
 
-            
+
 
         }
 
-            // 아이템 잡았다면
-            if (catchItem !=null && hitTFN == catchItem)
+        // 아이템 잡았다면
+        if (catchItem != null && hitTFN == catchItem)
+        {
+
+            Collider[] objs = Physics.OverlapSphere(hand.position, 0.1f, LayerMask.NameToLayer("Player"));
+            Rigidbody itemRb = catchItem.GetComponent<Rigidbody>();
+
+            // 손반경으로 걸리는 오브젝트가 1개이상이면
+            if (objs.Length > 0)
             {
-            
-              Collider[] objs = Physics.OverlapSphere(hand.position, 0.1f, LayerMask.NameToLayer("Player") );
+                Transform objTF = objs[0].transform;
 
-                // 손반경으로 걸리는 오브젝트가 1개이상이면
-                if (objs.Length > 0)
-                {
-                    Transform objTF = objs[0].transform;
-                   
                 //0번째가 몸이라면
-                    if (objTF == my[(int)Parts.Body])
+                if (objTF == my[(int)Parts.Body])
+                {
+
+                    // 획득 아이템이 2개 미만이면
+                    if (myItem.Count < 2)
                     {
+                        // 획득리스트에 넣는다.
+                        myItem.Add(catchItem.gameObject);
+                        // 멀리 날려 안보이게 하자
+                        myItem[0].transform.position = new Vector3(1000, 1000, 1000);
 
-                        // 획득 아이템이 2개 미만이면
-                        if (myItem.Count < 2)
+                        if (myItem.Count == 2)
                         {
-                            // 획득리스트에 넣는다.
-                            myItem.Add(catchItem.gameObject);
-                            // 멀리 날려 안보이게 하자
-                            myItem[0].transform.position = new Vector3(1000, 1000, 1000);
-
-                            // 안보이게 한다.
-                            //Color c = new Color();
-                            //c.a = 0;
-                            //myItem[0].GetComponent<MeshRenderer>().material.color = c;
-                            //myItem[0].SetActive(false);
-
-                            if (myItem.Count == 2)
-                            {
-                                myItem[1].transform.position = new Vector3(1000, 1000, 1000);
-                                //myItem[1].GetComponent<MeshRenderer>().material.color = c;
-                                //myItem[1].SetActive(false);
-                            }
+                            myItem[1].transform.position = new Vector3(1000, 1000, 1000);
                         }
-                        // 2개 이상이면 없에자.
-                        else
+                        objTF = null;
+                        if (hitTFN == hitTF[0]) hitTF[0] = null;
+                        else { hitTF[1] = null; }
+                    }
+                    // 2개 이상이면 눈앞에서 없에자.
+                    else
                     {
                         catchItem.position = new Vector3(1000, 1000, 1000);
                         catchItem.SetParent(free);
-                         print(catchItem+" 2개 이상");
+                        print(catchItem + " 2개 이상");
+                        objTF = null;
+                    if (hitTFN == hitTF[0]) hitTF[0] = null;
+                    else { hitTF[1] = null; }
                     }
-
                 }
-                    //몸에 넣지 않으면
-                    else
-                    {
+                //몸에 넣지 않으면
+                else
+                {
 
-                        //던지자
-                        Rigidbody itemRb = catchItem.GetComponent<Rigidbody>();
-                        itemRb.isKinematic = false;
+                    //던지자
+                    itemRb.isKinematic = false;
 
-                        itemRb.velocity = getVelL * vPower;
-                        itemRb.angularVelocity = getAngVelL;
+                    itemRb.velocity = vel * vPower;
+                    itemRb.angularVelocity = angVel;
 
 
                     catchItem.transform.SetParent(free);
-                         print(catchItem+" 공중부양");
-                    }
+                    print(catchItem + " 공중부양");
+                objTF = null;
 
-
-                    objTF = null;
+                if (hitTFN == hitTF[0]) hitTF[0] = null;
+                else { hitTF[1] = null; }
                 }
-
             }
+            // 걸리는게 없어도
+            else {
+                //던지자
+                itemRb.isKinematic = false;
 
+                itemRb.velocity = vel * vPower;
+                itemRb.angularVelocity = angVel;
+
+
+                catchItem.transform.SetParent(free);
+                print(catchItem + " 닿은게 없어서 공중부양");
+
+            if (hitTFN == hitTF[0]) hitTF[0] = null;
+            else { hitTF[1] = null; }
+            }
         }
 
+        // 풋스텝을 잡고 놓은 상태라면
+        if (hitTFN.gameObject.name.Contains("foot"))
+        {
+           transform.position = FootStepTransform.position; 
+           transform.rotation = FootStepTransform.rotation; 
+           state = State.Ready;
+        }
+        
 
     }
+
+
+}
 
 
 

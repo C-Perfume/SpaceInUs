@@ -5,13 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class goPlay : MonoBehaviour
 {
+    public static goPlay instance;
     public GameObject MenuManager;
     public GameObject hpBar;
     public bool a = false;
 
     void Start()
     {
-
+        instance = this;
     }
 
     private void Update()
@@ -22,7 +23,14 @@ public class goPlay : MonoBehaviour
             a = !a;
             MenuManager.gameObject.SetActive(a);
             hpBar.gameObject.SetActive(!a);
-
+            if (a)
+            {
+                Time.timeScale = 0;
+            }
+            else
+            {
+                Time.timeScale = 1;
+            }
         }
     }
 

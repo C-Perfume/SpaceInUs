@@ -728,7 +728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6691816d841572e4fae6891a6e6210b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gpObj: {fileID: 8733932752677898911}
+  MenuController: {fileID: 0}
   audiosource: {fileID: 893618919}
   howto: {fileID: 2053547717}
   image: {fileID: 3109706593594123654}
@@ -1247,7 +1247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6691816d841572e4fae6891a6e6210b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gpObj: {fileID: 8733932752677898911}
+  MenuController: {fileID: 983900392}
   audiosource: {fileID: 893618919}
   howto: {fileID: 781312809}
   image: {fileID: 3109706593594123654}
@@ -2312,7 +2312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6691816d841572e4fae6891a6e6210b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gpObj: {fileID: 8733932752677898911}
+  MenuController: {fileID: 0}
   audiosource: {fileID: 893618919}
   howto: {fileID: 2053547717}
   image: {fileID: 3109706593594123654}
@@ -10196,7 +10196,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MenuManager: {fileID: 983900392}
-  hpBar: {fileID: 3109706593594123654}
+  hpBar: {fileID: 1592212847}
+  a: 0
 --- !u!1 &8733932752852808786
 GameObject:
   m_ObjectHideFlags: 0

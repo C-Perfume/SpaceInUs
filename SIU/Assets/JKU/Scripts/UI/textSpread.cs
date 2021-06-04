@@ -20,8 +20,8 @@ public class textSpread : MonoBehaviour
     //출력할 string값 입력
     public int strNum = 0;
     //현재 출력중인 string 순서
-    public  float textSpeed = 0.1f;
-
+    public float textSpeed = 0.1f;
+    bool text = false;
     //텍스트 속도
     void Awake()
     {
@@ -34,29 +34,32 @@ public class textSpread : MonoBehaviour
 
     void Update()
     {
-        if (Time.timeScale == 0)
+        if (MenuController.activeSelf)
         {
-            
+
             textSpeed = 0;
             StopAllCoroutines();
+
             audiosource.Pause();
-    
-            
+            text = true;
         }
-          else
+
+
+        else
         {
-            
-            if (OVRInput.GetDown(OVRInput.Button.Start,OVRInput.Controller.LHand))
-                {
+            if (text)
+            {
                 textSpeed = 0.1f;
                 StartCoroutine("TextFuntion");
-                audiosource.Play(); 
+                audiosource.Play();
+                text = false;
             }
         }
-        
+
+
         //현재 string 순서까지 출력한다
         this.GetComponent<Text>().text = str.Substring(0, strNum);
-        
+
         if (strNum > str.Length)
         {
             StopAllCoroutines();

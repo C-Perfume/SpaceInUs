@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine.UI;
 public class textSpread : MonoBehaviour
 {
+    //메뉴창 키고 끄는거 알아오는거
+    public GameObject MenuController;
+
     //사운드
     public AudioSource audiosource;
 
@@ -17,7 +20,8 @@ public class textSpread : MonoBehaviour
     //출력할 string값 입력
     public int strNum = 0;
     //현재 출력중인 string 순서
-    public float textSpeed = 1.0f;
+    public  float textSpeed = 0.1f;
+
     //텍스트 속도
     void Awake()
     {
@@ -30,9 +34,29 @@ public class textSpread : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            
+            textSpeed = 0;
+            StopAllCoroutines();
+            audiosource.Pause();
+    
+            
+        }
+          else
+        {
+            
+            if (OVRInput.GetDown(OVRInput.Button.Start,OVRInput.Controller.LHand))
+                {
+                textSpeed = 0.1f;
+                StartCoroutine("TextFuntion");
+                audiosource.Play(); 
+            }
+        }
         
         //현재 string 순서까지 출력한다
         this.GetComponent<Text>().text = str.Substring(0, strNum);
+        
         if (strNum > str.Length)
         {
             StopAllCoroutines();

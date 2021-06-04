@@ -22,13 +22,7 @@ public class goPlay : MonoBehaviour
             a = !a;
             MenuManager.gameObject.SetActive(a);
             hpBar.gameObject.SetActive(!a);
-        }
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.name == "Player")
-        {
-            SceneManager.LoadScene("Game");
+           // if(a)Time.timeScale = 0; else { Time.timeScale = 1; }
         }
     }
 

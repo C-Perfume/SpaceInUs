@@ -42,18 +42,30 @@ public class Inventory : MonoBehaviour
                 if (pm.myItem[0].name.Contains("Rope"))
                 {
                     item1[(int)items.R].SetActive(true);
-                }
+                item1[(int)items.F].SetActive(false);
+                item1[(int)items.S].SetActive(false);
+                item1[(int)items.R].SetActive(false);
+            }
                 if (pm.myItem[0].name.Contains("Fire"))
                 {
-                    item1[(int)items.F].SetActive(true);
-                }
+                item1[(int)items.O].SetActive(false);
+                item1[(int)items.F].SetActive(true);
+                item1[(int)items.S].SetActive(false);
+                item1[(int)items.R].SetActive(false);
+            }
                 if (pm.myItem[0].name.Contains("Shield"))
                 {
-                    item1[(int)items.S].SetActive(true);
-                }
+                item1[(int)items.O].SetActive(false);
+                item1[(int)items.F].SetActive(false);
+                item1[(int)items.S].SetActive(true);
+                item1[(int)items.R].SetActive(false);
+            }
                 if (pm.myItem[0].name.Contains("Oxy"))
                 {
-                    item1[(int)items.O].SetActive(true);
+                item1[(int)items.O].SetActive(false);
+                item1[(int)items.F].SetActive(false);
+                item1[(int)items.S].SetActive(false);
+                item1[(int)items.O].SetActive(true);
                 }
 
             }

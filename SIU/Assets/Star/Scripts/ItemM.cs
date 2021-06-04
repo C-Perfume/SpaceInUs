@@ -12,6 +12,8 @@ public class ItemM : MonoBehaviour
     Rigidbody rb;
     public float ropeSpd = .03f;
     GameObject shield;
+    TrapManager tm;
+    public ParticleSystem particle;
     void Start()
     {
         p1 = GameObject.Find("Player");
@@ -20,6 +22,8 @@ public class ItemM : MonoBehaviour
         rb = p1.GetComponent<Rigidbody>();
         shield = ps.skillShield;
         shield.SetActive(false);
+        
+        tm = GetComponent<TrapManager>();
     }
 
     void Update()
@@ -31,6 +35,7 @@ public class ItemM : MonoBehaviour
                 print("Active fire");
                 rb.isKinematic = false;
                 rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd, ForceMode.Impulse);
+                particle.gameObject.SetActive(true);
             }
 
             if (gameObject.name.Contains("Rope"))
@@ -44,7 +49,7 @@ public class ItemM : MonoBehaviour
                     lr.SetPosition(1, hit.point);
                     Vector3 dir = hit.point - p1.transform.position;
                     dir.Normalize();
-                    p1.transform.position += dir * ropeSpd*100 * Time.deltaTime;
+                    p1.transform.position += dir * ropeSpd*10 * Time.deltaTime;
                 }
                 print("Active rope");
             }
@@ -54,6 +59,8 @@ public class ItemM : MonoBehaviour
                 shield.SetActive(true);
                 rb.isKinematic = true;
                 print("Active shield");
+                //블랙홀 지우기
+                tm.bH =false;
             }
 
             if (name.Contains("Oxy"))

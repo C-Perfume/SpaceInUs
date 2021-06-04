@@ -41,6 +41,12 @@ public class MeteoFall : MonoBehaviour
 
     {
         Vector3 dir1 = transform.position += dir * speed * Time.deltaTime;
+        
+        //½¯µå È¿°ú
+        if (gameObject.name.Contains("Shield"))
+        {
+            dir = -dir;
+        }
     }
 
 }

@@ -52,7 +52,7 @@ public class PlayerM : MonoBehaviour
     public bool floating = true;
     float vPower = .5f;
 
-    //잡은거 손위치
+    //그랩 손위치
     Transform[] hitTF = new Transform[2];
 
     //손에 잡은 오브젝트의 트랜스폼
@@ -61,6 +61,7 @@ public class PlayerM : MonoBehaviour
     Transform catchHoldR;
     Transform catchHoldRpre;
     Transform catchItem;
+
     //아이템 인벤토리 넣기용
     bool find = false;
 
@@ -124,7 +125,6 @@ public class PlayerM : MonoBehaviour
     Vector3 getAngVelR;
     #endregion
 
-    goPlay gp;
     void Start()
     {
         if (SceneManager.GetActiveScene().name == "Game")
@@ -136,7 +136,6 @@ public class PlayerM : MonoBehaviour
 
         tM = GetComponent<TrapManager>();
         rb = GetComponent<Rigidbody>();
-        gp = GetComponent<goPlay>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
         lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
     }
@@ -172,21 +171,37 @@ public class PlayerM : MonoBehaviour
         switch (state)
         {
             case State.Ready:
-                if (SceneManager.GetActiveScene().name == "Ready") { Walk(); } else { Walk(0); }
+               
+                if (SceneManager.GetActiveScene().name == "Ready")
+                { Walk(); } 
+                else { Walk(0); }
+                
                 Rot();
-                if (SceneManager.GetActiveScene().name == "Ready") { Open(0.1f, "Game"); }
+                
+                if (SceneManager.GetActiveScene().name == "Ready") 
+                { Open(0.1f, "Game"); }
                 else { Open(0.1f, "Clear"); }
-                floating = false;
+                
                 // 풋스텝에서 멀리 떨어지면 다시 게임스타트로 되돌아가기 - 나중에 하자.
                 //if (SceneManager.GetActiveScene().name != "Ready") { }
+                
+                floating = false;
+                
                 if (fStep)
                 {
-                    Vector3.Lerp(transform.position, FootStepTransform.position, 3);
-                    Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3);
+                    print("작동?");
+                    Vector3.Lerp(transform.position, FootStepTransform.position, 1);
+                    Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 1);
                     StartCoroutine(StopFStep());
                 }
-                if (gp.MenuManager.activeSelf) { state = State.GameOver; }
+
+                if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
+                
                 break;
+
+
+
+
 
             case State.GameStart:
               
@@ -217,7 +232,7 @@ public class PlayerM : MonoBehaviour
 
                 }
 
-                //멀리 간 아이템 없에기
+                //멀리 간 아이템 없에기 **디스트로이 없엤음
                 if (free.childCount > 0)
                 {
                     for (int i = 0; i < free.childCount; i++)
@@ -237,14 +252,26 @@ public class PlayerM : MonoBehaviour
                     }
                 }
 
-                if (gp.MenuManager.activeSelf) { state = State.GameOver; }
+                if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
                 break;
 
+
+
+
+
             case State.GameOver:
-                Click(100);
-                if (!gp.MenuManager.activeSelf) {
-                    if (SceneManager.GetActiveScene().name == "Ready") { state = State.Ready; }
-                    else { state = State.GameStart; }  }
+                ClickLR();
+
+                if (!goPlay.instance.MenuManager.activeSelf) {
+                    if (SceneManager.GetActiveScene().name == "Ready") 
+                    { state = State.Ready;
+                        lrL.enabled = false;
+                        lrR.enabled = false;
+                    }
+                    else { state = State.GameStart;
+                      
+                    }  
+                }
 
                 break;
         }
@@ -441,25 +468,32 @@ public class PlayerM : MonoBehaviour
     }
 
     // 메뉴선택 게임오버든 뭐든 이걸로 사용
-    void Click(float m)
+    void ClickLR()
     {
+        Click(my[(int)Parts.LHand], lrL, doorIndi, getDBtnIdxL);
+        Click(my[(int)Parts.RHand], lrR, doorIndi2, getDBtnIdxR);
+      }
 
+    void Click(Transform hand, LineRenderer lrC, GameObject indi, bool gDB) {
 
-        if (Physics.Raycast(origin: my[(int)Parts.LHand].position, direction: my[(int)Parts.LHand].forward, out hit, m))
+            lrC.enabled = true;
+      
+            lrC.SetPosition(0, hand.position);
+            lrC.SetPosition(1, hand.forward * 100);
+
+        if (Physics.Raycast(origin: hand.position, direction: hand.forward, out hit, 100))
         {
-            lrL.enabled = true;
-            lrL.SetPosition(0, my[(int)Parts.LHand].position);
-            lrL.SetPosition(1, hit.point);
-
             if (hit.collider.CompareTag("Button"))
             {
 
-                doorIndi.SetActive(true);
-                doorIndi.transform.forward = my[(int)Parts.LHand].forward;
-                doorIndi.transform.position = hit.point;
+                lrC.SetPosition(1, hit.point);
+                indi.SetActive(true);
+                indi.transform.localScale = Vector3.one * .5f;
+                indi.transform.forward = hand.forward;
+                indi.transform.position = hit.point;
 
 
-                if (getDBtnIdxL)
+                if (gDB)
                 {
                     Button btn = hit.transform.GetComponent<Button>();
                     if (btn != null)
@@ -470,53 +504,16 @@ public class PlayerM : MonoBehaviour
             }
             else
             {
-                doorIndi.SetActive(false);
+                lrC.SetPosition(1, hand.forward * 100);
+                indi.SetActive(false);
             }
         }
         else
         {
-            doorIndi.SetActive(false);
-            lrL.enabled = false;
+            
+            indi.SetActive(false);
         }
-
-
-
-        if (Physics.Raycast(origin: my[(int)Parts.RHand].position, direction: my[(int)Parts.RHand].forward, out hit, m))
-        {
-            lrR.enabled = true;
-            lrR.SetPosition(0, my[(int)Parts.RHand].position);
-            lrR.SetPosition(1, hit.point);
-
-
-            if (hit.collider.CompareTag("Button"))
-            {
-                doorIndi2.SetActive(true);
-                doorIndi2.transform.forward = my[(int)Parts.RHand].forward;
-                doorIndi2.transform.position = hit.point;
-
-                if (getDBtnIdxR)
-                {
-                    Button btn = hit.transform.GetComponent<Button>();
-                    if (btn != null)
-                    {
-                        btn.onClick.Invoke();
-                    }
-                }
-            }
-            else
-            {
-                doorIndi2.SetActive(false);
-            }
-        }
-        else
-        {
-            doorIndi2.SetActive(false);
-            lrR.enabled = false;
-        }
-
-
     }
-
     void PwUp()
     { //수정필요
         if (getUBtnIdxR && getUBtnIdxL)
@@ -530,20 +527,24 @@ public class PlayerM : MonoBehaviour
     {
         if (getDBtnIdxL)
         {
+            Collider[] hitsLL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.01f);
+
+            if (hitsLL.Length > 0)
+            {
+                Grap.Play();
+            }
 
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
 
             tM.up = true;
-            if (catchHoldL != null &&
-               catchHoldR != null &&
-               catchHoldL == catchHoldR) { tM.up = false; }
 
         }
 
         if (walkL)
         {
+
             Collider[] hitsL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.03f);
 
             if (hitsL.Length > 0)
@@ -551,26 +552,31 @@ public class PlayerM : MonoBehaviour
                 hitTF[0] = hitsL[0].transform;
 
                 if (hitTF[0].gameObject.name.Contains("Rock_01")) { }
-                Grab(hitTF[0], my[(int)Parts.LHand], my[(int)Parts.RHand], ref catchHoldL, catchHoldLpre);
+                Grab(hitTF[0], my[(int)Parts.LHand], my[(int)Parts.RHand], ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
             }
         }
 
         // 오른손 움직임
         if (getDBtnIdxR)
         {
+            Collider[] hitsRR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.01f);
+
+            if (hitsRR.Length > 0)
+            {
+                Grap.Play();
+            }
+
             walkR = true;
             walkL = false;
             origin = my[(int)Parts.RHand].position;
 
             tM.up = true;
-            if (catchHoldL != null &&
-               catchHoldR != null &&
-               catchHoldL == catchHoldR) { tM.up = false; }
-
+            
         }
 
         if (walkR)
         {
+
             Collider[] hitsR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.03f);
 
             if (hitsR.Length > 0)
@@ -579,7 +585,7 @@ public class PlayerM : MonoBehaviour
 
                 if (hitTF[1].gameObject.name.Contains("Rock_01")) { }
 
-                Grab(hitTF[1], my[(int)Parts.RHand], my[(int)Parts.LHand], ref catchHoldR, catchHoldRpre);
+                Grab(hitTF[1], my[(int)Parts.RHand], my[(int)Parts.LHand], ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
             }
 
         }
@@ -587,14 +593,17 @@ public class PlayerM : MonoBehaviour
     }
 
 
-    void Grab(Transform hitTFN, Transform handG, Transform otherH, ref Transform Hold, Transform Holdpre)
+    void Grab(Transform hitTFN, Transform handG, Transform otherH, ref Transform Hold, ref Transform Hold2, ref Transform Holdpre)
     {
-        Grap.Play();
+      
 
         // 홀드 잡고 있는 중
         if (hitTFN.IsChildOf(rock))
         {
             Hold = hitTFN;
+            if (Hold2 != null &&
+                  Hold == Hold2) { tM.up = false; }
+
             if (Holdpre == Hold) { tM.up = false; }
 
             Rocks r = hitTFN.GetComponent<Rocks>();
@@ -819,7 +828,6 @@ public class PlayerM : MonoBehaviour
         if (hitTFN.gameObject.name.Contains("foot"))
         {
             fStep = true;
-           
             state = State.Ready;
 
         }

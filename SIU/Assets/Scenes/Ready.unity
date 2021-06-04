@@ -728,7 +728,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6691816d841572e4fae6891a6e6210b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuController: {fileID: 0}
+  MenuController: {fileID: 983900392}
   audiosource: {fileID: 893618919}
   howto: {fileID: 2053547717}
   image: {fileID: 3109706593594123654}
@@ -1027,7 +1027,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &983900393
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1401,8 +1401,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 153.33131, y: 147.79, z: 147.79}
-  m_Center: {x: 6.4475265, y: 0, z: 0}
+  m_Size: {x: 85, y: 100, z: 5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1386332721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1508,10 +1508,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoorCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2014999831203189577, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: cc2dad67573f4c54eae110af5087e0e0, type: 2}
     - target: {fileID: 2708721452484547175, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2708721452484547177, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: cc2dad67573f4c54eae110af5087e0e0, type: 2}
     - target: {fileID: 4156011046003371476, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0
@@ -1751,8 +1759,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 153.33131, y: 147.79, z: 147.79}
-  m_Center: {x: 6.4475265, y: 0, z: 0}
+  m_Size: {x: 85, y: 100, z: 5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1527293000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2312,7 +2320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6691816d841572e4fae6891a6e6210b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MenuController: {fileID: 0}
+  MenuController: {fileID: 983900392}
   audiosource: {fileID: 893618919}
   howto: {fileID: 2053547717}
   image: {fileID: 3109706593594123654}
@@ -3553,8 +3561,8 @@ RectTransform:
   - {fileID: 983900393}
   - {fileID: 461402198}
   - {fileID: 1928322126}
-  m_Father: {fileID: 8733932751249054576}
-  m_RootOrder: 1
+  m_Father: {fileID: 8733932752677898880}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -9005,7 +9013,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 743606518567654824}
-  - {fileID: 3177759261462197050}
   m_Father: {fileID: 8733932751248982580}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9051,7 +9058,7 @@ Transform:
   - {fileID: 2650095907095232842}
   - {fileID: 8733932751248982580}
   m_Father: {fileID: 8733932752677898880}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8733932751249281816
 GameObject:
@@ -9660,7 +9667,7 @@ Transform:
   - {fileID: 8733932751728157708}
   - {fileID: 7831478945016808104}
   m_Father: {fileID: 8733932752677898880}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8733932751728157707
 GameObject:
@@ -10123,6 +10130,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 3177759261462197050}
   - {fileID: 8733932751249054582}
   - {fileID: 8733932751584722166}
   m_Father: {fileID: 0}

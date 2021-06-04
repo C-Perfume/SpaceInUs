@@ -72,15 +72,15 @@ public class TrapManager : MonoBehaviour
         GameObject a = Instantiate(bHole);
         if (r.trapNum == (int)Rocks.TrapType.BHoleL)
         {
-            a.transform.position = -transform.right * Random.Range(0.5f, 2)
-                - transform.up * Random.Range(0.5f, 2)
-                - transform.forward * Random.Range(0.5f, 2);
+            a.transform.position = -transform.right * Random.Range(0.5f, 1)
+                - transform.up * Random.Range(0.5f, 1)
+                - transform.forward * Random.Range(0.5f, 1);
         }
         else
         {
-            a.transform.position = transform.right * Random.Range(0.5f, 2)
-                - transform.up * Random.Range(0.5f, 2)
-                - transform.forward * Random.Range(0.5f, 2);
+            a.transform.position = transform.right * Random.Range(0.5f, 1)
+                - transform.up * Random.Range(0.5f, 1)
+                - transform.forward * Random.Range(0.5f, 1);
         }
 
        

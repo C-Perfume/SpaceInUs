@@ -21,9 +21,7 @@ public class PlayerM : MonoBehaviour
     {
         Ready,
         GameStart,
-        GameOver,
-        TowardsEnd,
-        End
+        GameOver
     }
     public enum Parts
     {
@@ -46,6 +44,9 @@ public class PlayerM : MonoBehaviour
     //문표시 아이콘
     public GameObject doorIndi;
     public GameObject doorIndi2;
+    // 클릭 라인렌더러 양손
+    LineRenderer lrL;
+    LineRenderer lrR;
 
     // 속력
     public bool floating = true;
@@ -60,6 +61,8 @@ public class PlayerM : MonoBehaviour
     Transform catchHoldR;
     Transform catchHoldRpre;
     Transform catchItem;
+    //아이템 인벤토리 넣기용
+    bool find = false;
 
     // 홀드찾기용
     public Transform rock;
@@ -67,6 +70,7 @@ public class PlayerM : MonoBehaviour
     //아이템 찾기용
     public Transform item;
     public Transform free;
+    public Transform mine;
 
     //아이템 생성용
     public GameObject rope;
@@ -90,6 +94,7 @@ public class PlayerM : MonoBehaviour
 
     // 클리어 도어로 가기 전 위치조정
     public Transform FootStepTransform;
+    bool fStep = false;
 
     //잡는소리
     public AudioSource Grap;
@@ -127,11 +132,13 @@ public class PlayerM : MonoBehaviour
         else if (SceneManager.GetActiveScene().name == "Ready")
         { state = State.Ready; }
         else
-        { state = State.End; }
+        { state = State.GameOver; }
 
         tM = GetComponent<TrapManager>();
         rb = GetComponent<Rigidbody>();
         gp = GetComponent<goPlay>();
+        lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
+        lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
     }
 
     void Update()
@@ -172,10 +179,16 @@ public class PlayerM : MonoBehaviour
                 floating = false;
                 // 풋스텝에서 멀리 떨어지면 다시 게임스타트로 되돌아가기 - 나중에 하자.
                 //if (SceneManager.GetActiveScene().name != "Ready") { }
-
-                    break;
+                if (fStep)
+                {
+                    Vector3.Lerp(transform.position, FootStepTransform.position, 3);
+                    Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3);
+                    StartCoroutine(StopFStep());
+                }
+                break;
 
             case State.GameStart:
+              
                 //플로팅
                 if (floating) Float();
 
@@ -194,7 +207,6 @@ public class PlayerM : MonoBehaviour
                     if (getDBtn1R)
                     {
                         print("아이템 사용");
-                        myItem[0].SetActive(true);
                         GameObject used = myItem[0];
                         ItemM itm = myItem[0].GetComponent<ItemM>();
                         itm.active = true;
@@ -219,7 +231,7 @@ public class PlayerM : MonoBehaviour
 
                             )
                         {
-                            Destroy(free.GetChild(i).gameObject);
+                           // Destroy(free.GetChild(i).gameObject);
                         }
                     }
                 }
@@ -231,13 +243,6 @@ public class PlayerM : MonoBehaviour
                 Click(100);
                 if (!gp.MenuManager.activeSelf) { state = State.GameStart; }
 
-                break;
-
-            case State.TowardsEnd:
-                break;
-
-            case State.End:
-                Click(100);
                 break;
         }
 
@@ -252,6 +257,7 @@ public class PlayerM : MonoBehaviour
     }
 
 
+    //레디씬에서 사용 Y값 고정
     void Walk()  //움직임을 위한 불 변수가 있었어야 했는데 그걸 생각 못해서 몇시간 고생했다 에휴
     {
 
@@ -302,7 +308,8 @@ public class PlayerM : MonoBehaviour
 
     }
 
-    void Walk(int audioNum)  //움직임을 위한 불 변수가 있었어야 했는데 그걸 생각 못해서 몇시간 고생했다 에휴
+    // 게임 클리어 도어를 향한 움직임
+    void Walk(int audioNum)
     {
 
         if (getDTchTmbL)
@@ -345,6 +352,7 @@ public class PlayerM : MonoBehaviour
         }
 
     }
+
     void Rot()
     {
         // 방향전환
@@ -366,6 +374,7 @@ public class PlayerM : MonoBehaviour
 
     }
 
+    //도어오픈 + 씬전환
     void Open(float m, string scene)
     {
 
@@ -428,26 +437,28 @@ public class PlayerM : MonoBehaviour
 
     }
 
+    // 메뉴선택 게임오버든 뭐든 이걸로 사용
     void Click(float m)
     {
 
+
         if (Physics.Raycast(origin: my[(int)Parts.LHand].position, direction: my[(int)Parts.LHand].forward, out hit, m))
         {
+            lrL.enabled = true;
+            lrL.SetPosition(0, my[(int)Parts.LHand].position);
+            lrL.SetPosition(1, hit.point);
 
-            hitObj = hit.transform.gameObject;
-            if (hitObj.layer == LayerMask.NameToLayer("UI") )
+            if (hit.collider.CompareTag("Button"))
             {
 
                 doorIndi.SetActive(true);
+                doorIndi.transform.forward = my[(int)Parts.LHand].forward;
                 doorIndi.transform.position = hit.point;
-                float dist = Vector3.Distance(
-              Camera.main.transform.position, hit.point);
-                doorIndi.transform.localScale = Vector3.one * dist;
+
 
                 if (getDBtnIdxL)
                 {
-
-                     Button btn = hit.transform.GetComponent<Button>();
+                    Button btn = hit.transform.GetComponent<Button>();
                     if (btn != null)
                     {
                         btn.onClick.Invoke();
@@ -462,20 +473,23 @@ public class PlayerM : MonoBehaviour
         else
         {
             doorIndi.SetActive(false);
+            lrL.enabled = false;
         }
 
 
 
         if (Physics.Raycast(origin: my[(int)Parts.RHand].position, direction: my[(int)Parts.RHand].forward, out hit, m))
         {
-            hitObj = hit.transform.gameObject;
-            if (hitObj.layer == LayerMask.NameToLayer("UI"))
+            lrR.enabled = true;
+            lrR.SetPosition(0, my[(int)Parts.RHand].position);
+            lrR.SetPosition(1, hit.point);
+
+
+            if (hit.collider.CompareTag("Button"))
             {
                 doorIndi2.SetActive(true);
+                doorIndi2.transform.forward = my[(int)Parts.RHand].forward;
                 doorIndi2.transform.position = hit.point;
-                float dist = Vector3.Distance(
-             Camera.main.transform.position, hit.point);
-                doorIndi2.transform.localScale = Vector3.one * dist;
 
                 if (getDBtnIdxR)
                 {
@@ -494,12 +508,11 @@ public class PlayerM : MonoBehaviour
         else
         {
             doorIndi2.SetActive(false);
+            lrR.enabled = false;
         }
 
 
     }
-
-
 
     void PwUp()
     { //수정필요
@@ -523,7 +536,7 @@ public class PlayerM : MonoBehaviour
             if (catchHoldL != null &&
                catchHoldR != null &&
                catchHoldL == catchHoldR) { tM.up = false; }
-           
+
         }
 
         if (walkL)
@@ -550,7 +563,7 @@ public class PlayerM : MonoBehaviour
             if (catchHoldL != null &&
                catchHoldR != null &&
                catchHoldL == catchHoldR) { tM.up = false; }
-          
+
         }
 
         if (walkR)
@@ -571,7 +584,7 @@ public class PlayerM : MonoBehaviour
     }
 
 
-    void Grab(Transform hitTFN, Transform handG, Transform otherH, ref Transform Hold, Transform Holdpre )
+    void Grab(Transform hitTFN, Transform handG, Transform otherH, ref Transform Hold, Transform Holdpre)
     {
         Grap.Play();
 
@@ -620,7 +633,8 @@ public class PlayerM : MonoBehaviour
 
 
 
-        }else
+        }
+        else
 
 
         // 아이템 잡을 때 손에 생성
@@ -635,7 +649,8 @@ public class PlayerM : MonoBehaviour
 
             hitTFN.gameObject.SetActive(false);
 
-        }else
+        }
+        else
 
         // 던져진 아이템이나 다른 손 아이템을 잡으면
         if (hitTFN.IsChildOf(free) || hitTFN.IsChildOf(otherH))
@@ -665,7 +680,7 @@ public class PlayerM : MonoBehaviour
     }
 
 
-       //놨을 때
+    //놨을 때
     void SetFree()
     {
 
@@ -720,22 +735,53 @@ public class PlayerM : MonoBehaviour
             //두개 이하
             if (myItem.Count < 2)
             {
+                
 
-                Collider[] obj = Physics.OverlapSphere(my[(int)Parts.Body].position, 0.5f);
-                print(obj[0].name);
-                if (obj[0].transform.name == catchItem.name)
-                {  
-                 
+                Collider[] obj = Physics.OverlapSphere(my[(int)Parts.Body].position+(Vector3.up*.05f), 0.3f);
 
-                    // 획득리스트에 넣는다.
-                    myItem.Add(catchItem.gameObject);
+                //1개이상   
+                if (obj.Length > 0)
+                {
+                    //찾기
+                    for (int i = 0; i < obj.Length; i++)
+                    {
+                        if (obj[i].name.Contains("Item"))
+                        {
+                            find = true;
+                            print(obj[i].name+" "+i+"번");
+                            break;
+                        }
+                    }
 
-                    // 멀리 날려 안보이게 하자
-                    myItem[0].transform.position = new Vector3(1000, 1000, 1000);
-                    if (myItem.Count > 1) myItem[1].transform.position = new Vector3(1000, 1000, 1000);
+                    if (find)
+                    {
+                        print("찾았다");
+                        //  획득리스트에 넣는다.
+                        catchItem.SetParent(mine);
+                        myItem.Add(catchItem.gameObject);
+
+                        // 멀리 날려 안보이게 하자
+                       myItem[0].transform.position = new Vector3(1000, 1000, 1000);
+                        if (myItem.Count > 1) myItem[1].transform.position = new Vector3(1000, 1000, 1000);
+                        find = false;
+                    }
+                    else 
+                    {
+                        itemRb.isKinematic = false;
+
+                        itemRb.velocity = vel * vPower;
+                        itemRb.angularVelocity = angVel;
+
+
+                        catchItem.transform.SetParent(free);
+                        print(obj[0].name + " 0번. 아이템이 목록에 없음 ");
+
+                    }
+
 
                 }
-                //아이템이 0번이 아니면 던지자
+
+                //0개
                 else
                 {
                     itemRb.isKinematic = false;
@@ -745,12 +791,9 @@ public class PlayerM : MonoBehaviour
 
 
                     catchItem.transform.SetParent(free);
-                    print(obj[0].name + "이 먼저라 공중부양");
+                    print("걸린게 없어서  공중부양");
                 }
-
-
-
-
+                
             }
             // 2개 이상이면 던지자.
             else
@@ -762,7 +805,7 @@ public class PlayerM : MonoBehaviour
 
 
                 catchItem.transform.SetParent(free);
-                print(catchItem + " 2개 이상");
+                print("아이템이  2개 이상");
             }
 
 
@@ -772,16 +815,19 @@ public class PlayerM : MonoBehaviour
         // 풋스텝을 잡고 놓은 상태라면
         if (hitTFN.gameObject.name.Contains("foot"))
         {
-         
-            Vector3.Lerp(transform.position, FootStepTransform.position, 3);
-            Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3);
-           state = State.Ready;
-            
+            fStep = true;
+           
+            state = State.Ready;
+
         }
-        
+
 
     }
 
+    IEnumerator StopFStep() {
+        yield return new WaitForSeconds(3);
+        fStep = false;
+    }
 
 }
 

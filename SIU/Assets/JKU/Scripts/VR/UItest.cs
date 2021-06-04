@@ -2,67 +2,57 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 public class UItest : MonoBehaviour
 {
-//Camera Rig 에 달아놓으면 됨 스크립트
-
-
-    //오른손 위치
-    public Transform rHand;
-
-    //이미지 받아오기
     public Transform dot;
+    RaycastHit hit; // 충돌된 객체
+    GameObject currentObject;   // 가장 최근에 충돌한 객체를 저장하기 위한 객체
 
-
-    void Start()
-    {
-
-    }
+    public float raycastDistance = 100f; // 레이저 포인터 감지 거리
 
     // Update is called once per frame
     void Update()
     {
-        //1. Ray를 만든다.(오른손 위치, 오른손 앞방향)
-        Ray ray = new Ray(rHand.position, rHand.forward);
-        //2. 부딪혔다면
-        RaycastHit hit;
+        Debug.DrawRay(transform.position, transform.forward * raycastDistance, Color.green, 0.5f);
 
-        if (Physics.Raycast(ray, out hit, 100))
+        // 충돌 감지 시
+        if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance))
         {
-            //만약에 부딪힌 놈의 layer가 UI라면
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("UI"))
-            {
+            print("맞춘 오브젝트 이름: " + hit.transform.gameObject.name);
 
-                //3. 그 위치에 빨간점을 위치시키자
+            // 충돌 객체의 태그가 Button인 경우
+            if (hit.collider.gameObject.CompareTag("Button"))
+
+            {
                 dot.gameObject.SetActive(true);
                 dot.position = hit.point;
-
+                // 오큘러스 고 리모콘에 트리거 부분을 누를 경우
+                if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
+                {
+                    // 버튼에 등록된 onClick 메소드를 실행한다.
+                    hit.collider.gameObject.GetComponent<Button>().onClick.Invoke();
+                }
+                else
+                {
+                    hit.collider.gameObject.GetComponent<Button>().OnPointerEnter(null);
+                    currentObject = hit.collider.gameObject;
+                }
             }
             else
             {
                 dot.gameObject.SetActive(false);
-
             }
         }
+
         else
         {
-            //4. 빨간 점 안보이게
-            dot.gameObject.SetActive(false);
-        }
-
-        //만약에 점이 활성화상태면
-        if (dot.gameObject.activeSelf == true)
-        {
-            if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch))
+            // 최근 감지된 오브젝트가 Button인 경우
+            // 버튼은 현재 눌려있는 상태이므로 이것을 풀어준다.
+            if (currentObject != null)
             {
-                //버튼 스크립트 가져오기
-                Button btn = hit.transform.GetComponent<Button>();
-
-                //만약 버튼이 null이 아니면
-                if (btn != null)
-                {
-                    btn.onClick.Invoke();
-                }
+                currentObject.GetComponent<Button>().OnPointerExit(null);
+                currentObject = null;
             }
         }
     }

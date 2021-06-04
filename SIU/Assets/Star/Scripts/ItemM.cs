@@ -12,6 +12,8 @@ public class ItemM : MonoBehaviour
     Rigidbody rb;
     public float ropeSpd = .03f;
     GameObject shield;
+    TrapManager tm;
+
     void Start()
     {
         p1 = GameObject.Find("Player");
@@ -20,6 +22,8 @@ public class ItemM : MonoBehaviour
         rb = p1.GetComponent<Rigidbody>();
         shield = ps.skillShield;
         shield.SetActive(false);
+
+        tm = GetComponent<TrapManager>();
     }
 
     void Update()
@@ -54,6 +58,8 @@ public class ItemM : MonoBehaviour
                 shield.SetActive(true);
                 rb.isKinematic = true;
                 print("Active shield");
+                //블랙홀 지우기
+                tm.bH =false;
             }
 
             if (name.Contains("Oxy"))

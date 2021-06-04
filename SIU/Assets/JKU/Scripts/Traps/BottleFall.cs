@@ -35,6 +35,12 @@ public class BottleFall : MonoBehaviour
         Vector3 dir1 = transform.position += dir * speed * Time.deltaTime;
 
         dir.Normalize();
+        
+        //½¯µå È¿°ú
+        if (gameObject.name.Contains("Shield"))
+        {
+            dir = -dir;
+        }
     }
     
     private void OnTriggerEnter(Collider other)

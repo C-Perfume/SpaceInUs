@@ -7,6 +7,7 @@ TagManager:
   - red
   - Item
   - Step
+  - Button
   layers:
   - Default
   - TransparentFX

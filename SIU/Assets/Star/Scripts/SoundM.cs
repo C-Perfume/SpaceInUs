@@ -15,10 +15,6 @@ public class SoundM : MonoBehaviour
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Ready") { StartCoroutine(warning()); }
     }
 
-    void Update()
-    {
-       
-    }
 
     public void playS(int num) {
         aS[1].clip = clips[num];

@@ -185,6 +185,7 @@ public class PlayerM : MonoBehaviour
                     Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3);
                     StartCoroutine(StopFStep());
                 }
+                if (gp.MenuManager.activeSelf) { state = State.GameOver; }
                 break;
 
             case State.GameStart:
@@ -241,7 +242,9 @@ public class PlayerM : MonoBehaviour
 
             case State.GameOver:
                 Click(100);
-                if (!gp.MenuManager.activeSelf) { state = State.GameStart; }
+                if (!gp.MenuManager.activeSelf) {
+                    if (SceneManager.GetActiveScene().name == "Ready") { state = State.Ready; }
+                    else { state = State.GameStart; }  }
 
                 break;
         }

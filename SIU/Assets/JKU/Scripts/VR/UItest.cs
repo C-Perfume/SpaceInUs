@@ -11,20 +11,29 @@ public class UItest : MonoBehaviour
 
     public float raycastDistance = 100f; // 레이저 포인터 감지 거리
 
-    // Update is called once per frame
+    LineRenderer lr;
+
+     void Start()
+    {
+            lr = GetComponent<LineRenderer>();
+    }
+
     void Update()
     {
-        Debug.DrawRay(transform.position, transform.forward * raycastDistance, Color.green, 0.5f);
+       // Debug.DrawRay(transform.position, transform.forward * raycastDistance, Color.green, 0.5f);
 
         // 충돌 감지 시
         if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance))
         {
+             lr.SetPosition(0, transform.position);
+            lr.SetPosition(1, hit.point);
             print("맞춘 오브젝트 이름: " + hit.transform.gameObject.name);
 
             // 충돌 객체의 태그가 Button인 경우
             if (hit.collider.gameObject.CompareTag("Button"))
 
             {
+               
                 dot.gameObject.SetActive(true);
                 dot.position = hit.point;
                 // 오큘러스 고 리모콘에 트리거 부분을 누를 경우
@@ -48,6 +57,8 @@ public class UItest : MonoBehaviour
 
         else
         {
+            lr.SetPosition(1, transform.forward * raycastDistance);
+            dot.gameObject.SetActive(false);
             // 최근 감지된 오브젝트가 Button인 경우
             // 버튼은 현재 눌려있는 상태이므로 이것을 풀어준다.
             if (currentObject != null)

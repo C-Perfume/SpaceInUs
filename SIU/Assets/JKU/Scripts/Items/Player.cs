@@ -17,8 +17,7 @@ public class Player : MonoBehaviour
 
     Rigidbody rb;
     PlayerM pm;
-    ItemM[] iM = new ItemM[2];
-    public GameObject skillShield;
+    ItemM iM;
 
     //소리 
     
@@ -34,7 +33,7 @@ public class Player : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         pm = GetComponent<PlayerM>();
-       
+        iM = GetComponent<ItemM>();
     }
 
     void Update()
@@ -56,11 +55,7 @@ public class Player : MonoBehaviour
 
         //rigidbody의 iskinematic이 꺼져있을때만 발동해라.
 
-        if (pm.myItem.Count > 0)
-        {
-            iM[0] = pm.myItem[0].GetComponent<ItemM>();
-
-            if (!iM[0].active && rb.isKinematic == false)
+        if (!iM.f && rb.isKinematic == false)
             {
 
                 if (mspeed > 3)
@@ -70,24 +65,16 @@ public class Player : MonoBehaviour
 
             }
 
-            if (pm.myItem.Count > 1)
+        if (!iM.r && rb.isKinematic == false)
+        {
+
+            if (mspeed > 3)
             {
-                iM[1] = pm.myItem[1].GetComponent<ItemM>();
-                if (!iM[1].active && rb.isKinematic)
-                {
-
-                    if (mspeed > 3)
-                    {
-                        TimeDamage(10);
-                    }
-
-                }
+                TimeDamage(10);
             }
 
         }
 
-
-       
         if (currentHp == 0)
         {
             GameObject SavTime = GameObject.Find("saveTime");

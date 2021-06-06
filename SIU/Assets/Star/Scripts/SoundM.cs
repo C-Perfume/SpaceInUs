@@ -16,13 +16,13 @@ public class SoundM : MonoBehaviour
     }
 
 
-    public void playS(int num) {
-        aS[1].clip = clips[num];
-        aS[1].Play();
+    public void playS(int audio, int clip) {
+        aS[audio].clip = clips[clip];
+        aS[audio].Play();
     }
-    public void StopS(int num) {
-        aS[1].clip = clips[num];
-        aS[1].Stop();
+    public void StopS(int audio, int clip) {
+        aS[audio].clip = clips[clip];
+        aS[audio].Stop();
     }
 
     IEnumerator warning() {

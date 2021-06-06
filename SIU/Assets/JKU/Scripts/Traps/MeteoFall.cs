@@ -17,36 +17,43 @@ public class MeteoFall : MonoBehaviour
 
     Vector3 dir;
 
-
-
-    // Start is called before the first frame update
-
+    ItemM iM;
+    bool isOpposit = false;
     void Start()
 
     {
-
-        target = GameObject.Find("Player");
+        target = GameObject.Find("EveB (1)");
+        iM = GameObject.Find("Player").GetComponent<ItemM>();
 
         dir = target.transform.position - transform.position;
-
         dir.Normalize();
-
+        
+        Destroy(gameObject, 10);
     }
 
 
 
-    // Update is called once per frame
 
     void Update()
 
     {
-        Vector3 dir1 = transform.position += dir * speed * Time.deltaTime;
-        
-        //½¯µå È¿°ú
-        if (gameObject.name.Contains("Shield"))
+
+        if (isOpposit)
         {
-            dir = -dir;
+            transform.position -= dir * speed * Time.deltaTime;
+        }
+        else
+        {
+            transform.position += dir * speed * Time.deltaTime;
         }
     }
 
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.name.Contains("Shield"))
+        {
+            isOpposit = true;
+        }
+    }
 }

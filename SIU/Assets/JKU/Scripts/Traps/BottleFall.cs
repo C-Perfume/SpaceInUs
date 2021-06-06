@@ -14,56 +14,57 @@ public class BottleFall : MonoBehaviour
     public float speed = 5f;
 
     Vector3 dir;
-    // Start is called before the first frame update
 
+    ItemM iM;
+
+    bool isOpposit = false;
     void Start()
 
     {
         black = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
-       
-        target = GameObject.Find("Player");
-
-        dir = target.transform.position - transform.position;
-
+        target = GameObject.Find("EveB (1)");
+        iM = GameObject.Find("Player").GetComponent<ItemM>();
+        Destroy(gameObject, 10);
     }
 
 
     void Update()
 
     {
+       dir = target.transform.position - transform.position;
+       dir.Normalize();
 
-        Vector3 dir1 = transform.position += dir * speed * Time.deltaTime;
 
-        dir.Normalize();
-        
-        //½¯µå È¿°ú
-        if (gameObject.name.Contains("Shield"))
+        if (isOpposit)
         {
-            dir = -dir;
+            transform.position -= dir * speed * Time.deltaTime;
         }
-    }
-    
-    private void OnTriggerEnter(Collider other)
+        else
+        {
+            transform.position += dir * speed * Time.deltaTime;
+        }
+
+     }
+
+    public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name.Contains("Player"))
-        {
-
-            StartCoroutine(Black_());
+        if (other.gameObject.name.Contains("Shield")) {
+            print("isOpposit working?");
+            isOpposit = true;
         }
     }
+
     public IEnumerator Black_()
 
     {
         
-        {
             black.gameObject.SetActive(true);
 
             yield return new WaitForSeconds(1);
 
             black.gameObject.SetActive(false);
 
-            Destroy(gameObject, 5);
-        }
+            Destroy(gameObject);
 
     }
     

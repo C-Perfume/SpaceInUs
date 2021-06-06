@@ -4,12 +4,9 @@ using UnityEngine;
 
 public class BholeRot : MonoBehaviour
 {
-    int num;
    public  int value;
     void Start()
     {
-        num = Random.Range(0, 10);
-        if (num > 7) { value = 1; } else { value = 0; }
     }
 
     void Update()

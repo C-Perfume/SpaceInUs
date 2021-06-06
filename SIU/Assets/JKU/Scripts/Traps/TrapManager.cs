@@ -47,8 +47,8 @@ public class TrapManager : MonoBehaviour
         GameObject obj = Instantiate(clone);
         
         obj.transform.position = transform.position
-            + transform.up * 7
-            + transform.forward * -7;
+            + transform.up * 10
+            + transform.forward * -10;
    
         if (clone.name.Contains("Meteo"))
         {
@@ -70,17 +70,20 @@ public class TrapManager : MonoBehaviour
     {   
         trapS[0].Play();
         GameObject a = Instantiate(bHole);
+        BholeRot bHR = a.GetComponent<BholeRot>();
         if (r.trapNum == (int)Rocks.TrapType.BHoleL)
         {
-            a.transform.position = -transform.right * Random.Range(0.5f, 1)
-                - transform.up * Random.Range(0.5f, 1)
-                - transform.forward * Random.Range(0.5f, 1);
+            a.transform.position = -transform.right * Random.Range(3, 5f)
+            - transform.up * Random.Range(3, 5f)
+                - transform.forward * Random.Range(3, 5f);
+            bHR.value = 0;
         }
         else
         {
-            a.transform.position = transform.right * Random.Range(0.5f, 1)
-                - transform.up * Random.Range(0.5f, 1)
-                - transform.forward * Random.Range(0.5f, 1);
+            a.transform.position = transform.right * Random.Range(3, 5f)
+               - transform.up * Random.Range(3, 5f)
+                - transform.forward * Random.Range(3, 5f);
+            bHR.value = 1;
         }
 
        
@@ -107,7 +110,7 @@ public class TrapManager : MonoBehaviour
     {
         if (other.gameObject.name.Contains("BH"))
         {
-            if (other.gameObject.GetComponent<BholeRot>().value == 1)
+            if (other.gameObject.GetComponent<BholeRot>().value == 0)
             {
                 GameObject SavTime = GameObject.Find("saveTime");
                 Destroy(SavTime);
@@ -116,7 +119,9 @@ public class TrapManager : MonoBehaviour
                 SceneManager.LoadScene("LostSpace");
                 pm.state = PlayerM.State.GameOver;
             }
-            else { gameObject.transform.position = Vector3.zero;
+            else {
+                bH = false;
+                gameObject.transform.position = new Vector3(0, 0, 0);
                 GetComponent<PlayerM>().floating = true;
             }
 
@@ -129,6 +134,7 @@ public class TrapManager : MonoBehaviour
             trapS[2].Stop();
             StartCoroutine(btf.Black_());
         }
+
 
         if (other.gameObject.name.Contains("Meteo"))
         {

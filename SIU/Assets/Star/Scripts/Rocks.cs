@@ -56,27 +56,29 @@ public class Rocks : MonoBehaviour
     void Start()
     {
         if (gameObject.transform == gameObject.transform.parent.GetChild(0)) num = 0;
-        else if (gameObject.transform == gameObject.transform.parent.GetChild(2)) num = 2;
+        else if (gameObject.transform == gameObject.transform.parent.GetChild(1)) { num = 1; tRand = 2; }
+        else if (gameObject.transform == gameObject.transform.parent.GetChild(2)) { num = 2; tRand = 2; }
         else
         {
             rand = Random.Range(1, 11);
-            tRand = Random.Range(1, 11);
+            tRand =  Random.Range(1, 11);
             if (rand < 6) { num = 0; } else if (rand < 9) { num = 1; } else { num = 2; }
         }
         
         mat = GetComponent<MeshRenderer>().material;
 
         if (num == 0) mat.color = Color.yellow;
-        else if (num == 1) { mat.color = Color.red;
+        else if (num == 1) { 
+            mat.color = Color.red;
             if (tRand == 1) { trapNum = 0; } 
             else if (tRand == 2 || tRand ==3) { trapNum = 1; } 
-            else if (tRand == 6) { trapNum = 2; } 
+            else if (tRand == 4) { trapNum = 2; } 
             else { trapNum = 3; }
         }
         else mat.color = Color.blue;
-        if (tRand == 1) { itNum = 0; } 
-        else if (tRand == 2) { itNum = 1; } 
-        else if (tRand == 3) { itNum = 2; } 
+        if (tRand == 1 || tRand == 4) { itNum = 0; } 
+        else if (tRand == 2 || tRand == 5) { itNum = 1; } 
+        else if (tRand == 3 || tRand == 6) { itNum = 2; } 
         else { itNum = 3; } // 3
 
     }
@@ -123,17 +125,16 @@ public class Rocks : MonoBehaviour
         GameObject a = Instantiate(obj);
         a.transform.position =
             transform.position +
-            //transform.right * Random.Range(0.05f, 0.15f)+
-            transform.up * .1f; 
-            //Random.Range(0.05f, 0.15f) + 
-            //transform.forward*0.1f ;
+            transform.forward * -.05f +
+        transform.up * .1f;
+
         a.transform.SetParent(item);
         items.Add(a);
         full = true;
     }
 
     IEnumerator ShowUp() {
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(30);
         items[0].SetActive(true);
         full = true;
     }

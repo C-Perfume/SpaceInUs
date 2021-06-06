@@ -193,9 +193,9 @@ public class PlayerM : MonoBehaviour
                 
                 if (fStep)
                 {
-                    print("작동?");
-                    Vector3.Lerp(transform.position, FootStepTransform.position, 1);
-                    Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 1);
+                    print("fStep 위치 이동 작동?");
+                    transform.position = Vector3.Lerp(transform.position, FootStepTransform.position, 3*Time.deltaTime);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3 * Time.deltaTime);
                     StartCoroutine(StopFStep());
                 }
 
@@ -228,10 +228,9 @@ public class PlayerM : MonoBehaviour
                     if (getDBtn1R)
                     {
                         print("아이템 사용");
-                        GameObject used = myItem[0];
-                        ItemM itm = myItem[0].GetComponent<ItemM>();
+                        ItemM itm = GetComponent<ItemM>();
                         itm.active = true;
-                        myItem.RemoveAt(0);
+                        GameObject used = myItem[0];
                         Destroy(used, 6);
                     }
 
@@ -307,7 +306,7 @@ public class PlayerM : MonoBehaviour
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
-            SoundM.instance.playS(0);
+            SoundM.instance.playS(1, 0);
 
         }
         if (walkL)
@@ -319,7 +318,7 @@ public class PlayerM : MonoBehaviour
         }
         if (getUTchTmbL)
         {
-            SoundM.instance.StopS(0);
+            SoundM.instance.StopS(1, 0);
             walkL = false;
         }
 
@@ -328,7 +327,7 @@ public class PlayerM : MonoBehaviour
             walkL = false;
             walkR = true;
             origin = my[(int)Parts.RHand].position;
-            SoundM.instance.playS(0);
+            SoundM.instance.playS(1, 0);
 
         }
 
@@ -343,7 +342,7 @@ public class PlayerM : MonoBehaviour
         if (getUTchTmbR)
         {
             walkR = false;
-            SoundM.instance.StopS(0);
+            SoundM.instance.StopS(1, 0);
         }
 
     }
@@ -358,7 +357,7 @@ public class PlayerM : MonoBehaviour
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
-            SoundM.instance.playS(audioNum);
+            SoundM.instance.playS(1, audioNum);
 
         }
         if (walkL)
@@ -367,7 +366,7 @@ public class PlayerM : MonoBehaviour
         }
         if (getUTchTmbL)
         {
-            SoundM.instance.StopS(audioNum);
+            SoundM.instance.StopS(1, audioNum);
             walkL = false;
         }
 
@@ -376,7 +375,7 @@ public class PlayerM : MonoBehaviour
             walkL = false;
             walkR = true;
             origin = my[(int)Parts.RHand].position;
-            SoundM.instance.playS(audioNum);
+            SoundM.instance.playS(1, audioNum);
 
         }
 
@@ -388,7 +387,7 @@ public class PlayerM : MonoBehaviour
         if (getUTchTmbR)
         {
             walkR = false;
-            SoundM.instance.StopS(audioNum);
+            SoundM.instance.StopS(1, audioNum);
         }
 
     }

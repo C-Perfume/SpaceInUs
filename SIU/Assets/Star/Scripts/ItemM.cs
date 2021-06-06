@@ -4,80 +4,140 @@ using UnityEngine;
 
 public class ItemM : MonoBehaviour
 {
+    //myitem[0] 작동
     public bool active = false;
+    // fire / rope 기능
+    public bool f = false;
+    public bool r = false;
 
-    GameObject p1;
     Player ps;
     PlayerM pm;
     Rigidbody rb;
+
+    //로프 복제용 후크
+    LineRenderer lr;
     public float ropeSpd = .03f;
-    GameObject shield;
+    public GameObject hook;
+    GameObject h;
+    //후크 박힐 때 파티클+소리 복제용
+    public GameObject hookP;
+    bool isH = true;
+
+    public GameObject shield;
+   
+
     TrapManager tm;
-    public ParticleSystem particle;
+    
+    // 소화기 파티클
+    public GameObject particle;
+    GameObject p;
+
     void Start()
     {
-        p1 = GameObject.Find("Player");
-        ps = p1.GetComponent<Player>();
-        pm = p1.GetComponent<PlayerM>();
-        rb = p1.GetComponent<Rigidbody>();
-        shield = ps.skillShield;
-        shield.SetActive(false);
-        
-        tm = GetComponent<TrapManager>();
+        ps = GetComponent<Player>();
+        pm = GetComponent<PlayerM>();
+        rb = GetComponent<Rigidbody>();
+        lr = GetComponent<LineRenderer>();
+        tm = GetComponent<TrapManager>(); 
     }
 
     void Update()
     {
+        if (f)
+        {
+            rb.isKinematic = false;
+            rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd*2);
+            p.transform.position = pm.my[(int)PlayerM.Parts.LHand].position;
+                p.transform.forward = pm.my[(int)PlayerM.Parts.LHand].forward;
+        }
+        else {
+
+            if (p != null)
+            {
+                p = null;
+            }
+        }
+
+        if (r)
+        {
+            rb.isKinematic = true;
+            lr.enabled = true;
+            lr.SetPosition(0, pm.my[(int)PlayerM.Parts.RHand].position);
+            lr.SetPosition(1, h.transform.position);
+            HookMovement hhook = h.GetComponent<HookMovement>();
+            if (!hhook.moving) {
+                if (isH)
+                {
+                GameObject hEFT = Instantiate(hookP);
+                hEFT.transform.position = h.transform.position;
+                hEFT.transform.forward = -h.transform.forward;
+                ParticleSystem hP = hEFT.GetComponent<ParticleSystem>();
+                hP.Play();
+                AudioSource hAs = hEFT.GetComponent<AudioSource>();
+                hAs.Play();
+                Destroy(hEFT, 10);
+                    isH = false;
+                }
+                transform.position = Vector3.Lerp(transform.position, h.transform.position, 1*Time.deltaTime);
+            }
+        }
+        else {
+            lr.enabled = false;
+            h = null;
+        }
+
         if (active)
         {
-            if (gameObject.name.Contains("Fire"))
+            if (pm.myItem[0].name.Contains("Fire"))
             {
-                print("Active fire");
-                rb.isKinematic = false;
-                rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd, ForceMode.Impulse);
-                particle.gameObject.SetActive(true);
+            print("Active - F");
+                f = true;
+                p = Instantiate(particle);
+                p.transform.position = pm.my[(int)PlayerM.Parts.LHand].position;
+                p.transform.forward = pm.my[(int)PlayerM.Parts.LHand].forward;
+                Destroy(p, 5.5f);
             }
 
-            if (gameObject.name.Contains("Rope"))
+            if (pm.myItem[0].name.Contains("Rope"))
             {
-                rb.isKinematic = true;
-                LineRenderer lr = p1.GetComponent<LineRenderer>();
-                if (Physics.Raycast(origin: pm.my[(int)PlayerM.Parts.RHand].position, direction: pm.my[(int)PlayerM.Parts.RHand].forward, out RaycastHit hit, 5f))
-                {
-                    lr.enabled = true;
-                    lr.SetPosition(0, pm.my[(int)PlayerM.Parts.RHand].position);
-                    lr.SetPosition(1, hit.point);
-                    Vector3 dir = hit.point - p1.transform.position;
-                    dir.Normalize();
-                    p1.transform.position += dir * ropeSpd*10 * Time.deltaTime;
-                }
-                print("Active rope");
+                print("Active - R");
+                h = Instantiate(hook);
+                h.transform.position = pm.my[(int)PlayerM.Parts.RHand].position;
+                h.transform.forward = pm.my[(int)PlayerM.Parts.RHand].forward;
+                r = true;
+                isH = true;
+                SoundM.instance.playS(2, 2);
             }
 
-            if (gameObject.name.Contains("Shield"))
+            if (pm.myItem[0].name.Contains("Shield"))
             {
-                shield.SetActive(true);
-                rb.isKinematic = true;
                 print("Active shield");
+                GameObject s = Instantiate(shield);
+                s.SetActive(true);
+                s.transform.position = transform.position;
+
+                ParticleSystem bubble = s.GetComponent<ParticleSystem>();
+                bubble.Play();
+                rb.isKinematic = true;
                 //블랙홀 지우기
                 tm.bH =false;
+                Destroy(s, 5);
             }
 
-            if (name.Contains("Oxy"))
+            if (pm.myItem[0].name.Contains("Oxy"))
             {
                 ps.PlusHp(30);
                 print("add HP");
-                active = false;
             }
-
-            StartCoroutine(StopActive());
+            active = false;
+            pm.myItem.RemoveAt(0);
+            StartCoroutine(StopFR());
         }
     }
-    IEnumerator StopActive() {
-        yield return new WaitForSeconds(3);
-        active = false;
-        if (shield.activeSelf) { shield.SetActive(false); }
-        print("StopActive working..");
+    IEnumerator StopFR() {
+        yield return new WaitForSeconds(5);
+        f = false; r = false;
+        print("Stop Item Funtion..");
         //yield break;
     }
 }

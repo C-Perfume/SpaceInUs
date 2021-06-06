@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7332216182360617140}
   - component: {fileID: 7332216182360617141}
   m_Layer: 0
-  m_Name: Fire_Extinguisher
+  m_Name: Fire_Extinguisher_Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,13 +27,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7332216182360617142}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.027109852, y: 0.027109858, z: 0.027109858}
+  m_LocalScale: {x: 0.002, y: 0.002, z: 0.002}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &2783857027292841196
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -105,7 +105,7 @@ BoxCollider:
   m_GameObject: {fileID: 7332216182360617142}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 25.3858, y: 16.542606, z: 56.69022}
   m_Center: {x: 0.31949997, y: 0, z: 28.34521}

@@ -10,6 +10,7 @@ public class goPlay : MonoBehaviour
     public GameObject hpBar;
     public bool a = false;
 
+    public GameObject rock;
     void Start()
     {
         instance = this;
@@ -26,10 +27,17 @@ public class goPlay : MonoBehaviour
             if (a)
             {
                 Time.timeScale = 0;
+                if (SceneManager.GetActiveScene().name == "Game") {
+                    rock.SetActive(false);
+                }
             }
             else
             {
                 Time.timeScale = 1;
+                if (SceneManager.GetActiveScene().name == "Game")
+                {
+                    rock.SetActive(true);
+                }
             }
         }
     }
@@ -38,6 +46,7 @@ public class goPlay : MonoBehaviour
     public void onClickRetry()
     {
         SceneManager.LoadScene("Ready");
+        Time.timeScale = 1;
     }
     public void onClickExit()
     {

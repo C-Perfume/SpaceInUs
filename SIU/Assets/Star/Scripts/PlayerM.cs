@@ -82,6 +82,9 @@ public class PlayerM : MonoBehaviour
     //획득아이템리스트
     public List<GameObject> myItem = new List<GameObject>();
 
+    // 아이템 로프 사용할 때 쓰는 lr >> player에 붙어있음
+    LineRenderer lr;
+
     //카메라 리그의 리지드바디를 가져오자
     Rigidbody rb;
 
@@ -136,6 +139,7 @@ public class PlayerM : MonoBehaviour
 
         tM = GetComponent<TrapManager>();
         rb = GetComponent<Rigidbody>();
+        lr = GetComponent<LineRenderer>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
         lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
     }
@@ -205,6 +209,7 @@ public class PlayerM : MonoBehaviour
 
             case State.GameStart:
               
+
                 //플로팅
                 if (floating) Float();
 
@@ -253,6 +258,11 @@ public class PlayerM : MonoBehaviour
                 }
 
                 if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
+                else {
+                    lrL.enabled = false;
+                    lrR.enabled = false;
+                }
+                
                 break;
 
 

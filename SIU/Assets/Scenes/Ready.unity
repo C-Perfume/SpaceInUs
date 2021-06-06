@@ -1027,7 +1027,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &983900393
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1447,7 +1447,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8733932752677898912}
         m_TargetAssemblyTypeName: goPlay, Assembly-CSharp
         m_MethodName: onClickExit
         m_Mode: 1
@@ -1471,7 +1471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: cc2dad67573f4c54eae110af5087e0e0, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -1507,30 +1507,6 @@ PrefabInstance:
     - target: {fileID: 298586000374219176, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
       propertyPath: m_Name
       value: DoorCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 2014999831203189577, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: cc2dad67573f4c54eae110af5087e0e0, type: 2}
-    - target: {fileID: 2708721452484547175, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2708721452484547177, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: cc2dad67573f4c54eae110af5087e0e0, type: 2}
-    - target: {fileID: 4156011046003371476, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4156011046003371476, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4156011046003371476, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
       objectReference: {fileID: 0}
     - target: {fileID: 5317614641989888067, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
       propertyPath: m_Pivot.x
@@ -1614,10 +1590,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5317614641989888067, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8635827408597477177, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1805,7 +1777,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8733932752677898912}
         m_TargetAssemblyTypeName: goPlay, Assembly-CSharp
         m_MethodName: onClickRetry
         m_Mode: 1
@@ -1829,7 +1801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: cc2dad67573f4c54eae110af5087e0e0, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -8489,7 +8461,7 @@ MeshCollider:
   m_GameObject: {fileID: 7190385640737061834}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
@@ -9293,6 +9265,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dot: {fileID: 461402198}
   raycastDistance: 100
+  deadinfo: {fileID: 0}
 --- !u!1 &8733932751249358234
 GameObject:
   m_ObjectHideFlags: 0
@@ -9423,6 +9396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dot: {fileID: 1928322126}
   raycastDistance: 100
+  deadinfo: {fileID: 0}
 --- !u!114 &8733932751259071154
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -55,9 +55,13 @@ public class Rocks : MonoBehaviour
 
     void Start()
     {
+        //0번은 무조건 노란색
         if (gameObject.transform == gameObject.transform.parent.GetChild(0)) num = 0;
+        //1번은 무조건 화이트홀
         else if (gameObject.transform == gameObject.transform.parent.GetChild(1)) { num = 1; tRand = 2; }
-        else if (gameObject.transform == gameObject.transform.parent.GetChild(2)) { num = 2; tRand = 2; }
+        //2번은 무조건 산소
+        else if (gameObject.transform == gameObject.transform.parent.GetChild(2)) { num = 2; tRand = 5; }
+
         else
         {
             rand = Random.Range(1, 11);
@@ -68,6 +72,7 @@ public class Rocks : MonoBehaviour
         mat = GetComponent<MeshRenderer>().material;
 
         if (num == 0) mat.color = Color.yellow;
+
         else if (num == 1) { 
             mat.color = Color.red;
             if (tRand == 1) { trapNum = 0; } 
@@ -75,10 +80,11 @@ public class Rocks : MonoBehaviour
             else if (tRand == 4) { trapNum = 2; } 
             else { trapNum = 3; }
         }
+
         else mat.color = Color.blue;
         if (tRand == 1 || tRand == 4) { itNum = 0; } 
-        else if (tRand == 2 || tRand == 5) { itNum = 1; } 
-        else if (tRand == 3 || tRand == 6) { itNum = 2; } 
+        else if (tRand == 2 ) { itNum = 1; } 
+        else if (tRand == 3 ) { itNum = 2; } 
         else { itNum = 3; } // 3
 
     }

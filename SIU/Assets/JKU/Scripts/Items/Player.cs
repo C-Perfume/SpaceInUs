@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
 
     // 게임옵션
     goPlay gp;
+    TrapManager tM;
     void Start()
     {
         gp = GetComponent<goPlay>();
@@ -34,6 +35,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         pm = GetComponent<PlayerM>();
         iM = GetComponent<ItemM>();
+        tM = GetComponent<TrapManager>();
     }
 
     void Update()
@@ -53,29 +55,22 @@ public class Player : MonoBehaviour
 
         float mspeed = GetSpeed();
 
-        //rigidbody의 iskinematic이 꺼져있을때만 발동해라.
 
-        if (!iM.f && rb.isKinematic == false)
+        if (rb.isKinematic == true)
             {
 
-                if (mspeed > 3)
+            if (!tM.bH || !iM.r) { 
+            
+                if (mspeed > 5)
                 {
-                    TimeDamage(10);
+                    TimeDamage(5);
                 }
-
+               
             }
-
-        if (!iM.r && rb.isKinematic == false)
-        {
-
-            if (mspeed > 3)
-            {
-                TimeDamage(10);
             }
+        
 
-        }
-
-        if (currentHp == 0)
+        if (currentHp <= 0)
         {
             GameObject SavTime = GameObject.Find("saveTime");
             Destroy(SavTime);

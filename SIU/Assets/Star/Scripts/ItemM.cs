@@ -46,7 +46,7 @@ public class ItemM : MonoBehaviour
         if (f)
         {
             rb.isKinematic = false;
-            rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd*2);
+            rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd*4);
             p.transform.position = pm.my[(int)PlayerM.Parts.LHand].position;
                 p.transform.forward = pm.my[(int)PlayerM.Parts.LHand].forward;
         }
@@ -60,7 +60,6 @@ public class ItemM : MonoBehaviour
 
         if (r)
         {
-            rb.isKinematic = true;
             lr.enabled = true;
             lr.SetPosition(0, pm.my[(int)PlayerM.Parts.RHand].position);
             lr.SetPosition(1, h.transform.position);
@@ -68,6 +67,7 @@ public class ItemM : MonoBehaviour
             if (!hhook.moving) {
                 if (isH)
                 {
+            rb.isKinematic = true;
                 GameObject hEFT = Instantiate(hookP);
                 hEFT.transform.position = h.transform.position;
                 hEFT.transform.forward = -h.transform.forward;

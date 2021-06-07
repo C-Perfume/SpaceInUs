@@ -137,6 +137,7 @@ public class PlayerM : MonoBehaviour
         { state = State.GameStart;
             free = new GameObject("Free").transform;
             mine = new GameObject("Mine").transform;
+        rock = GameObject.Find("Rock").transform;
         }
         else if (SceneManager.GetActiveScene().name == "Ready")
         { state = State.Ready; }
@@ -148,8 +149,7 @@ public class PlayerM : MonoBehaviour
         lr = GetComponent<LineRenderer>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
         lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
-        rock = GameObject.Find("Rock").transform;
-        rp = rock.GetComponent<RockParent>();
+        rp = GetComponent<RockParent>();
     }
 
     void Update()
@@ -269,6 +269,24 @@ public class PlayerM : MonoBehaviour
                     else { state = State.GameStart;
                       
                     }  
+                }
+
+                if (SceneManager.GetActiveScene().name == "Game") { 
+                
+                    //아이템 작용
+                    if (myItem.Count > 0)
+                {
+
+                    if (getDBtn1R)
+                    {
+                        print("아이템 사용");
+                        ItemM itm = GetComponent<ItemM>();
+                        itm.active = true;
+                        GameObject used = myItem[0];
+                        Destroy(used, 6);
+                    }
+
+                }
                 }
 
                 break;
@@ -593,8 +611,6 @@ public class PlayerM : MonoBehaviour
 
     void Grab(Transform hitTFN, Transform handG, Transform otherH, ref Transform Hold, ref Transform Hold2, ref Transform Holdpre)
     {
-      
-         
             int idx = hitTFN.GetSiblingIndex();
 
         // 홀드 잡고 있는 중
@@ -658,7 +674,7 @@ public class PlayerM : MonoBehaviour
             rp.item_False.Add(hitTFN.gameObject);
             hitTFN.gameObject.SetActive(false);
             rp.items.Remove(hitTFN.gameObject);
-
+            StartCoroutine(rp.ShowUp(hitTFN.gameObject));
         }
         else
 
@@ -745,9 +761,11 @@ public class PlayerM : MonoBehaviour
             //두개 이하
             if (myItem.Count < 2)
             {
-                
 
-                Collider[] obj = Physics.OverlapSphere(my[(int)Parts.Body].position+(Vector3.up*.05f), 0.3f);
+               // int layer = 1 << LayerMask.NameToLayer("Item");
+                Collider[] obj = Physics.OverlapSphere(my[(int)Parts.Body].position+(Vector3.up*.05f), 0.3f
+                    //,layer
+                    );
 
                 //1개이상   
                 if (obj.Length > 0)

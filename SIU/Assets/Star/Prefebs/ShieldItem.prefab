@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2795271184998338740}
   - component: {fileID: 2795271184998338741}
   - component: {fileID: 2795271184998338738}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: shieldMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 2795271186296236863}
   - component: {fileID: -6238826102099563143}
   - component: {fileID: 7567624667359072033}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ShieldItem
   m_TagString: Item
   m_Icon: {fileID: 0}

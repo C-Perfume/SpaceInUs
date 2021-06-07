@@ -6973,6 +6973,7 @@ GameObject:
   - component: {fileID: 7319669023415633885}
   - component: {fileID: 8970415600813354691}
   - component: {fileID: 7319669023415633884}
+  - component: {fileID: 4422038162104138463}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -7022,10 +7023,6 @@ MonoBehaviour:
   doorIndi: {fileID: 0}
   doorIndi2: {fileID: 0}
   floating: 1
-  rock: {fileID: 0}
-  item: {fileID: 0}
-  free: {fileID: 0}
-  mine: {fileID: 0}
   rope: {fileID: 6195559985027474900, guid: ac6661942e69f974d8da8140b8f692ab, type: 3}
   fire: {fileID: 1758077086301915472, guid: 2f47f940862307542a5dc0cc7839afbd, type: 3}
   shield: {fileID: 2795271186296236860, guid: ac171ac94626940479d191d5eb0996b8, type: 3}
@@ -7232,10 +7229,30 @@ MonoBehaviour:
   f: 0
   r: 0
   ropeSpd: 0.05
-  hook: {fileID: 0}
+  hook: {fileID: 4653391520705806573, guid: 6709fe26736d2be4c80537db79f44b6d, type: 3}
   hookP: {fileID: 100002, guid: 54dd9cb5740188a488b8baebbf19207c, type: 3}
-  shield: {fileID: 0}
-  particle: {fileID: 0}
+  shield: {fileID: 4742423144396731335, guid: ee6c1470fb3704645afffd198a683602, type: 3}
+  particle: {fileID: 8448567913201286592, guid: cbee4899696423944b618a9acd34552c, type: 3}
+--- !u!114 &4422038162104138463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7319669023199975324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 754bc81d42844df41b7c9df598a0a540, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holds: []
+  rope: {fileID: 6195559985027474900, guid: ac6661942e69f974d8da8140b8f692ab, type: 3}
+  fireEx: {fileID: 1758077086301915472, guid: 2f47f940862307542a5dc0cc7839afbd, type: 3}
+  shield: {fileID: 2795271186296236860, guid: ac171ac94626940479d191d5eb0996b8, type: 3}
+  oxyCan: {fileID: 8579832223223586287, guid: de96e38a282967e43b423e5327c5e692, type: 3}
+  item: {fileID: 0}
+  items: []
+  item_False: []
 --- !u!1 &7319669023314408048
 GameObject:
   m_ObjectHideFlags: 0

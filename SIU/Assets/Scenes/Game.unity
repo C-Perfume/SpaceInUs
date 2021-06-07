@@ -9710,7 +9710,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 480365269}
-  - component: {fileID: 480365270}
   m_Layer: 0
   m_Name: Rock
   m_TagString: Untagged
@@ -10155,26 +10154,6 @@ Transform:
   m_Father: {fileID: 4000012030138916}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &480365270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 480365268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 754bc81d42844df41b7c9df598a0a540, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  holds: []
-  rope: {fileID: 6195559985027474900, guid: ac6661942e69f974d8da8140b8f692ab, type: 3}
-  fireEx: {fileID: 1758077086301915472, guid: 2f47f940862307542a5dc0cc7839afbd, type: 3}
-  shield: {fileID: 2795271186296236860, guid: ac171ac94626940479d191d5eb0996b8, type: 3}
-  oxyCan: {fileID: 8579832223223586287, guid: de96e38a282967e43b423e5327c5e692, type: 3}
-  item: {fileID: 0}
-  items: []
-  item_False: []
 --- !u!1001 &481282886
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22854,7 +22833,7 @@ Transform:
   - {fileID: 773202301}
   - {fileID: 579223736}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1122906066
 AudioSource:
@@ -26128,7 +26107,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1308698888
 PrefabInstance:
@@ -28111,7 +28090,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5317614641989888067, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 5317614641989888067, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
       propertyPath: m_AnchorMax.x
@@ -36471,7 +36450,7 @@ Transform:
   - {fileID: 923783399}
   - {fileID: 503458473}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1777805572
 AudioSource:
@@ -36607,7 +36586,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1783207180
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44600,22 +44579,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 579223737}
     - target: {fileID: 7319669023199975318, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
-      propertyPath: free
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7319669023199975318, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
-      propertyPath: item
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7319669023199975318, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
-      propertyPath: mine
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7319669023199975318, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
-      propertyPath: rock
-      value: 
-      objectReference: {fileID: 480365269}
-    - target: {fileID: 7319669023199975318, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: doorIndi
       value: 
       objectReference: {fileID: 1415409352}
@@ -44633,7 +44596,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7319669023199975325, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7319669023199975325, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -44675,18 +44638,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7319669023415633884, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
-      propertyPath: hook
-      value: 
-      objectReference: {fileID: 4653391520705806573, guid: 6709fe26736d2be4c80537db79f44b6d, type: 3}
-    - target: {fileID: 7319669023415633884, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
-      propertyPath: shield
-      value: 
-      objectReference: {fileID: 4742423144396731335, guid: ee6c1470fb3704645afffd198a683602, type: 3}
-    - target: {fileID: 7319669023415633884, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
-      propertyPath: particle
-      value: 
-      objectReference: {fileID: 8448567913201286592, guid: cbee4899696423944b618a9acd34552c, type: 3}
     - target: {fileID: 7319669025068986784, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

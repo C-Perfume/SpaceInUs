@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1109826681581305846}
   - component: {fileID: 207814592958929912}
   - component: {fileID: 1852360295006456003}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,7 +107,7 @@ GameObject:
   - component: {fileID: 6195559985027474903}
   - component: {fileID: 3433112065714188094}
   - component: {fileID: -478866053134965182}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RopeItem
   m_TagString: Item
   m_Icon: {fileID: 0}

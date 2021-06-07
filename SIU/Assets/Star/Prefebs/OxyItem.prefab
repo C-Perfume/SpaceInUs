@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8579832221393144776}
   - component: {fileID: 8579832221393144775}
   - component: {fileID: 8579832221393144774}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: oxycan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 8579832223223586284}
   - component: {fileID: 8962001141604465392}
   - component: {fileID: 9180089636112150755}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: OxyItem
   m_TagString: Item
   m_Icon: {fileID: 0}

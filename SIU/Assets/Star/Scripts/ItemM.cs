@@ -46,7 +46,7 @@ public class ItemM : MonoBehaviour
         if (f)
         {
             rb.isKinematic = false;
-            rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd*4);
+            rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd*10);
             p.transform.position = pm.my[(int)PlayerM.Parts.LHand].position;
                 p.transform.forward = pm.my[(int)PlayerM.Parts.LHand].forward;
         }

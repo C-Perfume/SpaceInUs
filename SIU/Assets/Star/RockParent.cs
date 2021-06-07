@@ -58,13 +58,15 @@ public class Value : MonoBehaviour
      public Transform item;
     public List<GameObject> items = new List<GameObject>();
     public List<GameObject> item_False = new List<GameObject>();
+     public Transform rockParent;
 
     void Start()
     {
+        rockParent = GameObject.Find("Rock").transform;
         item = new GameObject("ItemList").transform;
-        item.SetParent(transform.parent);
+        item.SetParent(rockParent.parent);
 
-        for (int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < rockParent.childCount; i++)
         {
             
             Value v = new Value();
@@ -76,7 +78,7 @@ public class Value : MonoBehaviour
             else { v.num = 2; v.type = Value.Type.Item; }
             
 
-            v.mat = transform.GetChild(i).GetComponent<MeshRenderer>().material;
+            v.mat = rockParent.GetChild(i).GetComponent<MeshRenderer>().material;
 
             if (i == 0) { v.num = 0; v.type = Value.Type.Step; }
             if (i == 1) { v.num = 1;  v.type = Value.Type.Trap; v.tRand = 2;  v.tT = Value.TrapType.BholeR; }
@@ -95,19 +97,19 @@ public class Value : MonoBehaviour
             {
                 v.mat.color = Color.blue;
                 if (v.tRand == 1 || v.tRand == 4) { v.itNum = 0; v.iT = Value.ItemType.Rope;
-                    Create(rope, transform.GetChild(i));
+                    Create(rope, rockParent.GetChild(i));
                 }
                 else if (v.tRand == 2) { v.itNum = 1; v.iT = Value.ItemType.FireEx; 
                 
-                    Create(fireEx, transform.GetChild(i));
+                    Create(fireEx, rockParent.GetChild(i));
                 }
                 else if (v.tRand == 3) { v.itNum = 2; v.iT = Value.ItemType.Shield; 
                 
-                    Create(shield, transform.GetChild(i));
+                    Create(shield, rockParent.GetChild(i));
                 }
                 else { v.itNum = 3; v.iT = Value.ItemType.OxyCan; 
                 
-                    Create(oxyCan, transform.GetChild(i));
+                    Create(oxyCan, rockParent.GetChild(i));
                 }
             }
 
@@ -123,23 +125,14 @@ public class Value : MonoBehaviour
         items.Add(a);
     }
 
-     void Update()
-    {
-        if (item_False.Count > 0) {
-            StartCoroutine(ShowUp());
-        }
-    }
 
     //아이템 생성
 
-    IEnumerator ShowUp()
+   public IEnumerator ShowUp(GameObject item)
     {
         items.Add(item_False[0]);
-        print(item_False[0].name + "재생성 확인 비활성화 0번");
         item_False.RemoveAt(0);
-        if(item_False.Count > 0) print(item_False[0].name + "재생성 확인 비활성화 0번 제거 후");
         yield return new WaitForSeconds(30);
-        items[items.Count-1].SetActive(true);
-        print(items[items.Count - 1].name +"재생성 확인 활성화목록 맨 마지막");
+        item.SetActive(true);
     }
 }

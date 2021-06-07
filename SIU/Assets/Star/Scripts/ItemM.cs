@@ -113,11 +113,8 @@ public class ItemM : MonoBehaviour
             {
                 print("Active shield");
                 GameObject s = Instantiate(shield);
-                s.SetActive(true);
                 s.transform.position = transform.position;
 
-                ParticleSystem bubble = s.GetComponent<ParticleSystem>();
-                bubble.Play();
                 rb.isKinematic = true;
                 //블랙홀 지우기
                 tm.bH =false;

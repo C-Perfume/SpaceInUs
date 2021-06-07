@@ -13,6 +13,7 @@ public class SoundM : MonoBehaviour
         instance = this;
         aS[1] = GetComponent<AudioSource>();
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Ready") { StartCoroutine(warning()); }
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Game") { playS(3, 3); }
     }
 
 

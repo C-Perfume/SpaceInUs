@@ -504,7 +504,7 @@ public class PlayerM : MonoBehaviour
 
                 if (gDB)
                 {
-                    Button btn = hit.transform.GetComponent<Button>();
+                    Button btn = hit.collider.transform.GetComponent<Button>();
                     if (btn != null)
                     {
                         btn.onClick.Invoke();

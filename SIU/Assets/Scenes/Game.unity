@@ -36428,7 +36428,7 @@ GameObject:
   - component: {fileID: 1777805572}
   - component: {fileID: 1777805573}
   m_Layer: 0
-  m_Name: SoundManager
+  m_Name: SoundM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44658,9 +44658,5 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8970415600813354691, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}
-      propertyPath: rock
-      value: 
-      objectReference: {fileID: 1000014037622926}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d04704a9bec23349943d06281ee45b4, type: 3}

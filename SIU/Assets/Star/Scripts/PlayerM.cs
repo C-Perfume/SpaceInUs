@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Photon.Pun;
 
 
-
-public class PlayerM : MonoBehaviour
+public class PlayerM : MonoBehaviourPun, IPunObservable
 {
     // 카메라리그에 붙는 스크립트라는 전제로 왼손 / 오른손 변수잡고 시작하기
 
     // 네트워크 위치값 전송용
     struct Sync
     {
-        Vector3 pos;
-        Quaternion rot;
+        public Vector3 pos;
+        public Quaternion rot;
     }
 
     public enum State
@@ -31,10 +31,15 @@ public class PlayerM : MonoBehaviour
         Body
     }
 
-    public State state;
+    Vector3 photonPos;
     public Transform[] my;
     public Transform[] others;
+    Sync[] syncData;
+    public GameObject myModel;
+    public GameObject otherModel;
 
+
+    public State state;
     //걷기 잡기
     Vector3 origin;
     Vector3 pos;
@@ -133,6 +138,16 @@ public class PlayerM : MonoBehaviour
 
     void Start()
     {
+
+        if (!photonView.IsMine)
+        {
+            syncData = new Sync[my.Length];
+        }
+
+        myModel.SetActive(photonView.IsMine);
+        otherModel.SetActive(!photonView.IsMine);
+
+
         if (SceneManager.GetActiveScene().name == "Game")
         { state = State.GameStart;
             free = new GameObject("Free").transform;
@@ -151,11 +166,23 @@ public class PlayerM : MonoBehaviour
         lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
         rp = GetComponent<RockParent>();
     }
-
     void Update()
     {
-        #region 컨트롤러 bool
-        getTchTmbL = OVRInput.Get(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
+
+        if (!photonView.IsMine)
+        {
+
+            transform.position = Vector3.Lerp(transform.position, photonPos, .2f);
+            for (int i = 0; i < others.Length; i++)
+            {
+            others[i].position = Vector3.Lerp(others[i].position, syncData[i].pos, .2f);
+            others[i].rotation = Quaternion.Lerp(others[i].rotation, syncData[i].rot, .2f);
+
+            }
+                
+                }
+            #region 컨트롤러 bool
+            getTchTmbL = OVRInput.Get(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getDTchTmbL = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getUTchTmbL = OVRInput.GetUp(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getTchTmbR = OVRInput.Get(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.RTouch);
@@ -295,6 +322,39 @@ public class PlayerM : MonoBehaviour
 
 
     }
+    // 포톤 몸 움직임
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(transform.position);
+            for (int i = 0; i < my.Length; i++)
+            {
+                stream.SendNext(my[i].position);
+                stream.SendNext(my[i].rotation);
+
+            }
+        }
+
+        if (stream.IsReading)
+        {
+            photonPos = (Vector3)stream.ReceiveNext();
+            if (syncData != null)
+            {
+
+                for (int i = 0; i < others.Length; i++)
+                {
+                   syncData[i].pos = (Vector3)stream.ReceiveNext();
+                    syncData[i].rot = (Quaternion)stream.ReceiveNext();
+                }
+            }
+
+
+
+        }
+    }
+
+
 
     void Float()
     {

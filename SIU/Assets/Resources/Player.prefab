@@ -41,10 +41,10 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 65446389020847237}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: 9d33c0adb5ee94943adb53be29a7cf89, type: 2}
 --- !u!54 &8676749571344396352
@@ -6974,6 +6974,7 @@ GameObject:
   - component: {fileID: 8970415600813354691}
   - component: {fileID: 7319669023415633884}
   - component: {fileID: 4422038162104138463}
+  - component: {fileID: 7917979881557019647}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -7212,7 +7213,6 @@ MonoBehaviour:
   MenuManager: {fileID: 7319669024023894671}
   hpBar: {fileID: 7319669023545509552}
   a: 0
-  rock: {fileID: 0}
 --- !u!114 &7319669023415633884
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7253,6 +7253,29 @@ MonoBehaviour:
   item: {fileID: 0}
   items: []
   item_False: []
+  rockParent: {fileID: 0}
+--- !u!114 &7917979881557019647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7319669023199975324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &7319669023314408048
 GameObject:
   m_ObjectHideFlags: 0

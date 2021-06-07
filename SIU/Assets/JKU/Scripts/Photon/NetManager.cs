@@ -87,14 +87,14 @@ public class NetManager : MonoBehaviourPunCallbacks
         {
             int rand = Random.Range(1, 11); //여기서 랜덤값을 정해줌.
             int tRand = Random.Range(1, 11);
-            //     pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand);
+            //pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand);
         }
     }
 
     [PunRPC]
     void RpcRockstep(int num, int rand, int tRand)
     {
-        //    SL.list_Rocks[num].ChangeRandomStep(rand, tRand);
+        //SL.list_Rocks[num].ChangeRandomStep(rand, tRand);
     }
 
     //방나가기

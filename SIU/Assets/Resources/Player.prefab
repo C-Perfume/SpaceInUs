@@ -5500,6 +5500,8 @@ MonoBehaviour:
   - {fileID: 5840460201371422514}
   - {fileID: 5840460200500543330}
   - {fileID: 4942509894606625222}
+  doorIndi: {fileID: 0}
+  doorIndi2: {fileID: 0}
   floating: 1
   rope: {fileID: 6195559985027474900, guid: ac6661942e69f974d8da8140b8f692ab, type: 3}
   fire: {fileID: 1758077086301915472, guid: 2f47f940862307542a5dc0cc7839afbd, type: 3}
@@ -5508,8 +5510,6 @@ MonoBehaviour:
   myItem: []
   FootStepTransform: {fileID: 0}
   Grap: {fileID: 0}
-  ovrCameraRig: {fileID: 3402438146201099723}
-  other: {fileID: 5840460200357095323}
 --- !u!114 &5147577431983245137
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -55,6 +55,7 @@ public class PlayerM : MonoBehaviour
     //그랩 손위치
     Transform[] hitTF = new Transform[2];
 
+
     //손에 잡은 오브젝트의 트랜스폼
     Transform catchHoldL;
     Transform catchHoldLpre;
@@ -65,13 +66,15 @@ public class PlayerM : MonoBehaviour
     //아이템 인벤토리 넣기용
     bool find = false;
 
+
+    //그랩 종류구분
+    RockParent rp;
     // 홀드찾기용
-    public Transform rock;
+    Transform rock;
 
     //아이템 찾기용
-    public Transform item;
-    public Transform free;
-    public Transform mine;
+    Transform free;
+    Transform mine;
 
     //아이템 생성용
     public GameObject rope;
@@ -131,7 +134,10 @@ public class PlayerM : MonoBehaviour
     void Start()
     {
         if (SceneManager.GetActiveScene().name == "Game")
-        { state = State.GameStart; }
+        { state = State.GameStart;
+            free = new GameObject("Free").transform;
+            mine = new GameObject("Mine").transform;
+        }
         else if (SceneManager.GetActiveScene().name == "Ready")
         { state = State.Ready; }
         else
@@ -142,6 +148,8 @@ public class PlayerM : MonoBehaviour
         lr = GetComponent<LineRenderer>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
         lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
+        rock = GameObject.Find("Rock").transform;
+        rp = rock.GetComponent<RockParent>();
     }
 
     void Update()
@@ -236,25 +244,6 @@ public class PlayerM : MonoBehaviour
 
                 }
 
-                //멀리 간 아이템 없에기 **디스트로이 없엤음
-                if (free.childCount > 0)
-                {
-                    for (int i = 0; i < free.childCount; i++)
-                    {
-
-                        if (free.GetChild(i).position.x > transform.position.x * 10
-                            || free.GetChild(i).position.x < transform.position.x * -10
-                            || free.GetChild(i).position.y > transform.position.y * 10
-                            || free.GetChild(i).position.y < transform.position.y * -10
-                            || free.GetChild(i).position.z > transform.position.z * 10
-                            || free.GetChild(i).position.z < transform.position.z * -10
-
-                            )
-                        {
-                           // Destroy(free.GetChild(i).gameObject);
-                        }
-                    }
-                }
 
                 if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
                 else {
@@ -605,34 +594,37 @@ public class PlayerM : MonoBehaviour
     void Grab(Transform hitTFN, Transform handG, Transform otherH, ref Transform Hold, ref Transform Hold2, ref Transform Holdpre)
     {
       
+         
+            int idx = hitTFN.GetSiblingIndex();
 
         // 홀드 잡고 있는 중
         if (hitTFN.IsChildOf(rock))
         {
+            
             Hold = hitTFN;
             if (Hold2 != null &&
                   Hold == Hold2) { tM.up = false; }
 
             if (Holdpre == Hold) { tM.up = false; }
 
-            Rocks r = hitTFN.GetComponent<Rocks>();
             floating = false;
             rb.isKinematic = true;
 
-            if (r.num == (int)Rocks.Type.Trap)
-            {
+
+            if (rp.holds[idx].type == Value.Type.Trap) {
 
                 if (tM.up)
                 {
 
-                    if (r.trapNum < (int)Rocks.TrapType.Meteor)
+                    if (rp.holds[idx].tT == Value.TrapType.BHoleL 
+                        || rp.holds[idx].tT == Value.TrapType.BholeR
+                        )
                     {
-                        tM.BHole(r);
-
+                        tM.BHole(rp.holds[idx]);
                     }
                     else
 
-                    if (r.trapNum == (int)Rocks.TrapType.Meteor)
+                    if (rp.holds[idx].tT == Value.TrapType.Meteor)
                     {
                         tM.Create(tM.meteorFactory);
                     }
@@ -650,16 +642,11 @@ public class PlayerM : MonoBehaviour
             if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
             else { transform.position += origin - handG.position; }
 
-
-
-
-
         }
         else
 
-
         // 아이템 잡을 때 손에 생성
-        if (hitTFN.IsChildOf(item))
+        if (hitTFN.IsChildOf(rp.item))
         {
 
             Grap.Play();
@@ -668,7 +655,9 @@ public class PlayerM : MonoBehaviour
             if (hitTFN.gameObject.name.Contains("Rope")) { CreateItem(rope, handG); }
             if (hitTFN.gameObject.name.Contains("Shield")) { CreateItem(shield, handG); }
 
+            rp.item_False.Add(hitTFN.gameObject);
             hitTFN.gameObject.SetActive(false);
+            rp.items.Remove(hitTFN.gameObject);
 
         }
         else
@@ -685,7 +674,7 @@ public class PlayerM : MonoBehaviour
 
             // 물리 작용 off
             Rigidbody itemRb = hitTFN.gameObject.GetComponent<Rigidbody>();
-            itemRb.isKinematic = true;
+            itemRb.isKinematic = true;  
         }
 
 

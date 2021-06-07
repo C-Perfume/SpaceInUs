@@ -13,7 +13,7 @@ public class HookMovement : MonoBehaviour
     void Start()
     {
         rockMap = GameObject.Find("Rock_map").transform;
-        Destroy(gameObject, 5f);
+        Destroy(gameObject, 6f);
     }
 
     void Update()

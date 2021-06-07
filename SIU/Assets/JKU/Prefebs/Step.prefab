@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3416725543417586869}
-  - component: {fileID: 3230262677847649232}
   - component: {fileID: 1936725079087284700}
   - component: {fileID: 7926789720044512995}
   - component: {fileID: 5039895290728056447}
@@ -35,30 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
---- !u!114 &3230262677847649232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5222729058937882571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b22af22cc3fecad44be16a84440912ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rand: 0
-  tRand: 0
-  num: 0
-  trapNum: 0
-  itNum: 0
-  rope: {fileID: 6195559985027474900, guid: ac6661942e69f974d8da8140b8f692ab, type: 3}
-  fireEx: {fileID: 1758077086301915472, guid: 2f47f940862307542a5dc0cc7839afbd, type: 3}
-  Shield: {fileID: 2795271186296236860, guid: ac171ac94626940479d191d5eb0996b8, type: 3}
-  OxyCan: {fileID: 8579832223223586287, guid: de96e38a282967e43b423e5327c5e692, type: 3}
-  item: {fileID: 0}
-  items: []
-  full: 0
 --- !u!64 &1936725079087284700
 MeshCollider:
   m_ObjectHideFlags: 0

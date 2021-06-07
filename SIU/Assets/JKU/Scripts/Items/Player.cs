@@ -72,6 +72,7 @@ public class Player : MonoBehaviour
 
         if (currentHp <= 0)
         {
+            NetManager.Instance.LeaveRoom();//방나가기 호출
             GameObject SavTime = GameObject.Find("saveTime");
             Destroy(SavTime);
             print("Chock to death");

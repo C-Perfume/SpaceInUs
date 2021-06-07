@@ -63,7 +63,7 @@ public class Rocks : MonoBehaviour
         else if (gameObject.transform == gameObject.transform.parent.GetChild(2)) { num = 2; tRand = 5; }
 
         else
-        {
+        {  
             rand = Random.Range(1, 11);
             tRand =  Random.Range(1, 11);
             if (rand < 6) { num = 0; } else if (rand < 9) { num = 1; } else { num = 2; }

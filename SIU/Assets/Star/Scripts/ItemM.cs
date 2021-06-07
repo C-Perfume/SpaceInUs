@@ -24,10 +24,10 @@ public class ItemM : MonoBehaviour
     bool isH = true;
 
     public GameObject shield;
-   
+
 
     TrapManager tm;
-    
+
     // 소화기 파티클
     public GameObject particle;
     GameObject p;
@@ -38,7 +38,8 @@ public class ItemM : MonoBehaviour
         pm = GetComponent<PlayerM>();
         rb = GetComponent<Rigidbody>();
         lr = GetComponent<LineRenderer>();
-        tm = GetComponent<TrapManager>(); 
+        tm = GetComponent<TrapManager>();
+       
     }
 
     void Update()
@@ -46,11 +47,12 @@ public class ItemM : MonoBehaviour
         if (f)
         {
             rb.isKinematic = false;
-            rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd*4);
+            rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd * 4);
             p.transform.position = pm.my[(int)PlayerM.Parts.LHand].position;
-                p.transform.forward = pm.my[(int)PlayerM.Parts.LHand].forward;
+            p.transform.forward = pm.my[(int)PlayerM.Parts.LHand].forward;
         }
-        else {
+        else
+        {
 
             if (p != null)
             {
@@ -64,24 +66,26 @@ public class ItemM : MonoBehaviour
             lr.SetPosition(0, pm.my[(int)PlayerM.Parts.RHand].position);
             lr.SetPosition(1, h.transform.position);
             HookMovement hhook = h.GetComponent<HookMovement>();
-            if (!hhook.moving) {
+            if (!hhook.moving)
+            {
                 if (isH)
                 {
-            rb.isKinematic = true;
-                GameObject hEFT = Instantiate(hookP);
-                hEFT.transform.position = h.transform.position;
-                hEFT.transform.forward = -h.transform.forward;
-                ParticleSystem hP = hEFT.GetComponent<ParticleSystem>();
-                hP.Play();
-                AudioSource hAs = hEFT.GetComponent<AudioSource>();
-                hAs.Play();
-                Destroy(hEFT, 10);
+                    rb.isKinematic = true;
+                    GameObject hEFT = Instantiate(hookP);
+                    hEFT.transform.position = h.transform.position;
+                    hEFT.transform.forward = -h.transform.forward;
+                    ParticleSystem hP = hEFT.GetComponent<ParticleSystem>();
+                    hP.Play();
+                    AudioSource hAs = hEFT.GetComponent<AudioSource>();
+                    hAs.Play();
+                    Destroy(hEFT, 10);
                     isH = false;
                 }
-                transform.position = Vector3.Lerp(transform.position, h.transform.position, 1*Time.deltaTime);
+                transform.position = Vector3.Lerp(transform.position, h.transform.position, 1 * Time.deltaTime);
             }
         }
-        else {
+        else
+        {
             lr.enabled = false;
             h = null;
         }
@@ -90,7 +94,7 @@ public class ItemM : MonoBehaviour
         {
             if (pm.myItem[0].name.Contains("Fire"))
             {
-            print("Active - F");
+                print("Active - F");
                 f = true;
                 p = Instantiate(particle);
                 p.transform.position = pm.my[(int)PlayerM.Parts.LHand].position;
@@ -117,7 +121,7 @@ public class ItemM : MonoBehaviour
 
                 rb.isKinematic = true;
                 //블랙홀 지우기
-                tm.bH =false;
+                tm.bH = false;
                 Destroy(s, 5);
             }
 
@@ -131,7 +135,8 @@ public class ItemM : MonoBehaviour
             StartCoroutine(StopFR());
         }
     }
-    IEnumerator StopFR() {
+    IEnumerator StopFR()
+    {
         yield return new WaitForSeconds(5);
         f = false; r = false;
         print("Stop Item Funtion..");

@@ -10136,10 +10136,6 @@ MonoBehaviour:
   doorIndi: {fileID: 1415409352}
   doorIndi2: {fileID: 1415409351}
   floating: 1
-  rock: {fileID: 0}
-  item: {fileID: 0}
-  free: {fileID: 0}
-  mine: {fileID: 0}
   rope: {fileID: 6195559985027474900, guid: ac6661942e69f974d8da8140b8f692ab, type: 3}
   fire: {fileID: 1758077086301915472, guid: 2f47f940862307542a5dc0cc7839afbd, type: 3}
   shield: {fileID: 2795271186296236860, guid: ac171ac94626940479d191d5eb0996b8, type: 3}
@@ -10147,6 +10143,8 @@ MonoBehaviour:
   myItem: []
   FootStepTransform: {fileID: 0}
   Grap: {fileID: 0}
+  ovrCameraRig: {fileID: 0}
+  other: {fileID: 0}
 --- !u!1 &8733932752677898911
 GameObject:
   m_ObjectHideFlags: 0
@@ -10180,6 +10178,7 @@ MonoBehaviour:
   MenuManager: {fileID: 983900392}
   hpBar: {fileID: 1592212847}
   a: 0
+  rock: {fileID: 0}
 --- !u!1 &8733932752852808786
 GameObject:
   m_ObjectHideFlags: 0

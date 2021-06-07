@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
 
-
-public class PlayerM : MonoBehaviour
+public class PlayerM : MonoBehaviourPunCallbacks
 {
     // 카메라리그에 붙는 스크립트라는 전제로 왼손 / 오른손 변수잡고 시작하기
 
@@ -42,8 +43,8 @@ public class PlayerM : MonoBehaviour
     bool walkR = false;
 
     //문표시 아이콘
-    public GameObject doorIndi;
-    public GameObject doorIndi2;
+   GameObject doorIndi; //바꿈
+   GameObject doorIndi2;//바꿈
     // 클릭 라인렌더러 양손
     LineRenderer lrL;
     LineRenderer lrR;
@@ -66,12 +67,12 @@ public class PlayerM : MonoBehaviour
     bool find = false;
 
     // 홀드찾기용
-    public Transform rock;
+    Transform rock;
 
     //아이템 찾기용
-    public Transform item;
-    public Transform free;
-    public Transform mine;
+     Transform item;
+     Transform free;
+     Transform mine;
 
     //아이템 생성용
     public GameObject rope;
@@ -128,8 +129,37 @@ public class PlayerM : MonoBehaviour
     Vector3 getAngVelR;
     #endregion
 
+    //포톤 뷰 받아오기;
+    PhotonView pv;
+
+    //hitTFN RPC 트랜스폼
+    Transform hitTFN_RPC;
+    public GameObject ovrCameraRig;
+    public GameObject other;
+
     void Start()
     {
+        //인디케이터
+        doorIndi = GameObject.Find("DoorCanvas").transform.GetChild(0).gameObject;
+        doorIndi2 = GameObject.Find("DoorCanvas").transform.GetChild(1).gameObject;
+
+        //템찾기(추가)
+        rock = GameObject.Find("Rock").transform;
+        item = GameObject.Find("Item").transform;
+        free = GameObject.Find("Free").transform;
+        mine = GameObject.Find("Mine").transform;
+        
+        //포톤
+        pv = GetComponent<PhotonView>();
+
+        //내꺼일때 ovrmanager 켜줘
+        if (pv.IsMine)
+        {
+            ovrCameraRig.SetActive(true);
+
+            other.SetActive(false);
+        }
+
         if (SceneManager.GetActiveScene().name == "Game")
         { state = State.GameStart; }
         else if (SceneManager.GetActiveScene().name == "Ready")
@@ -143,7 +173,7 @@ public class PlayerM : MonoBehaviour
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
         lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
     }
-
+    
     void Update()
     {
         #region 컨트롤러 bool
@@ -208,7 +238,7 @@ public class PlayerM : MonoBehaviour
 
 
             case State.GameStart:
-              
+
 
                 //플로팅
                 if (floating) Float();
@@ -251,17 +281,18 @@ public class PlayerM : MonoBehaviour
 
                             )
                         {
-                           // Destroy(free.GetChild(i).gameObject);
+                            // Destroy(free.GetChild(i).gameObject);
                         }
                     }
                 }
 
                 if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
-                else {
+                else
+                {
                     lrL.enabled = false;
                     lrR.enabled = false;
                 }
-                
+
                 break;
 
 
@@ -271,15 +302,19 @@ public class PlayerM : MonoBehaviour
             case State.GameOver:
                 ClickLR();
 
-                if (!goPlay.instance.MenuManager.activeSelf) {
-                    if (SceneManager.GetActiveScene().name == "Ready") 
-                    { state = State.Ready;
+                if (!goPlay.instance.MenuManager.activeSelf)
+                {
+                    if (SceneManager.GetActiveScene().name == "Ready")
+                    {
+                        state = State.Ready;
                         lrL.enabled = false;
                         lrR.enabled = false;
                     }
-                    else { state = State.GameStart;
-                      
-                    }  
+                    else
+                    {
+                        state = State.GameStart;
+
+                    }
                 }
 
                 break;

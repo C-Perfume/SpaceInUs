@@ -10,10 +10,11 @@ public class goPlay : MonoBehaviour
     public GameObject hpBar;
     public bool a = false;
 
-    public GameObject rock;
+    GameObject rock;
     void Start()
     {
         instance = this;
+        rock = GameObject.Find("Rock_map");
     }
 
     private void Update()

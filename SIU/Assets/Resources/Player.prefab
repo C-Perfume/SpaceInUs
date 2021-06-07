@@ -5454,6 +5454,7 @@ GameObject:
   - component: {fileID: 2520729726695116998}
   - component: {fileID: 2624680439559301353}
   - component: {fileID: -5094593862003252252}
+  - component: {fileID: 608881307866801668}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -5510,6 +5511,8 @@ MonoBehaviour:
   myItem: []
   FootStepTransform: {fileID: 0}
   Grap: {fileID: 0}
+  ovrCameraRig: {fileID: 3402438146201099723}
+  other: {fileID: 5840460200357095323}
 --- !u!114 &5147577431983245137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5765,6 +5768,20 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!114 &608881307866801668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5147577431983245148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e46008144b3f32d46941dc7e9d086617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text_timer: {fileID: 0}
+  timesave: 0
 --- !u!1 &5147577432047996858
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Photon.Pun;
+using Photon.Realtime;
 
 
 
-public class PlayerM : MonoBehaviour
+public class PlayerM : MonoBehaviourPunCallbacks
 {
     // 카메라리그에 붙는 스크립트라는 전제로 왼손 / 오른손 변수잡고 시작하기
 
@@ -131,8 +133,26 @@ public class PlayerM : MonoBehaviour
     Vector3 getAngVelR;
     #endregion
 
+
+    //포톤 뷰 받아오기;
+    PhotonView pv;
+    //hitTFN RPC 트랜스폼
+    Transform hitTFN_RPC;
+    public GameObject ovrCameraRig;
+    public GameObject other;
+
     void Start()
     {
+        //포톤
+        pv = GetComponent<PhotonView>();
+        //내꺼일때 ovrmanager 켜줘
+        if (pv.IsMine)
+        {
+            ovrCameraRig.SetActive(true);
+
+            other.SetActive(false);
+        }
+
         if (SceneManager.GetActiveScene().name == "Game")
         { state = State.GameStart;
             free = new GameObject("Free").transform;

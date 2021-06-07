@@ -64,7 +64,7 @@ public class BottleFall : MonoBehaviour
 
             black.gameObject.SetActive(false);
 
-            Destroy(gameObject);
+        if (gameObject != null) { Destroy(gameObject); }
 
     }
     

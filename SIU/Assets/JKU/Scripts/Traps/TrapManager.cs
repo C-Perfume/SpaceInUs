@@ -66,12 +66,12 @@ public class TrapManager : MonoBehaviour
 
 
     // 블랙홀 생성
-    public void BHole(Rocks r)
-    {   
+    public void BHole(Value v)
+    {
         trapS[0].Play();
         GameObject a = Instantiate(bHole);
         BholeRot bHR = a.GetComponent<BholeRot>();
-        if (r.trapNum == (int)Rocks.TrapType.BHoleL)
+        if (v.tT == Value.TrapType.BHoleL)
         {
             a.transform.position = -transform.right * Random.Range(3, 5f)
             - transform.up * Random.Range(3, 5f)
@@ -85,8 +85,6 @@ public class TrapManager : MonoBehaviour
                 - transform.forward * Random.Range(3, 5f);
             bHR.value = 1;
         }
-
-       
         a.transform.up = transform.position - a.transform.position;
         Destroy(a, 5);
         bH = true;
@@ -120,11 +118,12 @@ public class TrapManager : MonoBehaviour
                 pm.state = PlayerM.State.GameOver;
             }
             else {
+                print("화이트홀 작동하니?");
                 bH = false;
                 gameObject.transform.position = new Vector3(0, 0, 0);
                 GetComponent<PlayerM>().floating = true;
             }
-
+            Destroy(other.gameObject, 5);
         }
 
         if (other.gameObject.name.Contains("Can"))
@@ -133,6 +132,7 @@ public class TrapManager : MonoBehaviour
             BottleFall btf = other.gameObject.GetComponent<BottleFall>();
             trapS[2].Stop();
             StartCoroutine(btf.Black_());
+
         }
 
 

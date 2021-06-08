@@ -60,6 +60,11 @@ public class RockParent : MonoBehaviour
     public List<GameObject> item_False = new List<GameObject>();
     public Transform rockParent;
 
+    public static RockParent Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         rockParent = GameObject.Find("Rock").transform;
@@ -81,7 +86,7 @@ public class RockParent : MonoBehaviour
         else { v.num = 2; v.type = Value.Type.Item; }
 
 
-        v.mat = transform.GetChild(i).GetComponent<MeshRenderer>().material;
+        v.mat = rockParent.GetChild(i).GetComponent<MeshRenderer>().material;
 
         if (i == 0) { v.num = 0; v.type = Value.Type.Step; }
         if (i == 1) { v.num = 1; v.type = Value.Type.Trap; v.tRand = 2; v.tT = Value.TrapType.BholeR; }

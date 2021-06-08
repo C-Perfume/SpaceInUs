@@ -9,17 +9,16 @@ using Photon.Realtime;
 public class NetManager : MonoBehaviourPunCallbacks
 {
     string ver = "1";
-    PhotonView pv;
+    PhotonView Pv;
     //  public StepListCreater SL;
-    RockParent RP;
     public static NetManager Instance;
 
+    bool a = true;
 
     //Loding(상대방 기다리기)
     //public GameObject Loding;
     private void Awake()
     {
-        //RP = GameObject.Find("Player(Clone)").GetComponent<RockParent>();
 
         Instance = this;
     }
@@ -28,7 +27,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.GameVersion = ver;
         PhotonNetwork.ConnectUsingSettings();
-        pv = GetComponent<PhotonView>();
+         Pv = GetComponent<PhotonView>();
     }
 
     public override void OnConnected()
@@ -68,8 +67,7 @@ public class NetManager : MonoBehaviourPunCallbacks
         {
 
             PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
-            RP = GameObject.Find("Player(Clone)").GetComponent<RockParent>();
-
+           
         }
         else
         {
@@ -85,15 +83,17 @@ public class NetManager : MonoBehaviourPunCallbacks
     public void RandomChange(int num) //RockParents에서 만든 int num값(하위 오브젝트의 번호값)
     {
         StartCoroutine(Co_RandomChange(num));
+        print("시작");
     }
 
     IEnumerator Co_RandomChange(int num)
     {
-        while (true)
+        while (a)
         {
             if (PhotonNetwork.IsConnected) //포톤에 접속 
             {
-                if (PhotonNetwork.IsMasterClient) //플레이어가 생성되고 마스터클라이언트인지 확인 여부까지 조건이 맞으면 
+                
+                if (Pv.IsMine&&PhotonNetwork.IsMasterClient) //플레이어가 생성되고 마스터클라이언트인지 확인 여부까지 조건이 맞으면 
                 {
                     for (int i = 0; i < num; i++) //하위오브젝트 숫자 받아온 걸로 포문을 돌리자
                     {
@@ -101,22 +101,24 @@ public class NetManager : MonoBehaviourPunCallbacks
                         int tRand = Random.Range(1, 11);
 
                         //뽑아낸 숫자만큼 알피씨를 보냄. RockParents 스크립트의 체인지랜덤스탭 스크립트에 몇번째 하위 오브젝트인지(i), 랜덤값 두개(rand, tRand)
-                        pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand);
+                        Pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand);
 
+                        a = false;
                     }
+                    
+                    print("S");
                     break;
                 }
             }
             yield return null;
         }
 
-
     }
 
     [PunRPC]
     public void RpcRockstep(int num, int rand, int tRand) //RockParents에 있는 함수 가져오기 (RPC로 만들기)
     {
-        RP.ChangeRandomStep(num, rand, tRand);
+        RockParent.Instance.ChangeRandomStep(num, rand, tRand);
     }
 
     //방나가기
@@ -128,27 +130,24 @@ public class NetManager : MonoBehaviourPunCallbacks
     }
 
     //플레이어 들어왔을 때 체크
-    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
-    {
-        base.OnPlayerEnteredRoom(newPlayer);
+    //public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    //{
+    //    base.OnPlayerEnteredRoom(newPlayer);
 
-        if (photonView.IsMine)//내꺼 일때
-        {
-            Destroy(GameObject.Find("Player(Clone)"));
-            PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
-        }
-        else
-        {
-            PhotonNetwork.Instantiate("Player", new Vector3(-0.333f, 0, 0), Quaternion.identity);
-        }
+    //    if (photonView.IsMine)//내꺼 일때
+    //    {
+    //        Destroy(GameObject.Find("Player(Clone)"));
+    //        PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
+    //    }
+       
+    //}
 
-    }
-
-    //플레이어 나갔을 때 체크
-    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
-    {
-        base.OnPlayerLeftRoom(otherPlayer);
-    }
+    ////플레이어 나갔을 때 체크
+    //public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    //{
+    //    base.OnPlayerLeftRoom(otherPlayer);
+    //    Destroy(GameObject.Find("Player(Clone)"));
+    //}
 }
 //    //로딩 창 보여주기
 //    //IEnumerator LodingImg()

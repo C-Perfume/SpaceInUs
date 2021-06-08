@@ -129,7 +129,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerEnteredRoom(newPlayer);
 
-        if (photonView.IsMine)//방장일때
+        if (photonView.IsMine)//내꺼 일때
         {
             Destroy(GameObject.Find("Player(Clone)"));
             PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);

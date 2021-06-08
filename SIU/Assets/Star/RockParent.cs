@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Value : MonoBehaviour
+public class Value : MonoBehaviour //추상클래스
 {
     public enum Type
     {
@@ -183,11 +183,12 @@ public class Value : MonoBehaviour
     void Create(GameObject obj, Transform h)
     {
         GameObject a = Instantiate(obj);
-        a.transform.position = h.position + h.forward * -.05f +        h.up * .1f;
+        a.transform.position = h.position + h.forward * -.05f +  h.up * .1f;
         a.transform.SetParent(item);
         items.Add(a);
     }
-
+    
+    //템 리젠 시키기
      void Update()
     {
         if (item_False.Count > 0) {

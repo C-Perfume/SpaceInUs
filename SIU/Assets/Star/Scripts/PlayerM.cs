@@ -149,11 +149,10 @@ public class PlayerM : MonoBehaviourPunCallbacks
         if (pv.IsMine)
         {
             ovrCameraRig.SetActive(true);
-
+            
             other.SetActive(false);
         }
-
-        if (SceneManager.GetActiveScene().name == "Game")
+                if (SceneManager.GetActiveScene().name == "Game")
         { state = State.GameStart;
             free = new GameObject("Free").transform;
             mine = new GameObject("Mine").transform;

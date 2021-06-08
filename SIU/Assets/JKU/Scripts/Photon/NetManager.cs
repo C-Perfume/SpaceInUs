@@ -11,7 +11,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     string ver = "1";
     PhotonView pv;
     //  public StepListCreater SL;
-
+    public RockParent RP;
     public static NetManager Instance;
 
 
@@ -67,7 +67,6 @@ public class NetManager : MonoBehaviourPunCallbacks
             
            PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
        
-         //   RandomChange();
         }
         else
         {
@@ -80,21 +79,41 @@ public class NetManager : MonoBehaviourPunCallbacks
     }
 
     //아이템 랜덤생성, 홀드 색깔 바꾸기 호출
-    void RandomChange()
+    public void RandomChange(int num) //RockParents에서 만든 int num값(하위 오브젝트의 번호값)
     {
-        print("됨");
-        // for (int i = 0; i < SL.list_Rocks.Count; i++)
+        StartCoroutine(Co_RandomChange(num));
+    }
+
+    IEnumerator Co_RandomChange(int num)
+    {
+        while (true)
         {
-            int rand = Random.Range(1, 11); //여기서 랜덤값을 정해줌.
-            int tRand = Random.Range(1, 11);
-            //     pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand);
+            if (PhotonNetwork.IsConnected) //포톤에 접속 
+            {
+                if (PhotonNetwork.IsMasterClient) //플레이어가 생성되고 마스터클라이언트인지 확인 여부까지 조건이 맞으면 
+                {
+                    for (int i = 0; i < num; i++) //하위오브젝트 숫자 받아온 걸로 포문을 돌리자
+                    {
+                        int rand = Random.Range(1, 11); //랜덤레인지값을 하위 오브젝트 숫자만큼 뽑아내자
+                        int tRand = Random.Range(1, 11);
+
+                        //뽑아낸 숫자만큼 알피씨를 보냄. RockParents 스크립트의 체인지랜덤스탭 스크립트에 몇번째 하위 오브젝트인지(i), 랜덤값 두개(rand, tRand)
+                        pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand); 
+
+                    }
+                    break;
+                }
+            }
+            yield return null;
         }
+
+
     }
 
     [PunRPC]
-    void RpcRockstep(int num, int rand, int tRand)
+    public void RpcRockstep(int num, int rand, int tRand) //RockParents에 있는 함수 가져오기 (RPC로 만들기)
     {
-        //    SL.list_Rocks[num].ChangeRandomStep(rand, tRand);
+        RP.ChangeRandomStep(num, rand, tRand); 
     }
 
     //방나가기
@@ -110,17 +129,14 @@ public class NetManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerEnteredRoom(newPlayer);
 
-        if (photonView.IsMine)//방장일때
+        if (photonView.IsMine)//내꺼 일때
         {
             Destroy(GameObject.Find("Player(Clone)"));
             PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
-            //StartCoroutine(LodingImg());
-            RandomChange();
         }
         else
         {
             PhotonNetwork.Instantiate("Player", new Vector3(-0.333f, 0, 0), Quaternion.identity);
-          //  StartCoroutine(LodingImg());
         }
 
     }

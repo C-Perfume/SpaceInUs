@@ -11,7 +11,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     string ver = "1";
     PhotonView pv;
     //  public StepListCreater SL;
-    public RockParent RP;
+    RockParent RP;
     public static NetManager Instance;
 
 
@@ -19,6 +19,8 @@ public class NetManager : MonoBehaviourPunCallbacks
     //public GameObject Loding;
     private void Awake()
     {
+        //RP = GameObject.Find("Player(Clone)").GetComponent<RockParent>();
+
         Instance = this;
     }
 
@@ -64,17 +66,18 @@ public class NetManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)//방장일때
         {
-            
-           PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
-       
+
+            PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
+            RP = GameObject.Find("Player(Clone)").GetComponent<RockParent>();
+
         }
         else
         {
             PhotonNetwork.Instantiate("Player", new Vector3(-0.333f, 0, 0), Quaternion.identity);
-           // StartCoroutine(LodingImg());
+            // StartCoroutine(LodingImg());
         }
 
-        
+
 
     }
 
@@ -98,7 +101,7 @@ public class NetManager : MonoBehaviourPunCallbacks
                         int tRand = Random.Range(1, 11);
 
                         //뽑아낸 숫자만큼 알피씨를 보냄. RockParents 스크립트의 체인지랜덤스탭 스크립트에 몇번째 하위 오브젝트인지(i), 랜덤값 두개(rand, tRand)
-                        pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand); 
+                        pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand);
 
                     }
                     break;
@@ -113,7 +116,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RpcRockstep(int num, int rand, int tRand) //RockParents에 있는 함수 가져오기 (RPC로 만들기)
     {
-        RP.ChangeRandomStep(num, rand, tRand); 
+        RP.ChangeRandomStep(num, rand, tRand);
     }
 
     //방나가기
@@ -146,16 +149,16 @@ public class NetManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerLeftRoom(otherPlayer);
     }
-
-    //로딩 창 보여주기
-    //IEnumerator LodingImg()
-    //{
-    //    Loding.transform.position = GameObject.Find("Player(Clone)").transform.position + new Vector3(0,0,0.4f);
-    //    Loding.SetActive(true);
-
-    //    yield return new WaitForSeconds(2);
-    //    Loding.SetActive(false);
-
-    //}
 }
+//    //로딩 창 보여주기
+//    //IEnumerator LodingImg()
+//    //{
+//    //    Loding.transform.position = GameObject.Find("Player(Clone)").transform.position + new Vector3(0,0,0.4f);
+//    //    Loding.SetActive(true);
+
+//    //    yield return new WaitForSeconds(2);
+//    //    Loding.SetActive(false);
+
+//    //}
+//}
 

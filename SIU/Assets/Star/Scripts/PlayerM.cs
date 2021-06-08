@@ -49,7 +49,6 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     bool walkR = false;
 
     //문표시 아이콘
-    public GameObject doorCanvas;
     GameObject doorIndi;
     GameObject doorIndi2;
     // 클릭 라인렌더러 양손
@@ -135,16 +134,19 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     Vector3 getAngVelR;
     #endregion
 
+    PhotonView pv;
     void Start()
     {
 
-        if (!photonView.IsMine)
+        pv = GetComponent<PhotonView>();
+
+        if (!pv.IsMine)
         {
             syncData = new Sync[my.Length];
         }
 
-        myModel.SetActive(photonView.IsMine);
-        otherModel.SetActive(!photonView.IsMine);
+        myModel.SetActive(pv.IsMine);
+        otherModel.SetActive(!pv.IsMine);
 
 
         if (SceneManager.GetActiveScene().name == "Game")
@@ -152,13 +154,15 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
         rock = GameObject.Find("Rock").transform;
         rp = GetComponent<RockParent>();
          free = rp.free;
-         mine = new GameObject(PhotonNetwork.NickName+"_Mine").transform;
+           
+        mine = new GameObject(pv.Owner.NickName + "_Mine").transform;
+              
         tM = GetComponent<TrapManager>();
         lr = GetComponent<LineRenderer>();
         FootStepTransform = GameObject.Find("FootStepTransform").transform;
 
         // 다른애들은 움직이지 말아라..
-            if (photonView.IsMine == PhotonNetwork.IsMasterClient)
+            if (pv.IsMine == PhotonNetwork.IsMasterClient)
             {
                 state = State.GameStart;
             }
@@ -174,8 +178,8 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
         else
         { state = State.GameOver; }
 
-        doorIndi = doorCanvas.transform.GetChild(0).gameObject;
-        doorIndi2 = doorCanvas.transform.GetChild(1).gameObject;
+        doorIndi = GameObject.Find("doorIndi");
+        doorIndi2 = GameObject.Find("doorIndi2");
 
         rb = GetComponent<Rigidbody>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
@@ -184,7 +188,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     void Update()
     {
 
-        if (!photonView.IsMine)
+        if (!pv.IsMine)
         {
 
             transform.position = Vector3.Lerp(transform.position, photonPos, .2f);
@@ -195,12 +199,13 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
             }
                 }
-        
-        if (!photonView.IsMine)
+
+        if (!pv.IsMine)
         {
             return;
         }
-            #region 컨트롤러 bool
+
+        #region 컨트롤러 bool
         getDTchTmbL = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getUTchTmbL = OVRInput.GetUp(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getDTchTmbR = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.RTouch);

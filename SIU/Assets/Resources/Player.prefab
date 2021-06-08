@@ -7024,7 +7024,6 @@ MonoBehaviour:
   myModel: {fileID: 994324799958289675}
   otherModel: {fileID: 8355890137728120667}
   state: 0
-  doorCanvas: {fileID: 298586000374219176, guid: 676830ae9c2c87c41895c9b9d27554eb, type: 3}
   floating: 1
   rope: {fileID: 6195559985027474900, guid: ac6661942e69f974d8da8140b8f692ab, type: 3}
   fire: {fileID: 1758077086301915472, guid: 2f47f940862307542a5dc0cc7839afbd, type: 3}

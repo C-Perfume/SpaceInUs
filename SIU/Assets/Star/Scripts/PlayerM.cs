@@ -153,18 +153,18 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
             free = new GameObject("Free").transform;
             mine = new GameObject("Mine").transform;
         rock = GameObject.Find("Rock").transform;
+        rp = GetComponent<RockParent>();
+        tM = GetComponent<TrapManager>();
+        lr = GetComponent<LineRenderer>();
         }
         else if (SceneManager.GetActiveScene().name == "Ready")
         { state = State.Ready; }
         else
         { state = State.GameOver; }
 
-        tM = GetComponent<TrapManager>();
         rb = GetComponent<Rigidbody>();
-        lr = GetComponent<LineRenderer>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
         lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
-        rp = GetComponent<RockParent>();
     }
     void Update()
     {
@@ -179,8 +179,12 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
             others[i].rotation = Quaternion.Lerp(others[i].rotation, syncData[i].rot, .2f);
 
             }
-                
                 }
+        
+        if (!photonView.IsMine)
+        {
+            return;
+        }
             #region 컨트롤러 bool
             getTchTmbL = OVRInput.Get(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getDTchTmbL = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
@@ -210,29 +214,44 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
         switch (state)
         {
             case State.Ready:
-               
+
                 if (SceneManager.GetActiveScene().name == "Ready")
-                { Walk(); } 
-                else { Walk(0); }
-                
-                Rot();
-                
-                if (SceneManager.GetActiveScene().name == "Ready") 
-                { Open(0.1f, "Game"); }
-                else { Open(0.1f, "Clear"); }
-                
-                // 풋스텝에서 멀리 떨어지면 다시 게임스타트로 되돌아가기 - 나중에 하자.
-                //if (SceneManager.GetActiveScene().name != "Ready") { }
-                
-                floating = false;
-                
-                if (fStep)
+                { Walk(); Open(0.1f, "Game"); }
+                else
                 {
-                    print("fStep 위치 이동 작동?");
-                    transform.position = Vector3.Lerp(transform.position, FootStepTransform.position, 3*Time.deltaTime);
-                    transform.rotation = Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3 * Time.deltaTime);
-                    StartCoroutine(StopFStep());
+                    Walk(0); Open(0.1f, "Clear");
+
+                    // 풋스텝에서 멀리 떨어지면 다시 게임스타트로 되돌아가기 - 나중에 하자.
+
+                    floating = false;
+
+                    if (fStep)
+                    {
+                        print("fStep 위치 이동 작동?");
+                        transform.position = Vector3.Lerp(transform.position, FootStepTransform.position, 3 * Time.deltaTime);
+                        transform.rotation = Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3 * Time.deltaTime);
+                        StartCoroutine(StopFStep());
+                    }
+
+                    //아이템 작용
+                    if (myItem.Count > 0)
+                    {
+
+                        if (getDBtn1R)
+                        {
+                            print("아이템 사용");
+                            ItemM itm = GetComponent<ItemM>();
+                            itm.active = true;
+                            GameObject used = myItem[0];
+                            Destroy(used, 6);
+                        }
+
+                    }
+
+
                 }
+
+                Rot();
 
                 if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
                 
@@ -296,24 +315,6 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
                     else { state = State.GameStart;
                       
                     }  
-                }
-
-                if (SceneManager.GetActiveScene().name == "Game") { 
-                
-                    //아이템 작용
-                    if (myItem.Count > 0)
-                {
-
-                    if (getDBtn1R)
-                    {
-                        print("아이템 사용");
-                        ItemM itm = GetComponent<ItemM>();
-                        itm.active = true;
-                        GameObject used = myItem[0];
-                        Destroy(used, 6);
-                    }
-
-                }
                 }
 
                 break;

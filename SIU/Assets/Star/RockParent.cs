@@ -68,9 +68,9 @@ public class RockParent : MonoBehaviourPun
     {
         pv = GetComponent<PhotonView>();
         //if (photonView.IsMine)         
-            rockParent = GameObject.Find("Rock").transform;
-        item = new GameObject("ItemList").transform;
-        free = new GameObject("Free").transform;
+        rockParent = GameObject.Find("Rock").transform;
+        item = GameObject.Find("Item").transform;
+        free = GameObject.Find("Free").transform;
         item.SetParent(rockParent.parent);
         free.SetParent(rockParent.parent);
 
@@ -98,7 +98,10 @@ public class RockParent : MonoBehaviourPun
         if(rockParent == null)
         {
             rockParent = GameObject.Find("Rock").transform;
+            item = GameObject.Find("Item").transform;
+            free = GameObject.Find("Free").transform;
         }
+
         Value v = new Value();
         v.rand = rand; //value클래스의 랜덤값 저장해주기
         v.tRand = tRand;

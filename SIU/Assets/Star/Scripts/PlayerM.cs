@@ -19,10 +19,12 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
     public enum State
     {
+        Wait,
         Ready,
         GameStart,
         GameOver
     }
+
     public enum Parts
     {
         Head,
@@ -110,24 +112,22 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     bool fStep = false;
 
     #region 컨트롤러 bool Vector3설정
-    bool getTchTmbL;
     bool getDTchTmbL;
     bool getUTchTmbL;
-    bool getTchTmbR;
     bool getDTchTmbR;
     bool getUTchTmbR;
 
     bool getBtnHandR;
     bool getBtnHandL;
 
-    bool getBtnIdxL;
     bool getDBtnIdxL;
     bool getUBtnIdxL;
-    bool getBtnIdxR;
     bool getDBtnIdxR;
     bool getUBtnIdxR;
 
     bool getDBtn1R;
+    bool getDBtn1L;
+    bool getDBtn2L;
 
     Vector3 getVelL;
     Vector3 getVelR;
@@ -148,7 +148,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
 
         if (SceneManager.GetActiveScene().name == "Game")
-        { state = State.GameStart;
+        { 
         rock = GameObject.Find("Rock").transform;
         rp = GetComponent<RockParent>();
          free = rp.free;
@@ -156,6 +156,16 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
         tM = GetComponent<TrapManager>();
         lr = GetComponent<LineRenderer>();
         FootStepTransform = GameObject.Find("FootStepTransform").transform;
+
+        // 다른애들은 움직이지 말아라..
+            if (photonView.IsMine == PhotonNetwork.IsMasterClient)
+            {
+                state = State.GameStart;
+            }
+            else {
+                state = State.Wait;
+            }
+        
         }
 
         else if (SceneManager.GetActiveScene().name == "Ready")
@@ -191,24 +201,22 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
             return;
         }
             #region 컨트롤러 bool
-            getTchTmbL = OVRInput.Get(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getDTchTmbL = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getUTchTmbL = OVRInput.GetUp(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
-        getTchTmbR = OVRInput.Get(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.RTouch);
         getDTchTmbR = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.RTouch);
         getUTchTmbR = OVRInput.GetUp(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.RTouch);
 
         getBtnHandR = OVRInput.Get(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.RTouch);
         getBtnHandL = OVRInput.Get(OVRInput.Button.PrimaryHandTrigger, OVRInput.Controller.LTouch);
 
-        getBtnIdxL = OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch);
         getDBtnIdxL = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch);
         getUBtnIdxL = OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch);
-        getBtnIdxR = OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
         getDBtnIdxR = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
         getUBtnIdxR = OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
 
         getDBtn1R = OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch);
+        getDBtn1L = OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
+        getDBtn2L = OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch);
 
         getVelL = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.LTouch);
         getVelR = OVRInput.GetLocalControllerVelocity(OVRInput.Controller.RTouch);
@@ -218,10 +226,29 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
         switch (state)
         {
+            #region Wait
+            case State.Wait:
+
+                float v = Input.GetAxis("Vertical");
+                float h = Input.GetAxis("Horizontal");
+                float f = 0;
+                if (Input.GetKey(KeyCode.Space)) { f = 1; }
+                if (Input.GetKey(KeyCode.LeftControl)) { f = -1; }
+                Vector3 dir = new Vector3(h, v, f);
+                transform.position += dir * 10 * Time.deltaTime;
+
+                break;
+            #endregion
+
+            #region Ready
             case State.Ready:
 
                 if (SceneManager.GetActiveScene().name == "Ready")
-                { Walk(); Open(0.1f, "Game"); }
+                { Walk(); Open(0.1f, "Game");
+                    if (getDBtn1R) {
+                        SceneManager.LoadScene("Game");
+                    }
+                }
                 else
                 {
                     Walk(0); Open(0.1f, "Clear");
@@ -255,19 +282,22 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
 
                 }
-
-                Rot();
-
-                if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
                 
+                Rot();
+                
+                if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
+               
+
                 break;
+            #endregion
 
-
-
-
-
+            #region GameStart
             case State.GameStart:
-              
+
+                //치트키
+                if (getDBtn1L) {  }
+                if (getDBtn2L) { }
+
 
                 //플로팅
                 if (floating) Float();
@@ -303,11 +333,9 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
                 }
                 
                 break;
+            #endregion
 
-
-
-
-
+            #region GameOver
             case State.GameOver:
                 ClickLR();
 
@@ -323,6 +351,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
                 }
 
                 break;
+#endregion
         }
 
 

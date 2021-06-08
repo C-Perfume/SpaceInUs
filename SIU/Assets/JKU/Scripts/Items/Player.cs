@@ -41,6 +41,9 @@ public class Player : MonoBehaviour
     void Update()
     {
         //10이하로 떨어지면 빨간색으로 바꾸기
+        if (pm.state == PlayerM.State.Wait) {
+            return;
+;        }
 
         currtime += Time.deltaTime;
         if (currtime > createTime)
@@ -76,7 +79,9 @@ public class Player : MonoBehaviour
             GameObject SavTime = GameObject.Find("saveTime");
             Destroy(SavTime);
             print("Chock to death");
-           SceneManager.LoadScene("LostSpace");
+           
+            //수정중에 죽지말자..
+            //SceneManager.LoadScene("LostSpace");
         }
 
         #region canvas GameOver

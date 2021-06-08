@@ -6975,6 +6975,7 @@ GameObject:
   - component: {fileID: 7319669023415633884}
   - component: {fileID: 4422038162104138463}
   - component: {fileID: 7917979881557019647}
+  - component: {fileID: 3666143794569430920}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -7010,7 +7011,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25cdf5fe1b8e3ef45b9cd0b70f949446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
   my:
   - {fileID: 41357508866072070}
   - {fileID: 994324799958733053}
@@ -7021,6 +7021,9 @@ MonoBehaviour:
   - {fileID: 8355890138875879410}
   - {fileID: 8355890137599192994}
   - {fileID: 7380340704961071366}
+  myModel: {fileID: 994324799958289675}
+  otherModel: {fileID: 8355890137728120667}
+  state: 0
   doorIndi: {fileID: 0}
   doorIndi2: {fileID: 0}
   floating: 1
@@ -7272,10 +7275,25 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 7319669023199975318}
   sceneViewId: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &3666143794569430920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7319669023199975324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e46008144b3f32d46941dc7e9d086617, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text_timer: {fileID: 7319669025057807270}
+  timesave: 0
 --- !u!1 &7319669023314408048
 GameObject:
   m_ObjectHideFlags: 0

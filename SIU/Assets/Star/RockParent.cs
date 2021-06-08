@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Value : MonoBehaviour //추상클래스
+public class Value : MonoBehaviourPun
 {
     public enum Type
     {
@@ -44,7 +45,7 @@ public class Value : MonoBehaviour //추상클래스
     public Material mat;
 
 }
-public class RockParent : MonoBehaviour
+public class RockParent : MonoBehaviourPun
 {
     public List<Value> holds = new List<Value>();
 
@@ -59,19 +60,45 @@ public class RockParent : MonoBehaviour
     public List<GameObject> items = new List<GameObject>();
     public List<GameObject> item_False = new List<GameObject>();
     public Transform rockParent;
+    public Transform free;
 
+
+    PhotonView pv;
     void Start()
     {
-        rockParent = GameObject.Find("Rock").transform;
-        int num = rockParent.childCount; //int값 변수를 선언해주고 아래에 생성되는 홀드(Step)들의 카운트번호를 가져옴
-        NetManager.Instance.RandomChange(num); //netmanager에 랜덤체인지 함수(만든 변수(num)호출
+        pv = GetComponent<PhotonView>();
+        //if (photonView.IsMine)         
+            rockParent = GameObject.Find("Rock").transform;
         item = new GameObject("ItemList").transform;
+        free = new GameObject("Free").transform;
         item.SetParent(rockParent.parent);
+        free.SetParent(rockParent.parent);
+
+        if (photonView.IsMine == PhotonNetwork.IsMasterClient)
+        {
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                for (int i = 0; i < rockParent.childCount; i++) //하위오브젝트 숫자 받아온 걸로 포문을 돌리자
+                {
+                    int rand = Random.Range(1, 11); //랜덤레인지값을 하위 오브젝트 숫자만큼 뽑아내자
+                    int tRand = Random.Range(1, 11);
+                    //뽑아낸 숫자만큼 알피씨를 보냄. RockParents 스크립트의 체인지랜덤스탭 스크립트에 몇번째 하위 오브젝트인지(i), 랜덤값 두개(rand, tRand)
+                    pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand);
+
+                }
+            }
+        }
     }
 
     //포톤용
-    public void ChangeRandomStep(int i, int rand, int tRand)
+    [PunRPC]
+    public void RpcRockstep(int i, int rand, int tRand) //RockParents에 있는 함수 가져오기 (RPC로 만들기)
     {
+        if(rockParent == null)
+        {
+            rockParent = GameObject.Find("Rock").transform;
+        }
         Value v = new Value();
         v.rand = rand; //value클래스의 랜덤값 저장해주기
         v.tRand = tRand;
@@ -81,7 +108,7 @@ public class RockParent : MonoBehaviour
         else { v.num = 2; v.type = Value.Type.Item; }
 
 
-        v.mat = transform.GetChild(i).GetComponent<MeshRenderer>().material;
+        v.mat = rockParent.GetChild(i).GetComponent<MeshRenderer>().material;
 
         if (i == 0) { v.num = 0; v.type = Value.Type.Step; }
         if (i == 1) { v.num = 1; v.type = Value.Type.Trap; v.tRand = 2; v.tT = Value.TrapType.BholeR; }
@@ -102,30 +129,46 @@ public class RockParent : MonoBehaviour
             if (v.tRand == 1 || v.tRand == 4)
             {
                 v.itNum = 0; v.iT = Value.ItemType.Rope;
+                //pv.RPC("RPCCreate", RpcTarget.AllBuffered, rope, rockParent.GetChild(i)); 
                 Create(rope, rockParent.GetChild(i));
             }
             else if (v.tRand == 2)
             {
                 v.itNum = 1; v.iT = Value.ItemType.FireEx;
 
-                Create(fireEx, rockParent.GetChild(i));
+              //  pv.RPC("RPCCreate", RpcTarget.AllBuffered, fireEx, rockParent.GetChild(i)); 
+               Create(fireEx, rockParent.GetChild(i));
             }
             else if (v.tRand == 3)
             {
                 v.itNum = 2; v.iT = Value.ItemType.Shield;
 
-                Create(shield, rockParent.GetChild(i));
+                //pv.RPC("RPCCreate", RpcTarget.AllBuffered, shield, rockParent.GetChild(i)); 
+              Create(shield, rockParent.GetChild(i));
             }
             else
             {
                 v.itNum = 3; v.iT = Value.ItemType.OxyCan;
 
+                //pv.RPC("RPCCreate", RpcTarget.AllBuffered, oxyCan, rockParent.GetChild(i)); 
                 Create(oxyCan, rockParent.GetChild(i));
             }
         }
 
         holds.Add(v);
     }
+
+
+
+    //[PunRPC]
+    //public void RPCCreate(GameObject obj, Transform h)
+    //{
+    //    GameObject a = Instantiate(obj);
+    //    a.transform.position = h.position + h.forward * -.05f + h.up * .1f;
+    //    a.transform.SetParent(item);
+    //    items.Add(a);
+    //}
+
     void Create(GameObject obj, Transform h)
     {
         GameObject a = Instantiate(obj);

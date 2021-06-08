@@ -17,7 +17,7 @@ public class Inventory : MonoBehaviour
     }
     void Start()
     {
-        pm = GameObject.Find("Player(Clone)").GetComponent<PlayerM>();
+        pm = transform.root.GetComponent<PlayerM>();
     }
 
     void Update()

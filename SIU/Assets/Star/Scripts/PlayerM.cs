@@ -47,8 +47,9 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     bool walkR = false;
 
     //문표시 아이콘
-    public GameObject doorIndi;
-    public GameObject doorIndi2;
+    public GameObject doorCanvas;
+    GameObject doorIndi;
+    GameObject doorIndi2;
     // 클릭 라인렌더러 양손
     LineRenderer lrL;
     LineRenderer lrR;
@@ -105,11 +106,9 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     GameObject hitObj;
 
     // 클리어 도어로 가기 전 위치조정
-    public Transform FootStepTransform;
+    Transform FootStepTransform;
     bool fStep = false;
 
-    //잡는소리
-    public AudioSource Grap;
     #region 컨트롤러 bool Vector3설정
     bool getTchTmbL;
     bool getDTchTmbL;
@@ -150,17 +149,23 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
         if (SceneManager.GetActiveScene().name == "Game")
         { state = State.GameStart;
-            free = new GameObject("Free").transform;
-            mine = new GameObject("Mine").transform;
         rock = GameObject.Find("Rock").transform;
         rp = GetComponent<RockParent>();
+         free = rp.free;
+         mine = new GameObject(PhotonNetwork.NickName+"_Mine").transform;
         tM = GetComponent<TrapManager>();
         lr = GetComponent<LineRenderer>();
+        FootStepTransform = GameObject.Find("FootStepTransform").transform;
         }
+
         else if (SceneManager.GetActiveScene().name == "Ready")
         { state = State.Ready; }
+
         else
         { state = State.GameOver; }
+
+        doorIndi = doorCanvas.transform.GetChild(0).gameObject;
+        doorIndi2 = doorCanvas.transform.GetChild(1).gameObject;
 
         rb = GetComponent<Rigidbody>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
@@ -500,6 +505,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
                 if (getDBtnIdxL)
                 {
+                    SoundM.instance.playS(0, 4);
                     SceneManager.LoadScene(scene);
                 }
             }
@@ -528,6 +534,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
                 if (getDBtnIdxR)
                 {
+                    SoundM.instance.playS(0, 4);
                     SceneManager.LoadScene(scene);
                 }
             }
@@ -608,7 +615,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
             if (hitsLL.Length > 0)
             {
-                Grap.Play();
+                SoundM.instance.playS(0, 5);
             }
 
             walkR = false;
@@ -640,7 +647,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
             if (hitsRR.Length > 0)
             {
-                Grap.Play();
+                SoundM.instance.playS(0, 5);
             }
 
             walkR = true;
@@ -726,7 +733,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
         if (hitTFN.IsChildOf(rp.item))
         {
 
-            Grap.Play();
+                SoundM.instance.playS(0, 5);
             if (hitTFN.gameObject.name.Contains("Fire")) { CreateItem(fire, handG); }
             if (hitTFN.gameObject.name.Contains("Oxy")) { CreateItem(oxy, handG); }
             if (hitTFN.gameObject.name.Contains("Rope")) { CreateItem(rope, handG); }
@@ -744,7 +751,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
         {
             catchItem = hitTFN;
 
-            Grap.Play();
+                SoundM.instance.playS(0, 5);
             // 잡은 손으로 자식 만들고 0점으로 이동시키기
             catchItem.SetParent(handG);
             hitTFN.localPosition = Vector3.zero;

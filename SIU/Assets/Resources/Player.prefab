@@ -7593,6 +7593,8 @@ MonoBehaviour:
   - {fileID: 7380340704961071366}
   myModel: {fileID: 994324799958289675}
   otherModel: {fileID: 8355890137728120667}
+  mine: {fileID: 7319669024258035632}
+  other: {fileID: 8072533507564599877}
 --- !u!114 &7917979881557019647
 MonoBehaviour:
   m_ObjectHideFlags: 0

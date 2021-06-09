@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 
 
@@ -31,6 +32,9 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
     public GameObject otherModel;
     PhotonView pv;
 
+    public Slider mine;
+    public Slider other;
+
     void Start()
     {
         pv = GetComponent<PhotonView>();
@@ -59,6 +63,7 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
             others[i].rotation = Quaternion.Lerp(others[i].rotation, syncData[i].rot, .2f);
 
             }
+            
                 }
         
     }
@@ -67,6 +72,7 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
     {
         if (stream.IsWriting)
         {
+            stream.SendNext(mine.value);
             stream.SendNext(transform.position);
             for (int i = 0; i < my.Length; i++)
             {
@@ -78,6 +84,7 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
 
         if (stream.IsReading)
         {
+            mine.value = (int)stream.ReceiveNext();
             photonPos = (Vector3)stream.ReceiveNext();
             if (syncData != null)
             {

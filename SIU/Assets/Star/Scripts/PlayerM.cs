@@ -18,16 +18,9 @@ public class PlayerM : MonoBehaviour
         GameOver
     }
 
-    public enum Parts
-    {
-        Head,
-        LHand,
-        RHand,
-        Body
-    }
 
     PhotonView pv;
-    public Transform[] my;
+    PlayerPhoton pp;
 
     public State state;
     //걷기 잡기
@@ -125,6 +118,7 @@ public class PlayerM : MonoBehaviour
     void Start()
     {
         pv = GetComponent<PhotonView>();
+        pp = GetComponent<PlayerPhoton>();
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
@@ -149,9 +143,9 @@ public class PlayerM : MonoBehaviour
         doorIndi2 = doorCanvas.transform.GetChild(1).gameObject;
 
         rb = GetComponent<Rigidbody>();
-        lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
-        lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
-        
+        lrL = pp.my[(int)PlayerPhoton.Parts.LHand].GetComponent<LineRenderer>();
+        lrR = pp.my[(int)PlayerPhoton.Parts.RHand].GetComponent<LineRenderer>();
+
     }
     void Update()
     {
@@ -254,20 +248,22 @@ public class PlayerM : MonoBehaviour
                 //if (pv.IsMine == PhotonNetwork.IsMasterClient)
                 //{
 
-                    float v = Input.GetAxis("Vertical");
-                    float h = Input.GetAxis("Horizontal");
-                    float f = 0;
-                    if (Input.GetKey(KeyCode.Space)) { f = .1f; }
-                    if (Input.GetKey(KeyCode.LeftControl)) { f = -.1f; }
-                    Vector3 dir = new Vector3(h, f, v);
-                    transform.position += dir * 10 * Time.deltaTime;
-              //  }
+                float v = Input.GetAxis("Vertical");
+                float h = Input.GetAxis("Horizontal");
+                float f = 0;
+                if (Input.GetKey(KeyCode.Space)) { f = .1f; }
+                if (Input.GetKey(KeyCode.LeftControl)) { f = -.1f; }
+                Vector3 dir = new Vector3(h, f, v);
+                transform.position += dir * 10 * Time.deltaTime;
+                //  }
 
                 //플로팅
                 // 개발로 수정중
-                if (floating) //Float();
+                if (floating) { }  //Float();
 
-                    if (!tM.bH) { Grab(); }
+
+
+                if (!tM.bH) { Grab(); }
                 SetFree();
                 Rot();
                 PwUp();
@@ -291,11 +287,11 @@ public class PlayerM : MonoBehaviour
                 }
 
                 //개발 수정중
-             //  if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
-               // else
+                //  if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
+                // else
                 //{
-                  //  lrL.enabled = false;
-                    //lrR.enabled = false;
+                //  lrL.enabled = false;
+                //lrR.enabled = false;
                 //}
 
                 break;
@@ -345,13 +341,13 @@ public class PlayerM : MonoBehaviour
 
             walkR = false;
             walkL = true;
-            origin = my[(int)Parts.LHand].position;
+            origin = pp.my[(int)PlayerPhoton.Parts.LHand].position;
             SoundM.instance.playS(1, 0);
 
         }
         if (walkL)
         {
-            transform.position += origin - my[(int)Parts.LHand].position;
+            transform.position += origin - pp.my[(int)PlayerPhoton.Parts.LHand].position;
             pos = transform.position;
             pos.y = 0;
             transform.position = pos;
@@ -366,14 +362,14 @@ public class PlayerM : MonoBehaviour
         {
             walkL = false;
             walkR = true;
-            origin = my[(int)Parts.RHand].position;
+            origin = pp.my[(int)PlayerPhoton.Parts.RHand].position;
             SoundM.instance.playS(1, 0);
 
         }
 
         if (walkR)
         {
-            transform.position += origin - my[(int)Parts.RHand].position;
+            transform.position += origin - pp.my[(int)PlayerPhoton.Parts.RHand].position;
             pos = transform.position;
             pos.y = 0;
             transform.position = pos;
@@ -396,13 +392,13 @@ public class PlayerM : MonoBehaviour
 
             walkR = false;
             walkL = true;
-            origin = my[(int)Parts.LHand].position;
+            origin = pp.my[(int)PlayerPhoton.Parts.LHand].position;
             SoundM.instance.playS(1, audioNum);
 
         }
         if (walkL)
         {
-            transform.position += origin - my[(int)Parts.LHand].position;
+            transform.position += origin - pp.my[(int)PlayerPhoton.Parts.LHand].position;
         }
         if (getUTchTmbL)
         {
@@ -414,14 +410,14 @@ public class PlayerM : MonoBehaviour
         {
             walkL = false;
             walkR = true;
-            origin = my[(int)Parts.RHand].position;
+            origin = pp.my[(int)PlayerPhoton.Parts.RHand].position;
             SoundM.instance.playS(1, audioNum);
 
         }
 
         if (walkR)
         {
-            transform.position += origin - my[(int)Parts.RHand].position;
+            transform.position += origin - pp.my[(int)PlayerPhoton.Parts.RHand].position;
         }
 
         if (getUTchTmbR)
@@ -457,7 +453,7 @@ public class PlayerM : MonoBehaviour
     void Open(float m, string scene)
     {
 
-        if (Physics.Raycast(origin: my[(int)Parts.LHand].position, direction: my[(int)Parts.LHand].forward, out hit, m))// 0.5f))
+        if (Physics.Raycast(origin: pp.my[(int)PlayerPhoton.Parts.LHand].position, direction: pp.my[(int)PlayerPhoton.Parts.LHand].forward, out hit, m))// 0.5f))
         {
 
             hitObj = hit.transform.gameObject;
@@ -488,7 +484,7 @@ public class PlayerM : MonoBehaviour
 
 
 
-        if (Physics.Raycast(origin: my[(int)Parts.RHand].position, direction: my[(int)Parts.RHand].forward, out hit, m))//0.5f))
+        if (Physics.Raycast(origin: pp.my[(int)PlayerPhoton.Parts.RHand].position, direction: pp.my[(int)PlayerPhoton.Parts.RHand].forward, out hit, m))//0.5f))
         {
             hitObj = hit.transform.gameObject;
             if (hitObj.name == "Door")
@@ -521,8 +517,8 @@ public class PlayerM : MonoBehaviour
     // 메뉴선택 게임오버든 뭐든 이걸로 사용
     void ClickLR()
     {
-        Click(my[(int)Parts.LHand], lrL, doorIndi, getDBtnIdxL);
-        Click(my[(int)Parts.RHand], lrR, doorIndi2, getDBtnIdxR);
+        Click(pp.my[(int)PlayerPhoton.Parts.LHand], lrL, doorIndi, getDBtnIdxL);
+        Click(pp.my[(int)PlayerPhoton.Parts.RHand], lrR, doorIndi2, getDBtnIdxR);
     }
 
     void Click(Transform hand, LineRenderer lrC, GameObject indi, bool gDB)
@@ -577,9 +573,9 @@ public class PlayerM : MonoBehaviour
 
     void Grab()
     {
-        Collider[] hitsL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.01f);
-        Collider[] hitsR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.01f);
-        
+        Collider[] hitsL = Physics.OverlapSphere(pp.my[(int)PlayerPhoton.Parts.LHand].position, 0.01f);
+        Collider[] hitsR = Physics.OverlapSphere(pp.my[(int)PlayerPhoton.Parts.RHand].position, 0.01f);
+
         if (getDBtnIdxL)
         {
 
@@ -590,7 +586,7 @@ public class PlayerM : MonoBehaviour
 
             walkR = false;
             walkL = true;
-            origin = my[(int)Parts.LHand].position;
+            origin = pp.my[(int)PlayerPhoton.Parts.LHand].position;
             tM.up = true;
 
         }
@@ -603,16 +599,14 @@ public class PlayerM : MonoBehaviour
                 hitTF[0] = hitsL[0].transform;
 
                 if (hitTF[0].gameObject.name.Contains("Big")) { }
-                Grab(hitTF[0], ref my[(int)Parts.LHand], my[(int)Parts.RHand], ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
+                Grab(hitTF[0], ref pp.my[(int)PlayerPhoton.Parts.LHand], pp.my[(int)PlayerPhoton.Parts.RHand], ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
+
             }
         }
 
         // 오른손 움직임
-        if (getDBtnIdxR
-            //|| OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)
-            )
+        if (getDBtnIdxR)
         {
-            print("문제0");
             if (hitsR.Length > 0)
             {
                 SoundM.instance.playS(0, 5);
@@ -620,7 +614,7 @@ public class PlayerM : MonoBehaviour
 
             walkR = true;
             walkL = false;
-            origin = my[(int)Parts.RHand].position;
+            origin = pp.my[(int)PlayerPhoton.Parts.RHand].position;
 
             tM.up = true;
 
@@ -636,7 +630,8 @@ public class PlayerM : MonoBehaviour
 
                 if (hitTF[1].gameObject.name.Contains("Big")) { print("문제0 big"); }
 
-                Grab(hitTF[1], ref my[(int)Parts.RHand], my[(int)Parts.LHand], ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
+                Grab(hitTF[1], ref pp.my[(int)PlayerPhoton.Parts.RHand], pp.my[(int)PlayerPhoton.Parts.LHand], ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
+
             }
 
         }
@@ -658,9 +653,7 @@ public class PlayerM : MonoBehaviour
             else
             {
                 transform.position += origin - handG.position;
-                print("문제1 - 움직임");
             }
-            print("문제1");
 
             Hold = hitTFN;
             if (Hold2 != null &&
@@ -693,7 +686,6 @@ public class PlayerM : MonoBehaviour
                     {
                         tM.Create(tM.canFactory);
                     }
-                   print("문제2");
                     tM.up = false;
 
                 }
@@ -703,6 +695,37 @@ public class PlayerM : MonoBehaviour
 
         }
         else
+        {
+            pv.RPC("RPCItem", RpcTarget.AllBuffered);
+        }
+
+
+
+
+    }
+
+    [PunRPC]
+    void RPCItem() {
+
+
+        Transform handG = pp.my[(int)PlayerPhoton.Parts.RHand];
+        Transform otherH = pp.my[(int)PlayerPhoton.Parts.LHand];
+        if (walkL) { handG = pp.my[(int)PlayerPhoton.Parts.LHand];
+            otherH = pp.my[(int)PlayerPhoton.Parts.RHand]; }
+
+        if (!pv.IsMine) { handG = pp.others[(int)PlayerPhoton.Parts.RHand];
+            otherH = pp.others[(int)PlayerPhoton.Parts.LHand];
+
+            if (walkL) { handG = pp.others[(int)PlayerPhoton.Parts.LHand]; }
+            otherH = pp.others[(int)PlayerPhoton.Parts.RHand];
+        }
+
+        Collider[] hitsL = Physics.OverlapSphere(handG.position, 0.01f);
+        Collider[] hitsR = Physics.OverlapSphere(handG.position, 0.01f);
+        if (hitsR.Length > 0) hitTF[1] = hitsR[0].transform;
+        if (hitsL.Length > 0) hitTF[0] = hitsL[0].transform;
+        Transform hitTFN = hitTF[1];
+        if (walkL) { hitTFN = hitTF[0]; }
 
         // 아이템 잡을 때 손에 생성
         if (hitTFN.IsChildOf(rp.item))
@@ -718,9 +741,8 @@ public class PlayerM : MonoBehaviour
             hitTFN.gameObject.SetActive(false);
             rp.items.Remove(hitTFN.gameObject);
             StartCoroutine(rp.ShowUp(hitTFN.gameObject));
-            print("문제2 - item");
+
         }
-        else
 
         // 던져진 아이템이나 다른 손 아이템을 잡으면
         if (hitTFN.IsChildOf(rp.free) || hitTFN.IsChildOf(otherH))
@@ -735,11 +757,10 @@ public class PlayerM : MonoBehaviour
             // 물리 작용 off
             Rigidbody itemRb = hitTFN.gameObject.GetComponent<Rigidbody>();
             itemRb.isKinematic = true;
-            print("문제2 - free/otherH");
         }
 
-
     }
+
 
     //아이템 손에 만들기
     void CreateItem(GameObject clone, Transform hand)
@@ -765,7 +786,7 @@ public class PlayerM : MonoBehaviour
                 return;
             }
 
-            SetFree(hitTF[0], catchHoldL, my[(int)Parts.LHand], getVelL, getAngVelL);
+            SetFree(hitTF[0], catchHoldL, pp.my[(int)PlayerPhoton.Parts.LHand], getVelL, getAngVelL);
             hitTF[0] = null;
             catchHoldLpre = catchHoldL;
         }
@@ -779,11 +800,10 @@ public class PlayerM : MonoBehaviour
             // 잡은게 없으면 리턴
             if (hitTF[1] == null)
             {
-                print("문제3");
                 return;
             }
 
-            SetFree(hitTF[1], catchHoldR, my[(int)Parts.RHand], getVelR, getAngVelR);
+            SetFree(hitTF[1], catchHoldR, pp.my[(int)PlayerPhoton.Parts.RHand], getVelR, getAngVelR);
             hitTF[1] = null;
             catchHoldRpre = catchHoldR;
         }
@@ -795,11 +815,11 @@ public class PlayerM : MonoBehaviour
         // 홀드라면
         if (hitTFN == hold)
         {
-            print("문제4");
             rb.isKinematic = false;
             rb.velocity = -transform.TransformDirection(vel) * vPower;
 
         }
+
 
         // 아이템 잡았다면
         if (catchItem != null && hitTFN == catchItem)
@@ -811,7 +831,7 @@ public class PlayerM : MonoBehaviour
             {
 
                 // int layer = 1 << LayerMask.NameToLayer("Item");
-                Collider[] obj = Physics.OverlapSphere(my[(int)Parts.Body].position + (Vector3.up * .05f), 0.3f
+                Collider[] obj = Physics.OverlapSphere(pp.my[(int)PlayerPhoton.Parts.Body].position + (Vector3.up * .05f), 0.3f
                     //,layer
                     );
 
@@ -824,7 +844,6 @@ public class PlayerM : MonoBehaviour
                         if (obj[i].name.Contains("Item"))
                         {
                             find = true;
-                            print(obj[i].name + " " + i + "번");
                             break;
                         }
                     }
@@ -839,6 +858,7 @@ public class PlayerM : MonoBehaviour
                         // 멀리 날려 안보이게 하자
                         myItem[0].transform.position = new Vector3(1000, 1000, 1000);
                         if (myItem.Count > 1) myItem[1].transform.position = new Vector3(1000, 1000, 1000);
+                        
                         find = false;
                     }
                     else
@@ -899,6 +919,10 @@ public class PlayerM : MonoBehaviour
 
     }
 
+    [PunRPC]
+    void RPCFind(){
+        find = true;
+    }
     IEnumerator StopFStep()
     {
         yield return new WaitForSeconds(3);

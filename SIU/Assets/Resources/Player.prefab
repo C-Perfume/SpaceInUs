@@ -7601,11 +7601,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25cdf5fe1b8e3ef45b9cd0b70f949446, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  my:
-  - {fileID: 994324799958782253}
-  - {fileID: 994324799958733053}
-  - {fileID: 994324799958738169}
-  - {fileID: 3315832885386332900}
   state: 0
   doorCanvas: {fileID: 1920909244156771956, guid: adfcf1cb5e59f484aa61cba843b7d738, type: 3}
   floating: 1

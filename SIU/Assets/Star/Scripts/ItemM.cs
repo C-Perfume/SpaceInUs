@@ -12,6 +12,7 @@ public class ItemM : MonoBehaviour
 
     Player ps;
     PlayerM pm;
+    PlayerPhoton pp;
     Rigidbody rb;
 
     //로프 복제용 후크
@@ -34,6 +35,7 @@ public class ItemM : MonoBehaviour
 
     void Start()
     {
+        pp = GetComponent<PlayerPhoton>();
         ps = GetComponent<Player>();
         pm = GetComponent<PlayerM>();
         rb = GetComponent<Rigidbody>();
@@ -46,9 +48,9 @@ public class ItemM : MonoBehaviour
         if (f)
         {
             rb.isKinematic = false;
-            rb.AddForce(-pm.my[(int)PlayerM.Parts.LHand].forward * ropeSpd*10);
-            p.transform.position = pm.my[(int)PlayerM.Parts.LHand].position;
-                p.transform.forward = pm.my[(int)PlayerM.Parts.LHand].forward;
+            rb.AddForce(-pp.my[(int)PlayerPhoton.Parts.LHand].forward * ropeSpd*10);
+            p.transform.position = pp.my[(int)PlayerPhoton.Parts.LHand].position;
+                p.transform.forward = pp.my[(int)PlayerPhoton.Parts.LHand].forward;
         }
         else {
 
@@ -61,7 +63,7 @@ public class ItemM : MonoBehaviour
         if (r)
         {
             lr.enabled = true;
-            lr.SetPosition(0, pm.my[(int)PlayerM.Parts.RHand].position);
+            lr.SetPosition(0, pp.my[(int)PlayerPhoton.Parts.RHand].position);
             lr.SetPosition(1, h.transform.position);
             HookMovement hhook = h.GetComponent<HookMovement>();
             if (!hhook.moving) {
@@ -93,8 +95,8 @@ public class ItemM : MonoBehaviour
             print("Active - F");
                 f = true;
                 p = Instantiate(particle);
-                p.transform.position = pm.my[(int)PlayerM.Parts.LHand].position;
-                p.transform.forward = pm.my[(int)PlayerM.Parts.LHand].forward;
+                p.transform.position = pp.my[(int)PlayerPhoton.Parts.LHand].position;
+                p.transform.forward = pp.my[(int)PlayerPhoton.Parts.LHand].forward;
                 Destroy(p, 5.5f);
             }
 
@@ -102,8 +104,8 @@ public class ItemM : MonoBehaviour
             {
                 print("Active - R");
                 h = Instantiate(hook);
-                h.transform.position = pm.my[(int)PlayerM.Parts.RHand].position;
-                h.transform.forward = pm.my[(int)PlayerM.Parts.RHand].forward;
+                h.transform.position = pp.my[(int)PlayerPhoton.Parts.RHand].position;
+                h.transform.forward = pp.my[(int)PlayerPhoton.Parts.RHand].forward;
                 r = true;
                 isH = true;
                 SoundM.instance.playS(2, 2);

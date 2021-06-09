@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 
 
@@ -30,43 +31,47 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
     public GameObject myModel;
     public GameObject otherModel;
     PhotonView pv;
-
+    Player pl;
+    public Slider hpother;
     void Start()
     {
+        pl = GetComponent<Player>();
         pv = GetComponent<PhotonView>();
 
         if (!pv.IsMine)
         {
             syncData = new Sync[my.Length];
+            
         }
 
         //꼭 플레이나 빌드할 때 ovr카메라를 비활성화 하자
         //아니면 네트워크 접속 시 바로 ovr매니져 스크립트가 사라진다!!!!
         myModel.SetActive(pv.IsMine);
         otherModel.SetActive(!pv.IsMine);
-        
-         }
+
+    }
     void Update()
     {
 
         if (!pv.IsMine)
         {
-
             transform.position = Vector3.Lerp(transform.position, photonPos, .2f);
             for (int i = 0; i < others.Length; i++)
             {
-            others[i].position = Vector3.Lerp(others[i].position, syncData[i].pos, .2f);
-            others[i].rotation = Quaternion.Lerp(others[i].rotation, syncData[i].rot, .2f);
+                others[i].position = Vector3.Lerp(others[i].position, syncData[i].pos, .2f);
+                others[i].rotation = Quaternion.Lerp(others[i].rotation, syncData[i].rot, .2f);
 
             }
-                }
-        
+        }
+
     }
     // 포톤 몸 움직임
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
+            //현재 체력 받기
+            stream.SendNext(pl.currentHp);
             stream.SendNext(transform.position);
             for (int i = 0; i < my.Length; i++)
             {
@@ -78,13 +83,15 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
 
         if (stream.IsReading)
         {
+            //현재 체력 받기
+            pl.currentHp = (int)stream.ReceiveNext();
             photonPos = (Vector3)stream.ReceiveNext();
             if (syncData != null)
             {
 
                 for (int i = 0; i < others.Length; i++)
                 {
-                   syncData[i].pos = (Vector3)stream.ReceiveNext();
+                    syncData[i].pos = (Vector3)stream.ReceiveNext();
                     syncData[i].rot = (Quaternion)stream.ReceiveNext();
                 }
             }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -8,15 +9,15 @@ using Photon.Realtime;
 public class NetManager : MonoBehaviourPunCallbacks
 {
     string ver = "1";
-
     //Loding(상대방 기다리기)
     //public GameObject Loding;
     //private void Awake()
     //{
     //}
-
+    PhotonView pv;
     void Start()
     {
+        pv = GetComponent<PhotonView>();
         PhotonNetwork.GameVersion = ver;
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -31,8 +32,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     {
         base.OnConnectedToMaster();
         PhotonNetwork.NickName = "Player" + Random.Range(0, 1000);
-
-        PhotonNetwork.JoinLobby();
+       PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedLobby()

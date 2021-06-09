@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class hpBar : MonoBehaviour
 {
     Color save = new Color();
@@ -32,4 +33,5 @@ public class hpBar : MonoBehaviour
             Hp10.color = save;
         }
     }
+
 }

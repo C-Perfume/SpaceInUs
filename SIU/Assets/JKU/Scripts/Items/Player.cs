@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
 public class Player : MonoBehaviour
 {
     public int maxHp = 100;
@@ -20,7 +21,7 @@ public class Player : MonoBehaviour
     ItemM iM;
 
     //소리 
-    
+
 
     // 게임옵션
     goPlay gp;
@@ -39,10 +40,12 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+
         //10이하로 떨어지면 빨간색으로 바꾸기
-        if (pm.state == PlayerM.State.Wait) {
+        if (pm.state == PlayerM.State.Wait)
+        {
             return;
-;        }
+        }
 
         currtime += Time.deltaTime;
         if (currtime > createTime)
@@ -59,26 +62,27 @@ public class Player : MonoBehaviour
 
 
         if (rb.isKinematic == true)
+        {
+
+            if (!tM.bH || !iM.r)
             {
 
-            if (!tM.bH || !iM.r) { 
-            
                 if (mspeed > 5)
                 {
                     TimeDamage(5);
                 }
-               
+
             }
-            }
-        
+        }
+
 
         if (currentHp <= 0)
         {
-        //    NetManager.Instance.LeaveRoom();//방나가기 호출
+            //    NetManager.Instance.LeaveRoom();//방나가기 호출
             GameObject SavTime = GameObject.Find("saveTime");
             Destroy(SavTime);
             print("Chock to death");
-           
+
             //수정중에 죽지말자..
             //SceneManager.LoadScene("LostSpace");
         }
@@ -97,8 +101,20 @@ public class Player : MonoBehaviour
         //}
 
         #endregion
-    }
 
+        {
+            currtime += Time.deltaTime;
+            if (currtime > createTime)
+            {
+                if (gp.MenuManager.activeSelf) { TimeDamage(0); }
+                else
+                {
+                    TimeDamage(2);
+                }
+                currtime = 0;
+            }
+        }
+    }
     void TimeDamage(int Damage)
     {
         currentHp -= Damage;
@@ -122,6 +138,5 @@ public class Player : MonoBehaviour
         m_LastPosition = transform.position;
         return speed;
     }
-
 
 }

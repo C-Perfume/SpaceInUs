@@ -6,16 +6,9 @@ using UnityEngine.UI;
 using Photon.Pun;
 
 
-public class PlayerM : MonoBehaviourPun, IPunObservable
+public class PlayerM : MonoBehaviour
 {
     // 카메라리그에 붙는 스크립트라는 전제로 왼손 / 오른손 변수잡고 시작하기
-
-    // 네트워크 위치값 전송용
-    struct Sync
-    {
-        public Vector3 pos;
-        public Quaternion rot;
-    }
 
     public enum State
     {
@@ -33,13 +26,8 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
         Body
     }
 
-    Vector3 photonPos;
+    PhotonView pv;
     public Transform[] my;
-    public Transform[] others;
-    Sync[] syncData;
-    public GameObject myModel;
-    public GameObject otherModel;
-
 
     public State state;
     //걷기 잡기
@@ -49,6 +37,7 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     bool walkR = false;
 
     //문표시 아이콘
+    public GameObject doorCanvas;
     GameObject doorIndi;
     GameObject doorIndi2;
     // 클릭 라인렌더러 양손
@@ -134,29 +123,16 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     Vector3 getAngVelR;
     #endregion
 
-    PhotonView pv;
     void Start()
     {
-
         pv = GetComponent<PhotonView>();
-
-        if (!pv.IsMine)
-        {
-            syncData = new Sync[my.Length];
-        }
-
-        myModel.SetActive(pv.IsMine);
-        otherModel.SetActive(!pv.IsMine);
-
 
         if (SceneManager.GetActiveScene().name == "Game")
         { 
         rock = GameObject.Find("Rock").transform;
         rp = GetComponent<RockParent>();
          free = rp.free;
-           
-        mine = new GameObject(pv.Owner.NickName + "_Mine").transform;
-              
+         mine = new GameObject(pv.Owner.NickName+"_Mine").transform;
         tM = GetComponent<TrapManager>();
         lr = GetComponent<LineRenderer>();
         FootStepTransform = GameObject.Find("FootStepTransform").transform;
@@ -178,8 +154,8 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
         else
         { state = State.GameOver; }
 
-        doorIndi = GameObject.Find("doorIndi");
-        doorIndi2 = GameObject.Find("doorIndi2");
+        doorIndi = doorCanvas.transform.GetChild(0).gameObject;
+        doorIndi2 = doorCanvas.transform.GetChild(1).gameObject;
 
         rb = GetComponent<Rigidbody>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
@@ -190,22 +166,9 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
         if (!pv.IsMine)
         {
-
-            transform.position = Vector3.Lerp(transform.position, photonPos, .2f);
-            for (int i = 0; i < others.Length; i++)
-            {
-            others[i].position = Vector3.Lerp(others[i].position, syncData[i].pos, .2f);
-            others[i].rotation = Quaternion.Lerp(others[i].rotation, syncData[i].rot, .2f);
-
-            }
-                }
-
-        if (!pv.IsMine)
-        {
             return;
         }
-
-        #region 컨트롤러 bool
+            #region 컨트롤러 bool
         getDTchTmbL = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getUTchTmbL = OVRInput.GetUp(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getDTchTmbR = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.RTouch);
@@ -305,7 +268,8 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
 
                 //플로팅
-                if (floating) Float();
+                // 개발로 수정중
+                if (floating) //Float();
 
                 if (!tM.bH) { Grab(); }
                 SetFree();
@@ -362,38 +326,6 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
 
 
     }
-    // 포톤 몸 움직임
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(transform.position);
-            for (int i = 0; i < my.Length; i++)
-            {
-                stream.SendNext(my[i].position);
-                stream.SendNext(my[i].rotation);
-
-            }
-        }
-
-        if (stream.IsReading)
-        {
-            photonPos = (Vector3)stream.ReceiveNext();
-            if (syncData != null)
-            {
-
-                for (int i = 0; i < others.Length; i++)
-                {
-                   syncData[i].pos = (Vector3)stream.ReceiveNext();
-                    syncData[i].rot = (Quaternion)stream.ReceiveNext();
-                }
-            }
-
-
-
-        }
-    }
-
 
 
     void Float()

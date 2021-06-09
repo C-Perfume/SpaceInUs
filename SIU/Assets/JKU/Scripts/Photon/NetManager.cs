@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -12,6 +13,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     //  public StepListCreater SL;
     public static NetManager Instance;
 
+    
     //Loding(상대방 기다리기)
     //public GameObject Loding;
     private void Awake()
@@ -34,8 +36,9 @@ public class NetManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         base.OnConnectedToMaster();
-        PhotonNetwork.NickName = "플레이어" + Random.Range(0, 1000);
-
+        //PhotonNetwork.NickName = PlayerName + "Player" + Random.Range(0, 1000);
+        
+      
         PhotonNetwork.JoinLobby();
     }
 

@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Value : MonoBehaviour //추상클래스
+[SerializeField]
+public class Value//추상클래스
 {
     public enum Type
     {

@@ -139,13 +139,21 @@ public class PlayerM : MonoBehaviourPun, IPunObservable
     void Start()
     {
 
-        if (!photonView.IsMine)
+        //if (!photonView.IsMine)
+        //{
+        //    syncData = new Sync[my.Length];
+        //}
+        PhotonView pv = GetComponent<PhotonView>();
+        
+        if (pv.IsMine)
         {
-            syncData = new Sync[my.Length];
+            myModel.SetActive(true);
+          
+            otherModel.SetActive(false);
         }
-
-        myModel.SetActive(photonView.IsMine);
-        otherModel.SetActive(!photonView.IsMine);
+        //테스트전
+        //myModel.SetActive(photonView.IsMine);
+        //otherModel.SetActive(!photonView.IsMine);
 
 
         if (SceneManager.GetActiveScene().name == "Game")

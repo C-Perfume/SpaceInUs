@@ -15,6 +15,7 @@ public class NetManager : MonoBehaviourPunCallbacks
 
     bool a = true;
 
+    GameObject ready;
     //Loding(상대방 기다리기)
     //public GameObject Loding;
     private void Awake()
@@ -129,24 +130,35 @@ public class NetManager : MonoBehaviourPunCallbacks
         print("방나감");
     }
 
-    //플레이어 들어왔을 때 체크
-    //public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
-    //{
-    //    base.OnPlayerEnteredRoom(newPlayer);
+  //  플레이어 들어왔을 때 체크
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+        base.OnPlayerEnteredRoom(newPlayer);
 
-    //    if (photonView.IsMine)//내꺼 일때
-    //    {
-    //        Destroy(GameObject.Find("Player(Clone)"));
-    //        PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
-    //    }
-       
-    //}
+        if (photonView.IsMine)//내꺼 일때
+        {
+           gameObject.transform.position = new Vector3(-0.553f, 0, 0);
+            //StartCoroutine(Co_Ready());
+        }
+        else
+        {
+           gameObject.transform.position = new Vector3(-0.333f, 0, 0);
+            //StartCoroutine(Co_Ready());
+        }
 
-    ////플레이어 나갔을 때 체크
-    //public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    }
+
+    //플레이어 나갔을 때 체크
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        Destroy(GameObject.Find("Player(Clone)"));
+    }
+    //IEnumerator Co_Ready()
     //{
-    //    base.OnPlayerLeftRoom(otherPlayer);
-    //    Destroy(GameObject.Find("Player(Clone)"));
+    //    ready = GameObject.Find("ready");
+    //    yield return null;//new WaitForSeconds(5);
+    //    ready.SetActive(false);
     //}
 }
 //    //로딩 창 보여주기

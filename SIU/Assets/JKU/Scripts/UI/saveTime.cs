@@ -31,12 +31,15 @@ public class saveTime : MonoBehaviour
 
    public IEnumerator Timesave()
     {
-        while (true)
-        {
-            timesave += Time.deltaTime;
+      
+        
+            while (true)
+            {
+                timesave += Time.deltaTime;
 
-            yield return timesave;
-            
-        }
+                yield return timesave;
+
+            }
+        
     }
 }

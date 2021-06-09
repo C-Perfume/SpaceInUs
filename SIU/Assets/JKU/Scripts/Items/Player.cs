@@ -77,7 +77,7 @@ public class Player : MonoBehaviour
         //    NetManager.Instance.LeaveRoom();//방나가기 호출
             GameObject SavTime = GameObject.Find("saveTime");
             Destroy(SavTime);
-            print("Chock to death");
+            //print("Chock to death");
            
             //수정중에 죽지말자..
             //SceneManager.LoadScene("LostSpace");

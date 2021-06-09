@@ -58,22 +58,23 @@ public class RockParent : MonoBehaviour
 
     bool isMaster = false;
     bool isRandom= false;
-
     void Start()
     {
         pv = GetComponent<PhotonView>();
         item = GameObject.Find("Item").transform;
         free = GameObject.Find("Free").transform;
+      
     }
-
     void Update()
     {
+    
         if (!isMaster)
         {
             if (pv.IsMine == PhotonNetwork.IsMasterClient)
             {
                 isRandom = true;
-                isMaster = true;
+                pv.RPC("RpcIsRandom", RpcTarget.AllBuffered);
+
             }
         }
 
@@ -89,9 +90,12 @@ public class RockParent : MonoBehaviour
                     pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand);
                 }
                 isRandom = false;
+               
             }
         }
+
     }
+
     //포톤용
     [PunRPC]
     public void RpcRockstep(int i, int rand, int tRand) //RockParents에 있는 함수 가져오기 (RPC로 만들기)
@@ -151,6 +155,9 @@ public class RockParent : MonoBehaviour
 
         holds.Add(v);
     }
+
+    [PunRPC]
+    public void RpcIsRandom() { isMaster = true;  }
 
     void Create(GameObject obj, Transform h)
     {

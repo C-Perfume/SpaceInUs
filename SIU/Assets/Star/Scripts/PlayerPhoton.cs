@@ -32,7 +32,10 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
     public GameObject otherModel;
     PhotonView pv;
     Player pl;
+    //체력바
     public Slider hpother;
+    //플레이어이름
+    public Text Pt;
     void Start()
     {
         pl = GetComponent<Player>();
@@ -41,13 +44,20 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
         if (!pv.IsMine)
         {
             syncData = new Sync[my.Length];
-            
+
         }
 
         //꼭 플레이나 빌드할 때 ovr카메라를 비활성화 하자
         //아니면 네트워크 접속 시 바로 ovr매니져 스크립트가 사라진다!!!!
         myModel.SetActive(pv.IsMine);
         otherModel.SetActive(!pv.IsMine);
+
+        //플레이어 이름
+        if (!pv.IsMine)
+            {
+                Pt.text = pv.Owner.NickName;
+            }
+        
 
     }
     void Update()
@@ -81,27 +91,26 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
             }
         }
 
-        if (stream.IsReading)
+        if (stream.IsReading)//받기
         {
             //현재 체력 받기
-            pl.currentHp = (int)stream.ReceiveNext();
+            hpother.value = (int)stream.ReceiveNext();
             photonPos = (Vector3)stream.ReceiveNext();
             if (syncData != null)
             {
-
-                for (int i = 0; i < others.Length; i++)
+                for (int i = 0; i < others.Length; i++)//몸
                 {
                     syncData[i].pos = (Vector3)stream.ReceiveNext();
                     syncData[i].rot = (Quaternion)stream.ReceiveNext();
                 }
             }
-
-
-
         }
-    }
 
+
+    }
 }
+
+
 
 
 

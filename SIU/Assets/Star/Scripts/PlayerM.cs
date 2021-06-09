@@ -69,7 +69,6 @@ public class PlayerM : MonoBehaviour
     Transform rock;
 
     //아이템 찾기용
-    Transform free;
     Transform mine;
 
     //아이템 생성용
@@ -128,24 +127,16 @@ public class PlayerM : MonoBehaviour
         pv = GetComponent<PhotonView>();
 
         if (SceneManager.GetActiveScene().name == "Game")
-        { 
-        rock = GameObject.Find("Rock").transform;
-        rp = GetComponent<RockParent>();
-         free = rp.free;
-         mine = new GameObject(pv.Owner.NickName+"_Mine").transform;
-        tM = GetComponent<TrapManager>();
-        lr = GetComponent<LineRenderer>();
-        FootStepTransform = GameObject.Find("FootStepTransform").transform;
+        {
+            rock = GameObject.Find("Rock").transform;
+            rp = rock.GetComponent<RockParent>();
+            mine = new GameObject(pv.Owner.NickName + "_Mine").transform;
+            tM = GetComponent<TrapManager>();
+            lr = GetComponent<LineRenderer>();
+            FootStepTransform = GameObject.Find("FootStepTransform").transform;
 
-        // 다른애들은 움직이지 말아라..
-            if (pv.IsMine == PhotonNetwork.IsMasterClient)
-            {
-                state = State.GameStart;
-            }
-            else {
-                state = State.Wait;
-            }
-        
+            state = State.GameStart;
+
         }
 
         else if (SceneManager.GetActiveScene().name == "Ready")
@@ -160,6 +151,7 @@ public class PlayerM : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         lrL = my[(int)Parts.LHand].GetComponent<LineRenderer>();
         lrR = my[(int)Parts.RHand].GetComponent<LineRenderer>();
+        
     }
     void Update()
     {
@@ -168,7 +160,7 @@ public class PlayerM : MonoBehaviour
         {
             return;
         }
-            #region 컨트롤러 bool
+        #region 컨트롤러 bool
         getDTchTmbL = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getUTchTmbL = OVRInput.GetUp(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.LTouch);
         getDTchTmbR = OVRInput.GetDown(OVRInput.Touch.PrimaryThumbstick, OVRInput.Controller.RTouch);
@@ -197,14 +189,6 @@ public class PlayerM : MonoBehaviour
             #region Wait
             case State.Wait:
 
-                float v = Input.GetAxis("Vertical");
-                float h = Input.GetAxis("Horizontal");
-                float f = 0;
-                if (Input.GetKey(KeyCode.Space)) { f = 1; }
-                if (Input.GetKey(KeyCode.LeftControl)) { f = -1; }
-                Vector3 dir = new Vector3(h, v, f);
-                transform.position += dir * 10 * Time.deltaTime;
-
                 break;
             #endregion
 
@@ -212,10 +196,9 @@ public class PlayerM : MonoBehaviour
             case State.Ready:
 
                 if (SceneManager.GetActiveScene().name == "Ready")
-                { Walk(); Open(0.1f, "Game");
-                    if (getDBtn1R) {
-                        SceneManager.LoadScene("Game");
-                    }
+                {
+                    Walk(); Open(0.1f, "Game");
+                    if (getDBtn1R) { SceneManager.LoadScene("Game"); }
                 }
                 else
                 {
@@ -250,11 +233,11 @@ public class PlayerM : MonoBehaviour
 
 
                 }
-                
+
                 Rot();
-                
+
                 if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
-               
+
 
                 break;
             #endregion
@@ -263,15 +246,28 @@ public class PlayerM : MonoBehaviour
             case State.GameStart:
 
                 //치트키
-                if (getDBtn1L) {  }
-                if (getDBtn2L) { }
+                if (getDBtn1L) { SceneManager.LoadScene("Meteo"); }
+                if (getDBtn2L) { SceneManager.LoadScene("Clear"); }
 
+
+                //// 다른애들은 키보드로 움직이지 말아라..
+                //if (pv.IsMine == PhotonNetwork.IsMasterClient)
+                //{
+
+                    float v = Input.GetAxis("Vertical");
+                    float h = Input.GetAxis("Horizontal");
+                    float f = 0;
+                    if (Input.GetKey(KeyCode.Space)) { f = .1f; }
+                    if (Input.GetKey(KeyCode.LeftControl)) { f = -.1f; }
+                    Vector3 dir = new Vector3(h, f, v);
+                    transform.position += dir * 10 * Time.deltaTime;
+              //  }
 
                 //플로팅
                 // 개발로 수정중
                 if (floating) //Float();
 
-                if (!tM.bH) { Grab(); }
+                    if (!tM.bH) { Grab(); }
                 SetFree();
                 Rot();
                 PwUp();
@@ -294,13 +290,14 @@ public class PlayerM : MonoBehaviour
 
                 }
 
+                //개발 수정중
+             //  if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
+               // else
+                //{
+                  //  lrL.enabled = false;
+                    //lrR.enabled = false;
+                //}
 
-                if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
-                else {
-                    lrL.enabled = false;
-                    lrR.enabled = false;
-                }
-                
                 break;
             #endregion
 
@@ -308,19 +305,23 @@ public class PlayerM : MonoBehaviour
             case State.GameOver:
                 ClickLR();
 
-                if (!goPlay.instance.MenuManager.activeSelf) {
-                    if (SceneManager.GetActiveScene().name == "Ready") 
-                    { state = State.Ready;
+                if (!goPlay.instance.MenuManager.activeSelf)
+                {
+                    if (SceneManager.GetActiveScene().name == "Ready")
+                    {
+                        state = State.Ready;
                         lrL.enabled = false;
                         lrR.enabled = false;
                     }
-                    else { state = State.GameStart;
-                      
-                    }  
+                    else
+                    {
+                        state = State.GameStart;
+
+                    }
                 }
 
                 break;
-#endregion
+                #endregion
         }
 
 
@@ -522,14 +523,15 @@ public class PlayerM : MonoBehaviour
     {
         Click(my[(int)Parts.LHand], lrL, doorIndi, getDBtnIdxL);
         Click(my[(int)Parts.RHand], lrR, doorIndi2, getDBtnIdxR);
-      }
+    }
 
-    void Click(Transform hand, LineRenderer lrC, GameObject indi, bool gDB) {
+    void Click(Transform hand, LineRenderer lrC, GameObject indi, bool gDB)
+    {
 
-            lrC.enabled = true;
-      
-            lrC.SetPosition(0, hand.position);
-            lrC.SetPosition(1, hand.forward * 100);
+        lrC.enabled = true;
+
+        lrC.SetPosition(0, hand.position);
+        lrC.SetPosition(1, hand.forward * 100);
 
         if (Physics.Raycast(origin: hand.position, direction: hand.forward, out hit, 100))
         {
@@ -560,7 +562,7 @@ public class PlayerM : MonoBehaviour
         }
         else
         {
-            
+
             indi.SetActive(false);
         }
     }
@@ -575,11 +577,13 @@ public class PlayerM : MonoBehaviour
 
     void Grab()
     {
+        Collider[] hitsL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.01f);
+        Collider[] hitsR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.01f);
+        
         if (getDBtnIdxL)
         {
-            Collider[] hitsLL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.01f);
 
-            if (hitsLL.Length > 0)
+            if (hitsL.Length > 0)
             {
                 SoundM.instance.playS(0, 5);
             }
@@ -587,7 +591,6 @@ public class PlayerM : MonoBehaviour
             walkR = false;
             walkL = true;
             origin = my[(int)Parts.LHand].position;
-
             tM.up = true;
 
         }
@@ -595,23 +598,22 @@ public class PlayerM : MonoBehaviour
         if (walkL)
         {
 
-            Collider[] hitsL = Physics.OverlapSphere(my[(int)Parts.LHand].position, 0.03f);
-
             if (hitsL.Length > 0)
             {
                 hitTF[0] = hitsL[0].transform;
 
-                if (hitTF[0].gameObject.name.Contains("Rock_01")) { }
-                Grab(hitTF[0], my[(int)Parts.LHand], my[(int)Parts.RHand], ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
+                if (hitTF[0].gameObject.name.Contains("Big")) { }
+                Grab(hitTF[0], ref my[(int)Parts.LHand], my[(int)Parts.RHand], ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
             }
         }
 
         // 오른손 움직임
-        if (getDBtnIdxR)
+        if (getDBtnIdxR
+            //|| OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)
+            )
         {
-            Collider[] hitsRR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.01f);
-
-            if (hitsRR.Length > 0)
+            print("문제0");
+            if (hitsR.Length > 0)
             {
                 SoundM.instance.playS(0, 5);
             }
@@ -621,21 +623,20 @@ public class PlayerM : MonoBehaviour
             origin = my[(int)Parts.RHand].position;
 
             tM.up = true;
-            
+
         }
 
         if (walkR)
         {
 
-            Collider[] hitsR = Physics.OverlapSphere(my[(int)Parts.RHand].position, 0.03f);
 
             if (hitsR.Length > 0)
             {
                 hitTF[1] = hitsR[0].transform;
 
-                if (hitTF[1].gameObject.name.Contains("Rock_01")) { }
+                if (hitTF[1].gameObject.name.Contains("Big")) { print("문제0 big"); }
 
-                Grab(hitTF[1], my[(int)Parts.RHand], my[(int)Parts.LHand], ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
+                Grab(hitTF[1], ref my[(int)Parts.RHand], my[(int)Parts.LHand], ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
             }
 
         }
@@ -643,30 +644,39 @@ public class PlayerM : MonoBehaviour
     }
 
 
-    void Grab(Transform hitTFN, Transform handG, Transform otherH, ref Transform Hold, ref Transform Hold2, ref Transform Holdpre)
+    void Grab(Transform hitTFN, ref Transform handG, Transform otherH, ref Transform Hold, ref Transform Hold2, ref Transform Holdpre)
     {
-            int idx = hitTFN.GetSiblingIndex();
+        int idx = hitTFN.GetSiblingIndex();
 
         // 홀드 잡고 있는 중
         if (hitTFN.IsChildOf(rock))
         {
-            
+            floating = false;
+            rb.isKinematic = true;
+
+            if (tM.bH) { transform.position += tM.dir * tM.pullSpd * Time.deltaTime; }
+            else
+            {
+                transform.position += origin - handG.position;
+                print("문제1 - 움직임");
+            }
+            print("문제1");
+
             Hold = hitTFN;
             if (Hold2 != null &&
                   Hold == Hold2) { tM.up = false; }
 
             if (Holdpre == Hold) { tM.up = false; }
 
-            floating = false;
-            rb.isKinematic = true;
 
 
-            if (rp.holds[idx].type == Value.Type.Trap) {
+            if (rp.holds[idx].type == Value.Type.Trap)
+            {
 
                 if (tM.up)
                 {
 
-                    if (rp.holds[idx].tT == Value.TrapType.BHoleL 
+                    if (rp.holds[idx].tT == Value.TrapType.BHoleL
                         || rp.holds[idx].tT == Value.TrapType.BholeR
                         )
                     {
@@ -683,14 +693,13 @@ public class PlayerM : MonoBehaviour
                     {
                         tM.Create(tM.canFactory);
                     }
+                   print("문제2");
                     tM.up = false;
 
                 }
 
             }
 
-            if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-            else { transform.position += origin - handG.position; }
 
         }
         else
@@ -699,7 +708,7 @@ public class PlayerM : MonoBehaviour
         if (hitTFN.IsChildOf(rp.item))
         {
 
-                SoundM.instance.playS(0, 5);
+            SoundM.instance.playS(0, 5);
             if (hitTFN.gameObject.name.Contains("Fire")) { CreateItem(fire, handG); }
             if (hitTFN.gameObject.name.Contains("Oxy")) { CreateItem(oxy, handG); }
             if (hitTFN.gameObject.name.Contains("Rope")) { CreateItem(rope, handG); }
@@ -709,22 +718,24 @@ public class PlayerM : MonoBehaviour
             hitTFN.gameObject.SetActive(false);
             rp.items.Remove(hitTFN.gameObject);
             StartCoroutine(rp.ShowUp(hitTFN.gameObject));
+            print("문제2 - item");
         }
         else
 
         // 던져진 아이템이나 다른 손 아이템을 잡으면
-        if (hitTFN.IsChildOf(free) || hitTFN.IsChildOf(otherH))
+        if (hitTFN.IsChildOf(rp.free) || hitTFN.IsChildOf(otherH))
         {
             catchItem = hitTFN;
 
-                SoundM.instance.playS(0, 5);
+            SoundM.instance.playS(0, 5);
             // 잡은 손으로 자식 만들고 0점으로 이동시키기
             catchItem.SetParent(handG);
             hitTFN.localPosition = Vector3.zero;
 
             // 물리 작용 off
             Rigidbody itemRb = hitTFN.gameObject.GetComponent<Rigidbody>();
-            itemRb.isKinematic = true;  
+            itemRb.isKinematic = true;
+            print("문제2 - free/otherH");
         }
 
 
@@ -750,7 +761,9 @@ public class PlayerM : MonoBehaviour
             walkL = false;
 
             // 잡은게 없으면 리턴
-            if (hitTF[0] == null) { return; }
+            if (hitTF[0] == null) {
+                return;
+            }
 
             SetFree(hitTF[0], catchHoldL, my[(int)Parts.LHand], getVelL, getAngVelL);
             hitTF[0] = null;
@@ -766,6 +779,7 @@ public class PlayerM : MonoBehaviour
             // 잡은게 없으면 리턴
             if (hitTF[1] == null)
             {
+                print("문제3");
                 return;
             }
 
@@ -781,7 +795,7 @@ public class PlayerM : MonoBehaviour
         // 홀드라면
         if (hitTFN == hold)
         {
-
+            print("문제4");
             rb.isKinematic = false;
             rb.velocity = -transform.TransformDirection(vel) * vPower;
 
@@ -796,8 +810,8 @@ public class PlayerM : MonoBehaviour
             if (myItem.Count < 2)
             {
 
-               // int layer = 1 << LayerMask.NameToLayer("Item");
-                Collider[] obj = Physics.OverlapSphere(my[(int)Parts.Body].position+(Vector3.up*.05f), 0.3f
+                // int layer = 1 << LayerMask.NameToLayer("Item");
+                Collider[] obj = Physics.OverlapSphere(my[(int)Parts.Body].position + (Vector3.up * .05f), 0.3f
                     //,layer
                     );
 
@@ -810,7 +824,7 @@ public class PlayerM : MonoBehaviour
                         if (obj[i].name.Contains("Item"))
                         {
                             find = true;
-                            print(obj[i].name+" "+i+"번");
+                            print(obj[i].name + " " + i + "번");
                             break;
                         }
                     }
@@ -823,11 +837,11 @@ public class PlayerM : MonoBehaviour
                         myItem.Add(catchItem.gameObject);
 
                         // 멀리 날려 안보이게 하자
-                       myItem[0].transform.position = new Vector3(1000, 1000, 1000);
+                        myItem[0].transform.position = new Vector3(1000, 1000, 1000);
                         if (myItem.Count > 1) myItem[1].transform.position = new Vector3(1000, 1000, 1000);
                         find = false;
                     }
-                    else 
+                    else
                     {
                         itemRb.isKinematic = false;
 
@@ -835,7 +849,7 @@ public class PlayerM : MonoBehaviour
                         itemRb.angularVelocity = angVel;
 
 
-                        catchItem.transform.SetParent(free);
+                        catchItem.transform.SetParent(rp.free);
                         print(obj[0].name + " 0번. 아이템이 목록에 없음 ");
 
                     }
@@ -852,10 +866,10 @@ public class PlayerM : MonoBehaviour
                     itemRb.angularVelocity = angVel;
 
 
-                    catchItem.transform.SetParent(free);
+                    catchItem.transform.SetParent(rp.free);
                     print("걸린게 없어서  공중부양");
                 }
-                
+
             }
             // 2개 이상이면 던지자.
             else
@@ -866,7 +880,7 @@ public class PlayerM : MonoBehaviour
                 itemRb.angularVelocity = angVel;
 
 
-                catchItem.transform.SetParent(free);
+                catchItem.transform.SetParent(rp.free);
                 print("아이템이  2개 이상");
             }
 
@@ -885,7 +899,8 @@ public class PlayerM : MonoBehaviour
 
     }
 
-    IEnumerator StopFStep() {
+    IEnumerator StopFStep()
+    {
         yield return new WaitForSeconds(3);
         fStep = false;
     }

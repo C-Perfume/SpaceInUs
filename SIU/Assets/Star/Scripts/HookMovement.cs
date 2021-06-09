@@ -33,7 +33,7 @@ public class HookMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.parent == rockMap) {
+        if (other.transform.root == rockMap) {
             print("hook stop ?");
             moving = false;
         }

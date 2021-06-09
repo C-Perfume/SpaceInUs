@@ -23,7 +23,7 @@ public class MeteoFall : MonoBehaviour
 
     {
         target = GameObject.Find("EveB (1)");
-        iM = GameObject.Find("Player").GetComponent<ItemM>();
+        iM = target.transform.root.GetComponent<ItemM>();
 
         dir = target.transform.position - transform.position;
         dir.Normalize();

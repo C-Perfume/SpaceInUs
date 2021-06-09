@@ -21,7 +21,6 @@ public class Player : MonoBehaviour
 
     //家府 
     
-    public AudioSource Breath;
 
     // 霸烙可记
     goPlay gp;
@@ -108,7 +107,7 @@ public class Player : MonoBehaviour
 
     public void PlusHp(int plusHp)
     {
-        Breath.Play();
+        SoundM.instance.playS(2, 9);
         currentHp += plusHp;
         if (currentHp > maxHp) { currentHp = maxHp; }
         HpBar.SetHpBar(currentHp);

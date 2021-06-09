@@ -23,7 +23,7 @@ public class BottleFall : MonoBehaviour
     {
         black = GameObject.Find("Canvas").transform.GetChild(0).gameObject;
         target = GameObject.Find("EveB (1)");
-        iM = GameObject.Find("Player").GetComponent<ItemM>();
+        iM = target.transform.root.GetComponent<ItemM>();
         Destroy(gameObject, 10);
     }
 

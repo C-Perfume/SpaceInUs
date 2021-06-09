@@ -24,8 +24,6 @@ public class TrapManager : MonoBehaviour
 
     PlayerM pm;
 
-    public AudioSource[] trapS;
-
     void Start()
 
     {
@@ -52,11 +50,13 @@ public class TrapManager : MonoBehaviour
    
         if (clone.name.Contains("Meteo"))
         {
-            trapS[1].Play();
+            // trapS[1].Play();
+            SoundM.instance.playS(4, 8);
         }
         if (clone.name.Contains("Can"))
         {
-            trapS[2].Play();
+            //trapS[2].Play();
+            SoundM.instance.playS(4, 7);
             
         }
         StartCoroutine(Vibrate(.5f));
@@ -68,7 +68,8 @@ public class TrapManager : MonoBehaviour
     // ºí·¢È¦ »ý¼º
     public void BHole(Value v)
     {
-        trapS[0].Play();
+       //trapS[0].Play();
+        SoundM.instance.playS(4, 6);
         GameObject a = Instantiate(bHole);
         BholeRot bHR = a.GetComponent<BholeRot>();
         if (v.tT == Value.TrapType.BHoleL)
@@ -130,7 +131,7 @@ public class TrapManager : MonoBehaviour
         {
 
             BottleFall btf = other.gameObject.GetComponent<BottleFall>();
-            trapS[2].Stop();
+          //  trapS[2].Stop();
             StartCoroutine(btf.Black_());
 
         }

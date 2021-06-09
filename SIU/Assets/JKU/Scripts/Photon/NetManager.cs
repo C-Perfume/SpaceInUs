@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Photon.Pun;
 using Photon.Realtime;
 
@@ -9,15 +8,12 @@ using Photon.Realtime;
 public class NetManager : MonoBehaviourPunCallbacks
 {
     string ver = "1";
-    //  public StepListCreater SL;
-    public static NetManager Instance;
 
     //Loding(상대방 기다리기)
     //public GameObject Loding;
-    private void Awake()
-    {
-        Instance = this;
-    }
+    //private void Awake()
+    //{
+    //}
 
     void Start()
     {
@@ -34,7 +30,7 @@ public class NetManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         base.OnConnectedToMaster();
-        PhotonNetwork.NickName = "플레이어" + Random.Range(0, 1000);
+        PhotonNetwork.NickName = "Player" + Random.Range(0, 1000);
 
         PhotonNetwork.JoinLobby();
     }
@@ -61,12 +57,12 @@ public class NetManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)//방장일때
         {
 
-            PhotonNetwork.Instantiate("Player", new Vector3(-0.553f, 0, 0), Quaternion.identity);
+            PhotonNetwork.Instantiate("Player", new Vector3(0, 0, -2), Quaternion.identity);
 
         }
         else
         {
-            PhotonNetwork.Instantiate("Player", new Vector3(-0.333f, 0, 0), Quaternion.identity);
+            PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
             // StartCoroutine(LodingImg());
         }
 

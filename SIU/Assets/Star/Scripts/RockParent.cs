@@ -73,7 +73,7 @@ public class RockParent : MonoBehaviour
             if (pv.IsMine == PhotonNetwork.IsMasterClient)
             {
                 isRandom = true;
-                pv.RPC("RpcIsRandom", RpcTarget.AllBuffered);
+                pv.RPC("RpcIsMaster", RpcTarget.AllBuffered);
 
             }
         }
@@ -100,12 +100,6 @@ public class RockParent : MonoBehaviour
     [PunRPC]
     public void RpcRockstep(int i, int rand, int tRand) //RockParents에 있는 함수 가져오기 (RPC로 만들기)
     {
-        //if(free == null)
-        //{
-        //    item = GameObject.Find("Item").transform;
-        //    free = GameObject.Find("Free").transform;
-        //}
-
         Value v = new Value();
         v.num[0] = rand;
         v.num[1] = tRand;
@@ -115,37 +109,47 @@ public class RockParent : MonoBehaviour
         else if (v.num[0] < 9) { v.type = Value.Type.Trap; }
         else { v.type = Value.Type.Item; }
 
+        //처음 0, 1, 2번 지정된 값 넣기 스텝 / 화이트홀 / 산소통
         if (i == 0) {  v.type = Value.Type.Step; }
-        if (i == 1) {  v.type = Value.Type.Trap; v.tT = Value.TrapType.BholeR; }
-        if (i == 2) {  v.type = Value.Type.Item; v.iT = Value.ItemType.OxyCan; }
-
+        if (i == 1) {  v.type = Value.Type.Trap; v.num[1] = 2; }
+        if (i == 2) {  v.type = Value.Type.Item; v.num[1] = 5; }
+       
+        //스텝이면 노란색
         if (v.type == Value.Type.Step) { v.mat.color = Color.yellow; }
+        
+        //트랩이면 빨강색 >> 개발로 수정 중  >> 아이템이랑 같은 색상 만들기
         else if (v.type == Value.Type.Trap)  {  v.mat.color = Color.red;
            
+            //1번 우주미아 블랙홀, 2+3번 화이트홀, 4번 메테오, 나머지 캔
             if (v.num[1] == 1) { v.tT = Value.TrapType.BHoleL; }
             else if (v.num[1] == 2 || v.num[1] == 3) { v.tT = Value.TrapType.BholeR; }
             else if (v.num[1] == 4) { v.tT = Value.TrapType.Meteor; }
             else { v.tT = Value.TrapType.Can; }
 
         }
+
+        // 아이템이면 파란색
         else  {  v.mat.color = Color.blue;
           
-       
+       //1, 4번 로프
             if (v.num[1] == 1 || v.num[1] == 4) 
             {
                 v.iT = Value.ItemType.Rope;
                 Create(rope, transform.GetChild(i));
             }
+            // 2번 소화기
             else if (v.num[1] == 2)
             {
                 v.iT = Value.ItemType.FireEx;
                Create(fireEx, transform.GetChild(i));
             }
+            //3번 쉴드
             else if (v.num[1] == 3)
             {
                v.iT = Value.ItemType.Shield;
               Create(shield, transform.GetChild(i));
             }
+            //4번 산소
             else
             {
                 v.iT = Value.ItemType.OxyCan;
@@ -157,23 +161,22 @@ public class RockParent : MonoBehaviour
     }
 
     [PunRPC]
-    public void RpcIsRandom() { isMaster = true;  }
+    public void RpcIsMaster() { isMaster = true;  }
 
     void Create(GameObject obj, Transform h)
     {
         GameObject a = Instantiate(obj);
-        a.transform.position = h.position + h.forward * -.05f + h.up * .1f;
+        a.transform.position = h.position + h.forward * -.05f + h.up * .07f;
         a.transform.SetParent(item);
         items.Add(a);
     }
 
     //아이템 생성
-
-    public IEnumerator ShowUp(GameObject item)
+    public IEnumerator ShowUp()
     {
+        yield return new WaitForSeconds(30);
+        item_False[0].SetActive(true);
         items.Add(item_False[0]);
         item_False.RemoveAt(0);
-        yield return new WaitForSeconds(30);
-        item.SetActive(true);
     }
 }

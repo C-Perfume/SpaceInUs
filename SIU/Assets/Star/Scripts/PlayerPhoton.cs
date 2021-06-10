@@ -36,15 +36,24 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
     public Slider hpother;
     //플레이어이름
     public Text Pt;
+
+    //pm에서 사용.. 손 지정하는 글이 너무 김
+    public Transform handL;
+    public Transform handR;
+
     void Start()
     {
         pl = GetComponent<Player>();
         pv = GetComponent<PhotonView>();
 
+        handL = my[(int)Parts.LHand];
+        handR = my[(int)Parts.RHand];
+    
         if (!pv.IsMine)
         {
             syncData = new Sync[my.Length];
-
+            handL = others[(int)Parts.LHand];
+            handR = others[(int)Parts.RHand];
         }
 
         //꼭 플레이나 빌드할 때 ovr카메라를 비활성화 하자

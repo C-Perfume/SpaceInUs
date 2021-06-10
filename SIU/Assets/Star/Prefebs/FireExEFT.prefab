@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 2510582098763616993}
   - component: {fileID: 8616247649265807814}
   - component: {fileID: 7418369422295625032}
-  - component: {fileID: 3814675760601499038}
-  - component: {fileID: 3814675760601499039}
   m_Layer: 0
   m_Name: Fire_Extinguisher_Item
   m_TagString: Untagged
@@ -83,32 +81,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3814675760601499038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3814675760601499036}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a327c587362555d478e11db01ec5581e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  boost: 1.9
---- !u!65 &3814675760601499039
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3814675760601499036}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 25.3858, y: 16.542606, z: 56.69022}
-  m_Center: {x: 0.31949997, y: 0, z: 28.34521}
 --- !u!1 &8447241939013956124
 GameObject:
   m_ObjectHideFlags: 0

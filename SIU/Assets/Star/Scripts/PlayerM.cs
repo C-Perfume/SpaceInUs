@@ -18,11 +18,11 @@ public class PlayerM : MonoBehaviour
         GameOver
     }
 
-
     PhotonView pv;
     PlayerPhoton pp;
 
     public State state;
+
     //걷기 잡기
     Vector3 origin;
     Vector3 pos;
@@ -30,7 +30,7 @@ public class PlayerM : MonoBehaviour
     bool walkR = false;
 
     //문표시 아이콘
-    public GameObject doorCanvas;
+    Transform doorCan;
     GameObject doorIndi;
     GameObject doorIndi2;
     // 클릭 라인렌더러 양손
@@ -44,7 +44,6 @@ public class PlayerM : MonoBehaviour
     //그랩 손위치
     Transform[] hitTF = new Transform[2];
 
-
     //손에 잡은 오브젝트의 트랜스폼
     Transform catchHoldL;
     Transform catchHoldLpre;
@@ -55,14 +54,10 @@ public class PlayerM : MonoBehaviour
     //아이템 인벤토리 넣기용
     bool find = false;
 
-
     //그랩 종류구분
     RockParent rp;
     // 홀드찾기용
     Transform rock;
-
-    //아이템 찾기용
-    Transform mine;
 
     //아이템 생성용
     public GameObject rope;
@@ -71,16 +66,36 @@ public class PlayerM : MonoBehaviour
     public GameObject oxy;
 
     //획득아이템리스트
-    public List<GameObject> myItem = new List<GameObject>();
+    public List<int> myTem = new List<int>();
+     int[] mytem = { -1, -1 };
 
     // 아이템 로프 사용할 때 쓰는 lr >> player에 붙어있음
     LineRenderer lr;
+    //소화기 사용할 때 씀
+    bool f = false;
+    // 소화기 파티클
+    public GameObject particle;
+    GameObject p;
+
+    //로프 사용할 때 씀 + 산소데미지 안주게 퍼블릭
+    public bool r = false;
+    //로프 복제용 후크
+    float ropeSpd = .05f;
+    public GameObject hook;
+    GameObject h;
+    //후크 박힐 때 파티클+소리 복제용
+    public GameObject hookP;
+    bool isH = true;
+    // 쉴드 사용 시 나오는 이펙트
+    public GameObject shieldEFT;
+
 
     //카메라 리그의 리지드바디를 가져오자
     Rigidbody rb;
 
     //함정용 변수
     TrapManager tM;
+    Player ps;
 
     RaycastHit hit;
 
@@ -119,16 +134,15 @@ public class PlayerM : MonoBehaviour
     {
         pv = GetComponent<PhotonView>();
         pp = GetComponent<PlayerPhoton>();
+        tM = GetComponent<TrapManager>();
+        ps = GetComponent<Player>();
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
             rock = GameObject.Find("Rock").transform;
             rp = rock.GetComponent<RockParent>();
-            mine = new GameObject(pv.Owner.NickName + "_Mine").transform;
-            tM = GetComponent<TrapManager>();
             lr = GetComponent<LineRenderer>();
             FootStepTransform = GameObject.Find("FootStepTransform").transform;
-
             state = State.GameStart;
 
         }
@@ -139,12 +153,13 @@ public class PlayerM : MonoBehaviour
         else
         { state = State.GameOver; }
 
-        doorIndi = doorCanvas.transform.GetChild(0).gameObject;
-        doorIndi2 = doorCanvas.transform.GetChild(1).gameObject;
+        doorCan = GameObject.Find("DoorCanvas").transform;
+        doorIndi = doorCan.GetChild(0).gameObject;
+        doorIndi2 = doorCan.GetChild(1).gameObject;
 
         rb = GetComponent<Rigidbody>();
-        lrL = pp.my[(int)PlayerPhoton.Parts.LHand].GetComponent<LineRenderer>();
-        lrR = pp.my[(int)PlayerPhoton.Parts.RHand].GetComponent<LineRenderer>();
+        lrL = pp.handL.GetComponent<LineRenderer>();
+        lrR = pp.handR.GetComponent<LineRenderer>();
 
     }
     void Update()
@@ -152,6 +167,7 @@ public class PlayerM : MonoBehaviour
 
         if (!pv.IsMine)
         {
+            rb.isKinematic = true;
             return;
         }
         #region 컨트롤러 bool
@@ -210,21 +226,8 @@ public class PlayerM : MonoBehaviour
                         StartCoroutine(StopFStep());
                     }
 
-                    //아이템 작용
-                    if (myItem.Count > 0)
-                    {
-
-                        if (getDBtn1R)
-                        {
-                            print("아이템 사용");
-                            ItemM itm = GetComponent<ItemM>();
-                            itm.active = true;
-                            GameObject used = myItem[0];
-                            Destroy(used, 6);
-                        }
-
-                    }
-
+                    UseItem();
+                    itemActive();
 
                 }
 
@@ -244,10 +247,7 @@ public class PlayerM : MonoBehaviour
                 if (getDBtn2L) { SceneManager.LoadScene("Clear"); }
 
 
-                //// 다른애들은 키보드로 움직이지 말아라..
-                //if (pv.IsMine == PhotonNetwork.IsMasterClient)
-                //{
-
+                // 개발 수정중 키보드조작
                 float v = Input.GetAxis("Vertical");
                 float h = Input.GetAxis("Horizontal");
                 float f = 0;
@@ -255,36 +255,18 @@ public class PlayerM : MonoBehaviour
                 if (Input.GetKey(KeyCode.LeftControl)) { f = -.1f; }
                 Vector3 dir = new Vector3(h, f, v);
                 transform.position += dir * 10 * Time.deltaTime;
-                //  }
 
                 //플로팅
                 // 개발로 수정중
                 if (floating) { }  //Float();
 
-
-
                 if (!tM.bH) { Grab(); }
                 SetFree();
+                UseItem();
+                itemActive();
                 Rot();
                 PwUp();
 
-                //블랙홀 인력
-                if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-
-                //아이템 작용
-                if (myItem.Count > 0)
-                {
-
-                    if (getDBtn1R)
-                    {
-                        print("아이템 사용");
-                        ItemM itm = GetComponent<ItemM>();
-                        itm.active = true;
-                        GameObject used = myItem[0];
-                        Destroy(used, 6);
-                    }
-
-                }
 
                 //개발 수정중
                 //  if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
@@ -293,6 +275,9 @@ public class PlayerM : MonoBehaviour
                 //  lrL.enabled = false;
                 //lrR.enabled = false;
                 //}
+
+                //블랙홀 인력
+                if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
 
                 break;
             #endregion
@@ -341,17 +326,19 @@ public class PlayerM : MonoBehaviour
 
             walkR = false;
             walkL = true;
-            origin = pp.my[(int)PlayerPhoton.Parts.LHand].position;
+            origin = pp.handL.position;
             SoundM.instance.playS(1, 0);
 
         }
+
         if (walkL)
         {
-            transform.position += origin - pp.my[(int)PlayerPhoton.Parts.LHand].position;
+            transform.position += origin - pp.handL.position;
             pos = transform.position;
             pos.y = 0;
             transform.position = pos;
         }
+
         if (getUTchTmbL)
         {
             SoundM.instance.StopS(1, 0);
@@ -362,14 +349,14 @@ public class PlayerM : MonoBehaviour
         {
             walkL = false;
             walkR = true;
-            origin = pp.my[(int)PlayerPhoton.Parts.RHand].position;
+            origin = pp.handR.position;
             SoundM.instance.playS(1, 0);
 
         }
 
         if (walkR)
         {
-            transform.position += origin - pp.my[(int)PlayerPhoton.Parts.RHand].position;
+            transform.position += origin - pp.handR.position;
             pos = transform.position;
             pos.y = 0;
             transform.position = pos;
@@ -392,14 +379,16 @@ public class PlayerM : MonoBehaviour
 
             walkR = false;
             walkL = true;
-            origin = pp.my[(int)PlayerPhoton.Parts.LHand].position;
+            origin = pp.handL.position;
             SoundM.instance.playS(1, audioNum);
 
         }
+
         if (walkL)
         {
-            transform.position += origin - pp.my[(int)PlayerPhoton.Parts.LHand].position;
+            transform.position += origin - pp.handL.position;
         }
+
         if (getUTchTmbL)
         {
             SoundM.instance.StopS(1, audioNum);
@@ -410,14 +399,14 @@ public class PlayerM : MonoBehaviour
         {
             walkL = false;
             walkR = true;
-            origin = pp.my[(int)PlayerPhoton.Parts.RHand].position;
+            origin = pp.handR.position;
             SoundM.instance.playS(1, audioNum);
 
         }
 
         if (walkR)
         {
-            transform.position += origin - pp.my[(int)PlayerPhoton.Parts.RHand].position;
+            transform.position += origin - pp.handR.position;
         }
 
         if (getUTchTmbR)
@@ -453,7 +442,7 @@ public class PlayerM : MonoBehaviour
     void Open(float m, string scene)
     {
 
-        if (Physics.Raycast(origin: pp.my[(int)PlayerPhoton.Parts.LHand].position, direction: pp.my[(int)PlayerPhoton.Parts.LHand].forward, out hit, m))// 0.5f))
+        if (Physics.Raycast(origin: pp.handL.position, direction: pp.handL.forward, out hit, m))// 0.5f))
         {
 
             hitObj = hit.transform.gameObject;
@@ -484,7 +473,7 @@ public class PlayerM : MonoBehaviour
 
 
 
-        if (Physics.Raycast(origin: pp.my[(int)PlayerPhoton.Parts.RHand].position, direction: pp.my[(int)PlayerPhoton.Parts.RHand].forward, out hit, m))//0.5f))
+        if (Physics.Raycast(origin: pp.handR.position, direction: pp.handR.forward, out hit, m))//0.5f))
         {
             hitObj = hit.transform.gameObject;
             if (hitObj.name == "Door")
@@ -517,8 +506,8 @@ public class PlayerM : MonoBehaviour
     // 메뉴선택 게임오버든 뭐든 이걸로 사용
     void ClickLR()
     {
-        Click(pp.my[(int)PlayerPhoton.Parts.LHand], lrL, doorIndi, getDBtnIdxL);
-        Click(pp.my[(int)PlayerPhoton.Parts.RHand], lrR, doorIndi2, getDBtnIdxR);
+        Click(pp.handL, lrL, doorIndi, getDBtnIdxL);
+        Click(pp.handR, lrR, doorIndi2, getDBtnIdxR);
     }
 
     void Click(Transform hand, LineRenderer lrC, GameObject indi, bool gDB)
@@ -562,6 +551,7 @@ public class PlayerM : MonoBehaviour
             indi.SetActive(false);
         }
     }
+
     void PwUp()
     { //수정필요
         if (getUBtnIdxR && getUBtnIdxL)
@@ -573,8 +563,8 @@ public class PlayerM : MonoBehaviour
 
     void Grab()
     {
-        Collider[] hitsL = Physics.OverlapSphere(pp.my[(int)PlayerPhoton.Parts.LHand].position, 0.01f);
-        Collider[] hitsR = Physics.OverlapSphere(pp.my[(int)PlayerPhoton.Parts.RHand].position, 0.01f);
+        Collider[] hitsL = Physics.OverlapSphere(pp.handL.position, 0.01f);
+        Collider[] hitsR = Physics.OverlapSphere(pp.handR.position, 0.01f);
 
         if (getDBtnIdxL)
         {
@@ -586,7 +576,7 @@ public class PlayerM : MonoBehaviour
 
             walkR = false;
             walkL = true;
-            origin = pp.my[(int)PlayerPhoton.Parts.LHand].position;
+            origin = pp.handL.position;
             tM.up = true;
 
         }
@@ -599,7 +589,7 @@ public class PlayerM : MonoBehaviour
                 hitTF[0] = hitsL[0].transform;
 
                 if (hitTF[0].gameObject.name.Contains("Big")) { }
-                Grab(hitTF[0], ref pp.my[(int)PlayerPhoton.Parts.LHand], pp.my[(int)PlayerPhoton.Parts.RHand], ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
+                Grab(hitTF[0], ref pp.handL, pp.handR, ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
 
             }
         }
@@ -614,7 +604,7 @@ public class PlayerM : MonoBehaviour
 
             walkR = true;
             walkL = false;
-            origin = pp.my[(int)PlayerPhoton.Parts.RHand].position;
+            origin = pp.handR.position;
 
             tM.up = true;
 
@@ -630,7 +620,7 @@ public class PlayerM : MonoBehaviour
 
                 if (hitTF[1].gameObject.name.Contains("Big")) { print("문제0 big"); }
 
-                Grab(hitTF[1], ref pp.my[(int)PlayerPhoton.Parts.RHand], pp.my[(int)PlayerPhoton.Parts.LHand], ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
+                Grab(hitTF[1], ref pp.handR, pp.handL, ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
 
             }
 
@@ -638,7 +628,7 @@ public class PlayerM : MonoBehaviour
 
     }
 
-
+    //개발로 수정중 레퍼런스 안넣으면 왜 작동하는건지 알기
     void Grab(Transform hitTFN, ref Transform handG, Transform otherH, ref Transform Hold, ref Transform Hold2, ref Transform Holdpre)
     {
         int idx = hitTFN.GetSiblingIndex();
@@ -696,97 +686,131 @@ public class PlayerM : MonoBehaviour
         }
         else
         {
-            pv.RPC("RPCItem", RpcTarget.AllBuffered);
+            //0 : 왼손, 1 : 오른손
+            int hand = 1;
+            if (walkL) hand = 0;
+            // 0 = rp.free, 1 = 다른손
+            int pa = 0;
+
+            // 아이템 잡을 때 손에 생성
+            if (hitTFN.IsChildOf(rp.item))
+            {
+                pv.RPC("RpcItem", RpcTarget.All, hand, idx);
+            }
+
+            // 던져진 아이템이나 다른 손 아이템을 잡으면
+            if (hitTFN.IsChildOf(rp.free))
+            {
+                pv.RPC("RPCFreeItem", RpcTarget.All, pa, hand, idx);
+            }
+            if (hitTFN.IsChildOf(otherH))
+            {
+                pa = 1;
+                pv.RPC("RPCFreeItem", RpcTarget.All, pa, hand, idx);
+            }
         }
-
-
-
 
     }
 
     [PunRPC]
-    void RPCItem() {
+    void RPCTrapM()
+    {
+        GameObject clone = tM.meteorFactory;
+        GameObject obj = Instantiate(clone);
 
-
-        Transform handG = pp.my[(int)PlayerPhoton.Parts.RHand];
-        Transform otherH = pp.my[(int)PlayerPhoton.Parts.LHand];
-        if (walkL) { handG = pp.my[(int)PlayerPhoton.Parts.LHand];
-            otherH = pp.my[(int)PlayerPhoton.Parts.RHand]; }
-
-        if (!pv.IsMine) { handG = pp.others[(int)PlayerPhoton.Parts.RHand];
-            otherH = pp.others[(int)PlayerPhoton.Parts.LHand];
-
-            if (walkL) { handG = pp.others[(int)PlayerPhoton.Parts.LHand]; }
-            otherH = pp.others[(int)PlayerPhoton.Parts.RHand];
-        }
-
-        Collider[] hitsL = Physics.OverlapSphere(handG.position, 0.01f);
-        Collider[] hitsR = Physics.OverlapSphere(handG.position, 0.01f);
-        if (hitsR.Length > 0) hitTF[1] = hitsR[0].transform;
-        if (hitsL.Length > 0) hitTF[0] = hitsL[0].transform;
-        Transform hitTFN = hitTF[1];
-        if (walkL) { hitTFN = hitTF[0]; }
-
-        // 아이템 잡을 때 손에 생성
-        if (hitTFN.IsChildOf(rp.item))
-        {
-
-            SoundM.instance.playS(0, 5);
-            if (hitTFN.gameObject.name.Contains("Fire")) { CreateItem(fire, handG); }
-            if (hitTFN.gameObject.name.Contains("Oxy")) { CreateItem(oxy, handG); }
-            if (hitTFN.gameObject.name.Contains("Rope")) { CreateItem(rope, handG); }
-            if (hitTFN.gameObject.name.Contains("Shield")) { CreateItem(shield, handG); }
-
-            rp.item_False.Add(hitTFN.gameObject);
-            hitTFN.gameObject.SetActive(false);
-            rp.items.Remove(hitTFN.gameObject);
-            StartCoroutine(rp.ShowUp(hitTFN.gameObject));
-
-        }
-
-        // 던져진 아이템이나 다른 손 아이템을 잡으면
-        if (hitTFN.IsChildOf(rp.free) || hitTFN.IsChildOf(otherH))
-        {
-            catchItem = hitTFN;
-
-            SoundM.instance.playS(0, 5);
-            // 잡은 손으로 자식 만들고 0점으로 이동시키기
-            catchItem.SetParent(handG);
-            hitTFN.localPosition = Vector3.zero;
-
-            // 물리 작용 off
-            Rigidbody itemRb = hitTFN.gameObject.GetComponent<Rigidbody>();
-            itemRb.isKinematic = true;
-        }
-
+        obj.transform.position = transform.position
+            + transform.up * 10
+            + transform.forward * -10;
     }
 
 
-    //아이템 손에 만들기
+    [PunRPC]
+    void RpcItem(int hand, int itemIdx)
+    {
+        // 손에 잡힌 아이템 특정
+        GameObject item = rp.item.GetChild(itemIdx).gameObject;
+
+        // 어떤손인지 특정
+        Transform handG = pp.handL;
+
+        if (hand == 1) handG = pp.handR;
+
+        // 손에 복제
+        //각 아이템마다 고유 번호를 써서 인트 리스트를 통해 사용하기
+        if (item.name.Contains("Rope")) { CreateItem(rope, handG); mytem[hand] = 0; }
+        if (item.name.Contains("Fire")) { CreateItem(fire, handG); mytem[hand] = 1; }
+        if (item.name.Contains("Shield")) { CreateItem(shield, handG); mytem[hand] = 2; }
+        if (item.name.Contains("Oxy")) { CreateItem(oxy, handG); mytem[hand] = 3; }
+
+        // 아이템 풀 돌리기 30초
+        rp.item_False.Add(item);
+        item.SetActive(false);
+        rp.items.Remove(item);
+        StartCoroutine(rp.ShowUp());
+    }
+
+    //아이템 손에 만들기 함수
     void CreateItem(GameObject clone, Transform hand)
     {
         GameObject a = Instantiate(clone);
-        a.transform.SetParent(hand);
-        a.transform.localPosition = Vector3.zero;
         catchItem = a.transform;
+        catchItem.SetParent(hand);
+        catchItem.localPosition = Vector3.zero;
     }
+
+
+    //공중에 뜬 / 다른손의 아이템
+    [PunRPC]
+    void RPCFreeItem(int parent, int hand, int itemIdx)
+    {
+        Transform otherH = pp.handR;
+        Transform handG = pp.handL;
+        if (hand == 1) { otherH = pp.handL; handG = pp.handR; }
+        Transform pa = otherH;
+        if (parent == 0) pa = rp.free;
+
+        Transform item = pa.GetChild(itemIdx);
+        catchItem = item;
+
+        catchItem.SetParent(handG);
+        item.localPosition = Vector3.zero;
+
+        //공중에 뜬 아이템 잡으면 템리스트에 넣을 인트값 변경
+        if (parent == 0) {
+            for (int i = 0; i < 4; i++)
+            {
+                if (catchItem.name.Contains(i.ToString())) {
+                    mytem[hand] = i;
+                    break;
+                }
+            }
+        }
+
+        // 물리 작용 off
+        Rigidbody itemRb = item.GetComponent<Rigidbody>();
+        itemRb.isKinematic = true;
+    }
+
+
 
 
     //놨을 때
     void SetFree()
     {
-
+        //0 : 왼손, 1 : 오른손
+        int hh = 0;
         //왼손
         if (getUBtnIdxL)
         {
             walkL = false;
 
             // 잡은게 없으면 리턴
-            if (hitTF[0] == null) {
+            if (hitTF[0] == null)
+            {
                 return;
             }
 
-            SetFree(hitTF[0], catchHoldL, pp.my[(int)PlayerPhoton.Parts.LHand], getVelL, getAngVelL);
+            SetFree(hitTF[0], catchHoldL, pp.my[(int)PlayerPhoton.Parts.Body], getVelL, getAngVelL, hh);
             hitTF[0] = null;
             catchHoldLpre = catchHoldL;
         }
@@ -794,7 +818,7 @@ public class PlayerM : MonoBehaviour
         //오른손
         if (getUBtnIdxR)
         {
-
+            hh = 1;
             walkR = false;
 
             // 잡은게 없으면 리턴
@@ -803,20 +827,20 @@ public class PlayerM : MonoBehaviour
                 return;
             }
 
-            SetFree(hitTF[1], catchHoldR, pp.my[(int)PlayerPhoton.Parts.RHand], getVelR, getAngVelR);
+            SetFree(hitTF[1], catchHoldR, pp.my[(int)PlayerPhoton.Parts.Body], getVelR, getAngVelR, hh);
             hitTF[1] = null;
             catchHoldRpre = catchHoldR;
         }
     }
 
-    void SetFree(Transform hitTFN, Transform hold, Transform hand, Vector3 vel, Vector3 angVel)
+    void SetFree(Transform hitTFN, Transform hold, Transform body, Vector3 ve, Vector3 angVe, int hand)
     {
 
         // 홀드라면
         if (hitTFN == hold)
         {
             rb.isKinematic = false;
-            rb.velocity = -transform.TransformDirection(vel) * vPower;
+            rb.velocity = -transform.TransformDirection(ve) * vPower;
 
         }
 
@@ -824,20 +848,22 @@ public class PlayerM : MonoBehaviour
         // 아이템 잡았다면
         if (catchItem != null && hitTFN == catchItem)
         {
-            Rigidbody itemRb = catchItem.GetComponent<Rigidbody>();
-
             //두개 이하
-            if (myItem.Count < 2)
+            if (myTem.Count < 2)
             {
 
-                // int layer = 1 << LayerMask.NameToLayer("Item");
-                Collider[] obj = Physics.OverlapSphere(pp.my[(int)PlayerPhoton.Parts.Body].position + (Vector3.up * .05f), 0.3f
-                    //,layer
-                    );
+                int item = 1 << LayerMask.NameToLayer("Item");
+                Collider[] obj = Physics.OverlapSphere(body.position + (Vector3.up * .01f), 0.3f, item);
 
                 //1개이상   
                 if (obj.Length > 0)
                 {
+
+                    for (int i = 0; i < obj.Length; i++)
+                    {
+                        print(i + "번    " + obj[i].name);
+                    }
+
                     //찾기
                     for (int i = 0; i < obj.Length; i++)
                     {
@@ -850,57 +876,31 @@ public class PlayerM : MonoBehaviour
 
                     if (find)
                     {
-                        print("찾았다");
-                        //  획득리스트에 넣는다.
-                        catchItem.SetParent(mine);
-                        myItem.Add(catchItem.gameObject);
-
-                        // 멀리 날려 안보이게 하자
-                        myItem[0].transform.position = new Vector3(1000, 1000, 1000);
-                        if (myItem.Count > 1) myItem[1].transform.position = new Vector3(1000, 1000, 1000);
-                        
+                        pv.RPC("RPCFind", RpcTarget.All, hand);
                         find = false;
-                    }
-                    else
-                    {
-                        itemRb.isKinematic = false;
-
-                        itemRb.velocity = vel * vPower;
-                        itemRb.angularVelocity = angVel;
-
-
-                        catchItem.transform.SetParent(rp.free);
-                        print(obj[0].name + " 0번. 아이템이 목록에 없음 ");
 
                     }
-
+                    //else
+                    //{
+                    //    pv.RPC("RPCFree", RpcTarget.AllBuffered, ve, angVe);
+                    //    print("포문으로 찾아지지 않음");
+                    //}
 
                 }
 
                 //0개
                 else
                 {
-                    itemRb.isKinematic = false;
-
-                    itemRb.velocity = vel * vPower;
-                    itemRb.angularVelocity = angVel;
-
-
-                    catchItem.transform.SetParent(rp.free);
+                    pv.RPC("RPCFree", RpcTarget.AllBuffered, ve, angVe);
                     print("걸린게 없어서  공중부양");
                 }
+
 
             }
             // 2개 이상이면 던지자.
             else
             {
-                itemRb.isKinematic = false;
-
-                itemRb.velocity = vel * vPower;
-                itemRb.angularVelocity = angVel;
-
-
-                catchItem.transform.SetParent(rp.free);
+                pv.RPC("RPCFree", RpcTarget.AllBuffered, ve, angVe);
                 print("아이템이  2개 이상");
             }
 
@@ -913,21 +913,176 @@ public class PlayerM : MonoBehaviour
         {
             fStep = true;
             state = State.Ready;
-
         }
-
-
     }
 
     [PunRPC]
-    void RPCFind(){
-        find = true;
+    void RPCFind(int hh)
+    {
+        if (mytem[hh] != -1) myTem.Add(mytem[hh]);
+        mytem[hh] = -1;
+        Destroy(catchItem.gameObject);
+    }
+
+
+    [PunRPC]
+    void RPCFree(Vector3 velo, Vector3 angVelo)
+    {
+        Rigidbody itemRb = catchItem.GetComponent<Rigidbody>();
+
+        itemRb.isKinematic = false;
+        itemRb.velocity = velo * vPower;
+        itemRb.angularVelocity = angVelo;
+
+        catchItem.SetParent(rp.free);
+    }
+
+
+    void UseItem() {
+
+        //아이템 작용
+        if (myTem.Count > 0)
+        {
+            if (getDBtn1R)
+            {
+
+                if (myTem[0] == 0)
+                {
+                    pv.RPC("RPCUse", RpcTarget.All, myTem[0]);
+                    r = true;
+                    isH = true;
+                    SoundM.instance.playS(2, 2);
+                }
+                if (myTem[0] == 1)
+                {
+                    f = true;
+                    pv.RPC("RPCUse", RpcTarget.All, myTem[0]);
+                }
+
+                if (myTem[0] == 2)
+                {
+                    rb.isKinematic = true;
+                    //블랙홀 지우기
+                    tM.bH = false;
+                    pv.RPC("RPCUse", RpcTarget.All, myTem[0]);
+                }
+
+                if (myTem[0] == 3)
+                {
+                    ps.PlusHp(30);
+                }
+
+                myTem.RemoveAt(0);
+                StartCoroutine(StopFR());
+            }
+
+        }
+
+    }
+
+    void itemActive() {
+
+        if (f)
+        {
+            rb.isKinematic = false;
+            rb.AddForce(-pp.handL.forward * ropeSpd * 10);
+            pv.RPC("RPCFireEx", RpcTarget.All);
+        }
+        else
+        {
+
+            if (p != null)
+            {
+                pv.RPC("RPCFNull", RpcTarget.All);
+            }
+        }
+
+        if (r)
+        {
+            pv.RPC("RPCRLr", RpcTarget.All);
+            HookMovement hhook = h.GetComponent<HookMovement>();
+            if (!hhook.moving)
+            {
+                if (isH)
+                {
+                    rb.isKinematic = true;
+                    pv.RPC("RPCUse", RpcTarget.All, 3);
+                    isH = false;
+                }
+                transform.position = Vector3.Lerp(transform.position, h.transform.position, 1 * Time.deltaTime);
+            }
+        }
+        else
+        {
+            pv.RPC("RPCRLrFalse", RpcTarget.All);
+        }
+
+    }
+
+    // 아이템 사용 시 복제동기화 함수
+    // 012 로프, 소화기, 쉴드 / 3 후크
+    [PunRPC]
+    void RPCUse(int itIdx) {
+
+        GameObject[] item = new GameObject[4];
+
+        GameObject clone = shieldEFT;
+        Transform handG = transform;
+
+        if (itIdx == 0) { clone = hook; handG = pp.handR; }
+        if (itIdx == 1) { clone = particle; handG = pp.handL; }
+        if (itIdx == 3) { clone = hookP; handG = h.transform; }
+
+        item[itIdx] = Instantiate(clone);
+        item[itIdx].transform.position = handG.position;
+        item[itIdx].transform.forward = handG.forward;
+        if (itIdx == 3) item[itIdx].transform.forward = -handG.forward;
+
+        h = item[0];
+        p = item[1];
+        if (itIdx != 0) Destroy(item[itIdx], 5.5f);
+    }
+
+    [PunRPC]
+    void RPCRLrFalse()
+    {
+        lr.enabled = false;
+        h = null;
+    }
+
+    //rpc해야될 것!
+
+    [PunRPC]
+    void RPCFireEx()
+    {
+        p.transform.position = pp.handL.position;
+        p.transform.forward = pp.handL.forward;
+    }
+
+    [PunRPC]
+    void RPCFNull()
+    {
+        p = null;
+    }
+
+    [PunRPC]
+    void RPCRLr()
+    {
+            lr.enabled = true;
+            lr.SetPosition(0, pp.handR.position);
+            lr.SetPosition(1, h.transform.position);
+    }
+    IEnumerator StopFR()
+    {
+        yield return new WaitForSeconds(5);
+        f = false; r = false;
     }
     IEnumerator StopFStep()
     {
         yield return new WaitForSeconds(3);
         fStep = false;
     }
+
 
 }
 

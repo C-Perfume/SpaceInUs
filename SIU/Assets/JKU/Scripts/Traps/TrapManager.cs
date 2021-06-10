@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
 
 public class TrapManager : MonoBehaviour
@@ -23,19 +24,13 @@ public class TrapManager : MonoBehaviour
     public  float pullSpd = 1f;
 
     PlayerM pm;
+    PhotonView pv;
 
     void Start()
 
     {
+        pv = GetComponent<PhotonView>();
         pm = GetComponent<PlayerM>();
-
-
-    }
-
-    void Update()
-
-    {
-
     }
 
     public void Create(GameObject clone)
@@ -50,14 +45,11 @@ public class TrapManager : MonoBehaviour
    
         if (clone.name.Contains("Meteo"))
         {
-            // trapS[1].Play();
             SoundM.instance.playS(4, 8);
         }
         if (clone.name.Contains("Can"))
         {
-            //trapS[2].Play();
             SoundM.instance.playS(4, 7);
-            
         }
         StartCoroutine(Vibrate(.5f));
         StopCoroutine(Vibrate(5));
@@ -143,10 +135,10 @@ public class TrapManager : MonoBehaviour
             Destroy(SavTime);
             //메테오씬 로드
 
-              SceneManager.LoadScene("Meteo");
             pm.state = PlayerM.State.GameOver;
 
             Destroy(other.gameObject, 5);
+            SceneManager.LoadScene("Meteo");
         }
     }
 

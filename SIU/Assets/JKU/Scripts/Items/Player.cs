@@ -17,10 +17,6 @@ public class Player : MonoBehaviour
 
     Rigidbody rb;
     PlayerM pm;
-    ItemM iM;
-
-    //家府 
-    
 
     // 霸烙可记
     goPlay gp;
@@ -33,7 +29,6 @@ public class Player : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         pm = GetComponent<PlayerM>();
-        iM = GetComponent<ItemM>();
         tM = GetComponent<TrapManager>();
     }
 
@@ -61,7 +56,7 @@ public class Player : MonoBehaviour
         if (rb.isKinematic == true)
             {
 
-            if (!tM.bH || !iM.r) { 
+            if (!tM.bH || !pm.r) { 
             
                 if (mspeed > 5)
                 {

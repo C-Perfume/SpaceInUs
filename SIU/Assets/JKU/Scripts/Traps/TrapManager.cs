@@ -145,8 +145,7 @@ public class TrapManager : MonoBehaviour
         {
             TrapManager tm = net.playerList[i].GetComponent<TrapManager>();
             tm.bH = true;
-            tm.StartCoroutine(Pull(a));
-            //tm.Pull(a));
+            tm.StartCoroutine(tm.Pull(a));
         }
 
     }

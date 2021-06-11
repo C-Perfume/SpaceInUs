@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using Photon.Pun;
 
 
-public class TrapManager : MonoBehaviour
+public class TrapManager : MonoBehaviourPun
 
 {
 
@@ -35,7 +35,8 @@ public class TrapManager : MonoBehaviour
         pm = GetComponent<PlayerM>();
         viewID = pv.ViewID;
         net = GameObject.Find("NetManager").GetComponent<NetManager>();
-        net.AddPlayer(gameObject);
+       
+
     }
 
 
@@ -229,4 +230,6 @@ public class TrapManager : MonoBehaviour
         OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.RTouch);
 
     }
+
+   
 }

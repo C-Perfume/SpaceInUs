@@ -20,28 +20,39 @@ public class PlayerM : MonoBehaviour
 
     PhotonView pv;
     PlayerPhoton pp;
+    public byte maxP;
+    NetManager net;
+    public GameObject hpbar;
+   public GameObject readytext;
 
     public State state;
 
-    //걷기 잡기
+    #region//걷기 잡기
     Vector3 origin;
     Vector3 pos;
     bool walkL = false;
     bool walkR = false;
-
-    //문표시 아이콘
+    #endregion
+   
+    #region //문표시 아이콘
     Transform doorCan;
     GameObject doorIndi;
     GameObject doorIndi2;
     // 클릭 라인렌더러 양손
     LineRenderer lrL;
     LineRenderer lrR;
+    #endregion
 
-    // 속력
+    #region // 속력
+
+
     public bool floating = true;
     float vPower = .5f;
+    #endregion
+    
+    #region//그랩 손위치
 
-    //그랩 손위치
+
     Transform[] hitTF = new Transform[2];
 
     //손에 잡은 오브젝트의 트랜스폼
@@ -51,13 +62,14 @@ public class PlayerM : MonoBehaviour
     Transform catchHoldRpre;
     Transform catchItem;
 
-    //아이템 인벤토리 넣기용
-    bool find = false;
-
     //그랩 종류구분
     RockParent rp;
     // 홀드찾기용
     Transform rock;
+    #endregion
+
+    #region    //아이템 인벤토리 넣기용
+    bool find = false;
 
     //아이템 생성용
     public GameObject rope;
@@ -89,8 +101,10 @@ public class PlayerM : MonoBehaviour
     bool isH = true;
     // 쉴드 사용 시 나오는 이펙트
     public GameObject shieldEFT;
-
-
+#endregion
+    
+    #region //기타 함정
+  
     //카메라 리그의 리지드바디를 가져오자
     Rigidbody rb;
 
@@ -106,6 +120,7 @@ public class PlayerM : MonoBehaviour
     // 클리어 도어로 가기 전 위치조정
     Transform FootStepTransform;
     bool fStep = false;
+    #endregion
 
     #region 컨트롤러 bool Vector3설정
     bool getDTchTmbL;
@@ -131,8 +146,13 @@ public class PlayerM : MonoBehaviour
     Vector3 getAngVelR;
     #endregion
 
+   
     void Start()
     {
+        #region 초기값 세팅
+        net = GameObject.Find("NetManager").GetComponent<NetManager>();
+        net.AddPlayer(gameObject);
+        maxP = PhotonNetwork.CurrentRoom.MaxPlayers;
         pv = GetComponent<PhotonView>();
         pp = GetComponent<PlayerPhoton>();
         tM = GetComponent<TrapManager>();
@@ -146,22 +166,49 @@ public class PlayerM : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         lrL = pp.handL.GetComponent<LineRenderer>();
         lrR = pp.handR.GetComponent<LineRenderer>();
+        #endregion
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
             rock = GameObject.Find("Rock").transform;
             rp = rock.GetComponent<RockParent>();
             FootStepTransform = GameObject.Find("FootStepTransform").transform;
-            state = State.GameStart;
-        }
+            
+            // 지정인원이 안들어 온 경우 wait 상태로 기다리기
+            state = PlayerM.State.Wait;
+            //배경맵 안보이게 멀리 보내기 >> 비활성화 시 나중에 들어오는 경우 찾지 못함
+            hpbar.SetActive(false);
+            rock.transform.parent.position -= Vector3.up * 10000;
 
+        StartCoroutine(WaitforStart());
+        }
 
         else if (SceneManager.GetActiveScene().name == "Ready")
         { state = State.Ready; }
 
         else
         { state = State.GameOver; }
+
     }
+
+    IEnumerator WaitforStart() {
+        // 최대인원이 아닌 경우 기다린다.
+        while (maxP != net.playerList.Count)
+        {         
+        yield return new WaitForSeconds(.01f);
+        }
+
+        yield return new WaitForSeconds(1);
+        // 최대 인원이면 게임 스타트, 배경맵 돌아오기, 우주선 터지는 거 활성화 및 플레이어 밑으로 위치이동
+        hpbar.SetActive(true);
+        readytext.SetActive(false);
+        state = State.GameStart;
+        rock.transform.parent.position += Vector3.up * 10000;
+        rock.transform.parent.GetChild(0).GetChild(0).gameObject.SetActive(true);
+        rock.transform.parent.GetChild(0).GetChild(0).position = transform.position - Vector3.up * 1.1f - Vector3.forward * -1.95f;
+        if (GameObject.Find("StarParticle") != null) Destroy(GameObject.Find("StarParticle"));
+    }
+
     void Update()
     {
 
@@ -242,7 +289,8 @@ public class PlayerM : MonoBehaviour
             #region GameStart
             case State.GameStart:
 
-                //치트키
+           #region //치트키
+               
                 if (getDBtn1L) { SceneManager.LoadScene("Meteo"); }
                 if (getDBtn2L) { SceneManager.LoadScene("Clear"); }
 
@@ -255,6 +303,7 @@ public class PlayerM : MonoBehaviour
                 if (Input.GetKey(KeyCode.LeftControl)) { f = -.1f; }
                 Vector3 dir = new Vector3(h, f, v);
                 transform.position += dir * 10 * Time.deltaTime;
+        #endregion
 
                 //플로팅
                 // 개발로 수정중
@@ -268,16 +317,16 @@ public class PlayerM : MonoBehaviour
                 PwUp();
 
 
+                //블랙홀 인력
+                if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
+               
+                //들어갔다 나가면 오류 싱글톤이라 그런건가?
                 if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
                 else
                 {
                     lrL.enabled = false;
                     lrR.enabled = false;
                 }
-
-                //블랙홀 인력
-                if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-
                 break;
             #endregion
 

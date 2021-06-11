@@ -9,7 +9,6 @@ public class Laser : MonoBehaviour
     //public GameObject key2;
     //public GameObject MalletL;
     //public GameObject MalletR;
-    bool a = true;
 
     // 클릭 라인렌더러 양손
   

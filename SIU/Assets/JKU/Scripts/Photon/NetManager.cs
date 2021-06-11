@@ -42,7 +42,9 @@ public class NetManager : MonoBehaviourPunCallbacks
     {
         base.OnJoinedLobby();
         print("OnJoinedLobbyzz");
-        PhotonNetwork.JoinOrCreateRoom("JKU", new RoomOptions(), TypedLobby.Default);
+        RoomOptions option = new RoomOptions();
+        option.MaxPlayers = 2;
+        PhotonNetwork.JoinOrCreateRoom("JKU", option, TypedLobby.Default);
     }
     public override void OnCreatedRoom()
     {

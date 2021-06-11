@@ -9,6 +9,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Ready.unity
     guid: a867b562437134b4f8604cb2186f4614
   - enabled: 1
+    path: Assets/JKU/Scenes/Select.unity
+    guid: b86f67df5122af743ab7d147fea7acec
+  - enabled: 1
+    path: Assets/JKU/Scenes/Connect.unity
+    guid: 6086081c7520acb42afd5a2312c51280
+  - enabled: 1
+    path: Assets/JKU/Scenes/LobbyScene.unity
+    guid: c5037d78d0e5f374cb0b6b7a25f52c46
+  - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: e8170de5e0d42474aad137ab1bd7fd14
   - enabled: 1

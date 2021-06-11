@@ -268,13 +268,12 @@ public class PlayerM : MonoBehaviour
                 PwUp();
 
 
-                //개발 수정중
-                //  if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
-                // else
-                //{
-                //  lrL.enabled = false;
-                //lrR.enabled = false;
-                //}
+                if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
+                else
+                {
+                    lrL.enabled = false;
+                    lrR.enabled = false;
+                }
 
                 //블랙홀 인력
                 if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;

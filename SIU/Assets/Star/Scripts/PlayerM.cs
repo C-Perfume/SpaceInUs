@@ -64,6 +64,7 @@ public class PlayerM : MonoBehaviour
     public GameObject fire;
     public GameObject shield;
     public GameObject oxy;
+    public GameObject ranBox;
 
     //획득아이템리스트
     public List<int> myTem = new List<int>();
@@ -136,22 +137,7 @@ public class PlayerM : MonoBehaviour
         pp = GetComponent<PlayerPhoton>();
         tM = GetComponent<TrapManager>();
         ps = GetComponent<Player>();
-
-        if (SceneManager.GetActiveScene().name == "Game")
-        {
-            rock = GameObject.Find("Rock").transform;
-            rp = rock.GetComponent<RockParent>();
-            lr = GetComponent<LineRenderer>();
-            FootStepTransform = GameObject.Find("FootStepTransform").transform;
-            state = State.GameStart;
-
-        }
-
-        else if (SceneManager.GetActiveScene().name == "Ready")
-        { state = State.Ready; }
-
-        else
-        { state = State.GameOver; }
+        lr = GetComponent<LineRenderer>();
 
         doorCan = GameObject.Find("DoorCanvas").transform;
         doorIndi = doorCan.GetChild(0).gameObject;
@@ -161,6 +147,20 @@ public class PlayerM : MonoBehaviour
         lrL = pp.handL.GetComponent<LineRenderer>();
         lrR = pp.handR.GetComponent<LineRenderer>();
 
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
+            rock = GameObject.Find("Rock").transform;
+            rp = rock.GetComponent<RockParent>();
+            FootStepTransform = GameObject.Find("FootStepTransform").transform;
+            state = State.GameStart;
+        }
+
+
+        else if (SceneManager.GetActiveScene().name == "Ready")
+        { state = State.Ready; }
+
+        else
+        { state = State.GameOver; }
     }
     void Update()
     {
@@ -425,15 +425,15 @@ public class PlayerM : MonoBehaviour
         if (getBtnHandR)
         { transform.Rotate(0, .2f, 0); }
 
-        Vector2 joystickL = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.LTouch);
-        if (joystickL.y > 0 || joystickL.y < 0)
+        Vector2 joystickR = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.RTouch);
+        if (joystickR.y > 0 || joystickR.y < 0)
         {
-            transform.Rotate(joystickL.y * .2f, 0, 0);
+            transform.Rotate(joystickR.y * .2f, 0, 0);
         }
 
-        if (joystickL.x > 0 || joystickL.x < 0)
+        if (joystickR.x > 0 || joystickR.x < 0)
         {
-            transform.Rotate(0, 0, joystickL.x * .2f);
+            transform.Rotate(0, 0, joystickR.x * .2f);
         }
 
     }
@@ -712,16 +712,6 @@ public class PlayerM : MonoBehaviour
 
     }
 
-    [PunRPC]
-    void RPCTrapM()
-    {
-        GameObject clone = tM.meteorFactory;
-        GameObject obj = Instantiate(clone);
-
-        obj.transform.position = transform.position
-            + transform.up * 10
-            + transform.forward * -10;
-    }
 
 
     [PunRPC]
@@ -853,7 +843,7 @@ public class PlayerM : MonoBehaviour
             {
 
                 int item = 1 << LayerMask.NameToLayer("Item");
-                Collider[] obj = Physics.OverlapSphere(body.position + (Vector3.up * .01f), 0.3f, item);
+                Collider[] obj = Physics.OverlapSphere(body.position + (Vector3.up * .05f), 0.5f, item);
 
                 //1개이상   
                 if (obj.Length > 0)
@@ -876,6 +866,7 @@ public class PlayerM : MonoBehaviour
 
                     if (find)
                     {
+                        SoundM.instance.playS(1, 10);
                         pv.RPC("RPCFind", RpcTarget.All, hand);
                         find = false;
 
@@ -1038,16 +1029,16 @@ public class PlayerM : MonoBehaviour
         item[itIdx].transform.forward = handG.forward;
         if (itIdx == 3) item[itIdx].transform.forward = -handG.forward;
 
-        h = item[0];
-        p = item[1];
+        if (item[0] != null) h = item[0];
+        if (item[1] != null)  p = item[1];
         if (itIdx != 0) Destroy(item[itIdx], 5.5f);
     }
 
     [PunRPC]
     void RPCRLrFalse()
     {
-        lr.enabled = false;
-        h = null;
+        if(lr != null) lr.enabled = false;
+        if (h != null ) h = null;
     }
 
     //rpc해야될 것!

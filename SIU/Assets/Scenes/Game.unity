@@ -35319,6 +35319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81ed3cc9e63c5774d8f0dc7ab57983a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerList: []
 --- !u!4 &1784720771
 Transform:
   m_ObjectHideFlags: 0
@@ -43221,12 +43222,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2060654455168080626, guid: 2054dce5e6363774d96472c24c6fbad3, type: 3}
       propertyPath: clips.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2060654455168080626, guid: 2054dce5e6363774d96472c24c6fbad3, type: 3}
       propertyPath: clips.Array.data[9]
       value: 
       objectReference: {fileID: 8300000, guid: eabe547b29ed07c49a1c9727975525ed, type: 3}
+    - target: {fileID: 2060654455168080626, guid: 2054dce5e6363774d96472c24c6fbad3, type: 3}
+      propertyPath: clips.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: 7be84a7b72244f843899ab8b73566b8d, type: 3}
     - target: {fileID: 2060654455168080628, guid: 2054dce5e6363774d96472c24c6fbad3, type: 3}
       propertyPath: m_RootOrder
       value: 5

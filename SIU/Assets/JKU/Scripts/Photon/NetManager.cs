@@ -15,6 +15,9 @@ public class NetManager : MonoBehaviourPunCallbacks
     //{
     //}
     PhotonView pv;
+
+    public List<GameObject> playerList = new List<GameObject>();
+    GameObject a;
     void Start()
     {
         pv = GetComponent<PhotonView>();
@@ -55,20 +58,21 @@ public class NetManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)//방장일때
         {
-
-            PhotonNetwork.Instantiate("Player", new Vector3(0, 0, -2), Quaternion.identity);
-
+           a = PhotonNetwork.Instantiate("Player", new Vector3(0, 0, -2), Quaternion.identity);
+            pv.RPC("RPCadd", RpcTarget.AllBuffered);
         }
         else
         {
-            PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
-            // StartCoroutine(LodingImg());
+            a = PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
+            pv.RPC("RPCadd", RpcTarget.AllBuffered);
         }
-
-
 
     }
 
+    [PunRPC]
+    void RPCadd() {
+       playerList.Add(a);
+    }
     
 
     //방나가기

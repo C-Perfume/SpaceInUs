@@ -47,6 +47,7 @@ public class RockParent : MonoBehaviour
     public GameObject fireEx;
     public GameObject shield;
     public GameObject oxyCan;
+    public GameObject ranBox;
 
     //setparent¿ë
     public Transform item;

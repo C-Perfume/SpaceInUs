@@ -10,25 +10,24 @@ public class MeteoFall : MonoBehaviour
 
 {
 
-    GameObject target;
+    public GameObject target;
 
 
     public float speed = 5f;
 
     Vector3 dir;
 
-    ItemM iM;
     bool isOpposit = false;
     void Start()
 
     {
-        target = GameObject.Find("EveB (1)");
-        iM = target.transform.root.GetComponent<ItemM>();
-
-        dir = target.transform.position - transform.position;
-        dir.Normalize();
+        if (target != null)
+        {
+            dir = target.transform.position - transform.position;
+            dir.Normalize();
+        }
         
-        Destroy(gameObject, 10);
+        Destroy(gameObject, 5);
     }
 
 

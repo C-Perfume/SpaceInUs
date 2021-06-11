@@ -119,13 +119,13 @@ public class PlayerM : MonoBehaviour
     {
         pv = GetComponent<PhotonView>();
         pp = GetComponent<PlayerPhoton>();
+            tM = GetComponent<TrapManager>();
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
             rock = GameObject.Find("Rock").transform;
             rp = rock.GetComponent<RockParent>();
             mine = new GameObject(pv.Owner.NickName + "_Mine").transform;
-            tM = GetComponent<TrapManager>();
             lr = GetComponent<LineRenderer>();
             FootStepTransform = GameObject.Find("FootStepTransform").transform;
 

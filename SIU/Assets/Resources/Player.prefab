@@ -7700,6 +7700,7 @@ MonoBehaviour:
   fire: {fileID: 1758077086301915472, guid: 2f47f940862307542a5dc0cc7839afbd, type: 3}
   shield: {fileID: 2795271186296236860, guid: ac171ac94626940479d191d5eb0996b8, type: 3}
   oxy: {fileID: 8579832223223586287, guid: de96e38a282967e43b423e5327c5e692, type: 3}
+  ranBox: {fileID: 0}
   myTem: 
   particle: {fileID: 8448567913201286592, guid: cbee4899696423944b618a9acd34552c, type: 3}
   r: 0

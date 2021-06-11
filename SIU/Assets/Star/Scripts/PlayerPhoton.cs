@@ -54,7 +54,7 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
             syncData = new Sync[my.Length];
             handL = others[(int)Parts.LHand];
             handR = others[(int)Parts.RHand];
-        }
+        }        
 
         //꼭 플레이나 빌드할 때 ovr카메라를 비활성화 하자
         //아니면 네트워크 접속 시 바로 ovr매니져 스크립트가 사라진다!!!!

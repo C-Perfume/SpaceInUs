@@ -28,6 +28,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     
     //버젼
     string ver = "1";
+
+    //static 선언
+    public static LobbyManager instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         PhotonNetwork.GameVersion = ver;

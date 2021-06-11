@@ -30,12 +30,12 @@ public class TrapManager : MonoBehaviour
     int viewID;
 
     void Start()
-
     {
         pv = GetComponent<PhotonView>();
         pm = GetComponent<PlayerM>();
         viewID = pv.ViewID;
         net = GameObject.Find("NetManager").GetComponent<NetManager>();
+        net.AddPlayer(gameObject);
     }
 
 
@@ -143,8 +143,9 @@ public class TrapManager : MonoBehaviour
         
         for (int i = 0; i < net.playerList.Count; i++)
         {
-            net.playerList[i].GetComponent<TrapManager>().bH = true;
-            net.playerList[i].GetComponent<TrapManager>().StartCoroutine(Pull(a));
+            TrapManager tm = net.playerList[i].GetComponent<TrapManager>();
+            tm.bH = true;
+            tm.StartCoroutine(tm.Pull(a));
         }
 
     }

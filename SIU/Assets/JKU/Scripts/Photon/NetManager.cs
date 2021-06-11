@@ -58,20 +58,17 @@ public class NetManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)//방장일때
         {
-           a = PhotonNetwork.Instantiate("Player", new Vector3(0, 0, -2), Quaternion.identity);
-            pv.RPC("RPCadd", RpcTarget.AllBuffered);
+            PhotonNetwork.Instantiate("Player", new Vector3(0, 0, -2), Quaternion.identity);
         }
         else
         {
-            a = PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
-            pv.RPC("RPCadd", RpcTarget.AllBuffered);
+             PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
         }
 
     }
 
-    [PunRPC]
-    void RPCadd() {
-       playerList.Add(a);
+    public void AddPlayer(GameObject pl) {
+       playerList.Add(pl);
     }
     
 

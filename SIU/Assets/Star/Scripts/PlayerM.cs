@@ -24,6 +24,7 @@ public class PlayerM : MonoBehaviour
     NetManager net;
     public GameObject hpbar;
    public GameObject readytext;
+   
 
     public State state;
 
@@ -76,7 +77,7 @@ public class PlayerM : MonoBehaviour
     public GameObject fire;
     public GameObject shield;
     public GameObject oxy;
-    public GameObject ranBox;
+    public GameObject[] ranBox;
 
     //획득아이템리스트
     public List<int> myTem = new List<int>();
@@ -89,11 +90,14 @@ public class PlayerM : MonoBehaviour
     // 소화기 파티클
     public GameObject particle;
     GameObject p;
+    // 소화기 사용시 속도
+    public float fireSpd = .1f;
+    //소화기 멈췄다 다시쓰기
+    public bool spdChange = false;
 
     //로프 사용할 때 씀 + 산소데미지 안주게 퍼블릭
     public bool r = false;
     //로프 복제용 후크
-    float ropeSpd = .05f;
     public GameObject hook;
     GameObject h;
     //후크 박힐 때 파티클+소리 복제용
@@ -137,6 +141,7 @@ public class PlayerM : MonoBehaviour
     bool getUBtnIdxR;
 
     bool getDBtn1R;
+    bool getDBtn2R;
     bool getDBtn1L;
     bool getDBtn2L;
 
@@ -151,7 +156,7 @@ public class PlayerM : MonoBehaviour
     {
         #region 초기값 세팅
         net = GameObject.Find("NetManager").GetComponent<NetManager>();
-        net.AddPlayer(gameObject);
+        net.playerList.Add(gameObject);
         maxP = PhotonNetwork.CurrentRoom.MaxPlayers;
         pv = GetComponent<PhotonView>();
         pp = GetComponent<PlayerPhoton>();
@@ -178,7 +183,6 @@ public class PlayerM : MonoBehaviour
             state = PlayerM.State.Wait;
             //배경맵 안보이게 멀리 보내기 >> 비활성화 시 나중에 들어오는 경우 찾지 못함
             hpbar.SetActive(false);
-            rock.transform.parent.position -= Vector3.up * 10000;
 
         StartCoroutine(WaitforStart());
         }
@@ -203,10 +207,10 @@ public class PlayerM : MonoBehaviour
         hpbar.SetActive(true);
         readytext.SetActive(false);
         state = State.GameStart;
-        rock.transform.parent.position += Vector3.up * 10000;
-        rock.transform.parent.GetChild(0).GetChild(0).gameObject.SetActive(true);
-        rock.transform.parent.GetChild(0).GetChild(0).position = transform.position - Vector3.up * 1.1f - Vector3.forward * -1.95f;
+        if (pv.IsMine) {
+            transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
         if (GameObject.Find("StarParticle") != null) Destroy(GameObject.Find("StarParticle"));
+        }
     }
 
     void Update()
@@ -232,6 +236,7 @@ public class PlayerM : MonoBehaviour
         getUBtnIdxR = OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch);
 
         getDBtn1R = OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch);
+        getDBtn2R = OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch);
         getDBtn1L = OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
         getDBtn2L = OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch);
 
@@ -288,9 +293,10 @@ public class PlayerM : MonoBehaviour
 
             #region GameStart
             case State.GameStart:
+            #endregion
 
-           #region //치트키
-               
+                #region //치트키
+
                 if (getDBtn1L) { SceneManager.LoadScene("Meteo"); }
                 if (getDBtn2L) { SceneManager.LoadScene("Clear"); }
 
@@ -298,15 +304,65 @@ public class PlayerM : MonoBehaviour
                 // 개발 수정중 키보드조작
                 float v = Input.GetAxis("Vertical");
                 float h = Input.GetAxis("Horizontal");
-                float f = 0;
-                if (Input.GetKey(KeyCode.Space)) { f = .1f; }
-                if (Input.GetKey(KeyCode.LeftControl)) { f = -.1f; }
-                Vector3 dir = new Vector3(h, f, v);
+                float ff = 0;
+                if (Input.GetKey(KeyCode.Space)) { ff = .1f; }
+                if (Input.GetKey(KeyCode.LeftControl)) { ff = -.1f; }
+                Vector3 dir = new Vector3(h, ff, v);
                 transform.position += dir * 10 * Time.deltaTime;
-        #endregion
 
-                //플로팅
-                // 개발로 수정중
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    pv.RPC("RpcItem", RpcTarget.All, 1, 0);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Alpha2)) 
+                {
+                    if (myTem.Count < 2)
+                    {
+                        SoundM.instance.playS(1, 10);
+                        pv.RPC("RPCFind", RpcTarget.All, 1);
+                    }
+                    else
+                    {
+                        pv.RPC("RPCFree", RpcTarget.AllBuffered, 1, 1);
+                        print("걸린게 없어서  공중부양");
+                    }
+                }
+
+                 if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    if (myTem.Count > 0)
+                    {
+                        if (myTem[0] == 4)
+                        {
+                            int test = Random.Range(0, 4);
+                            UseItem(test);
+                        }
+
+                        if (myTem[0] == 5) 
+                        {
+                            int test = 3;
+                                //Random.Range(0, 4);
+                            if (test == 0 || test == 1)
+                            {
+                                int ox = Random.Range(0, 2);
+                                pv.RPC("RPCBlackHole", RpcTarget.All, ox);
+                                pv.RPC("RPCvib", RpcTarget.All);
+                            }
+                            else {
+                                pv.RPC("RPCRanBoxTrapC", RpcTarget.All, test, tM.viewID);
+                            }
+
+                        }
+                            myTem.RemoveAt(0);
+                            StartCoroutine(StopFR());
+                    }
+
+                }
+                #endregion
+
+                #region a
+                //플로팅 개발로 수정중
                 if (floating) { }  //Float();
 
                 if (!tM.bH) { Grab(); }
@@ -319,14 +375,14 @@ public class PlayerM : MonoBehaviour
 
                 //블랙홀 인력
                 if (tM.bH) transform.position += tM.dir * tM.pullSpd * Time.deltaTime;
-               
-                //들어갔다 나가면 오류 싱글톤이라 그런건가?
-                if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
-                else
-                {
-                    lrL.enabled = false;
-                    lrR.enabled = false;
-                }
+
+                ////들어갔다 나가면 오류 싱글톤이라 그런건가?
+                //if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
+                //else
+                //{
+                //    lrL.enabled = false;
+                //    lrR.enabled = false;
+                //}
                 break;
             #endregion
 
@@ -600,8 +656,9 @@ public class PlayerM : MonoBehaviour
         }
     }
 
+        //수정필요
     void PwUp()
-    { //수정필요
+    {
         if (getUBtnIdxR && getUBtnIdxL)
         {
             vPower *= 3;
@@ -682,7 +739,9 @@ public class PlayerM : MonoBehaviour
         int idx = hitTFN.GetSiblingIndex();
 
         // 홀드 잡고 있는 중
-        if (hitTFN.IsChildOf(rock))
+        if (hitTFN.IsChildOf(rock)
+            || hitTFN.name.Contains("Player")
+            )
         {
             floating = false;
             rb.isKinematic = true;
@@ -699,35 +758,36 @@ public class PlayerM : MonoBehaviour
 
             if (Holdpre == Hold) { tM.up = false; }
 
+            if (!hitTFN.name.Contains("Player")) {
 
-
-            if (rp.holds[idx].type == Value.Type.Trap)
-            {
-
-                if (tM.up)
+                if (rp.holds[idx].type == Value.Type.Trap)
                 {
 
-                    if (rp.holds[idx].tT == Value.TrapType.BHoleL
-                        || rp.holds[idx].tT == Value.TrapType.BholeR
-                        )
+                    if (tM.up)
                     {
-                        tM.BHole(rp.holds[idx]);
-                    }
-                    else
 
-                    if (rp.holds[idx].tT == Value.TrapType.Meteor)
-                    {
-                        tM.Create(tM.meteorFactory);
-                    }
+                        if (rp.holds[idx].tT == Value.TrapType.BHoleL
+                            || rp.holds[idx].tT == Value.TrapType.BholeR
+                            )
+                        {
+                            tM.BHole(rp.holds[idx]);
+                        }
 
-                    else //(r.trapType == (int)Rocks.TrapType.Can)
-                    {
-                        tM.Create(tM.canFactory);
-                    }
-                    tM.up = false;
+                        else
+                        if (rp.holds[idx].tT == Value.TrapType.Meteor)
+                        {
+                            tM.Create(tM.meteorFactory);
+                        }
 
+                        else //(r.trapType == (int)Rocks.TrapType.Can)
+                        {
+                            tM.Create(tM.canFactory);
+                        }
+                        
+                        tM.up = false;
+
+                    }
                 }
-
             }
 
 
@@ -770,8 +830,11 @@ public class PlayerM : MonoBehaviour
 
         // 어떤손인지 특정
         Transform handG = pp.handL;
-
         if (hand == 1) handG = pp.handR;
+
+        //랜덤박스 특정
+        byte rIdx = 0;
+        if (maxP > 1) { rIdx = 1; }
 
         // 손에 복제
         //각 아이템마다 고유 번호를 써서 인트 리스트를 통해 사용하기
@@ -779,6 +842,7 @@ public class PlayerM : MonoBehaviour
         if (item.name.Contains("Fire")) { CreateItem(fire, handG); mytem[hand] = 1; }
         if (item.name.Contains("Shield")) { CreateItem(shield, handG); mytem[hand] = 2; }
         if (item.name.Contains("Oxy")) { CreateItem(oxy, handG); mytem[hand] = 3; }
+        if (item.name.Contains("Ran")) { CreateItem(ranBox[rIdx], handG); mytem[hand] = 4+ rIdx; }
 
         // 아이템 풀 돌리기 30초
         rp.item_False.Add(item);
@@ -886,7 +950,7 @@ public class PlayerM : MonoBehaviour
         // 아이템 잡았다면
         if (catchItem != null && hitTFN == catchItem)
         {
-            //두개 이하
+            //내 템리스트가 비엇거나 1개인 경우
             if (myTem.Count < 2)
             {
 
@@ -919,12 +983,7 @@ public class PlayerM : MonoBehaviour
                         find = false;
 
                     }
-                    //else
-                    //{
-                    //    pv.RPC("RPCFree", RpcTarget.AllBuffered, ve, angVe);
-                    //    print("포문으로 찾아지지 않음");
-                    //}
-
+                   
                 }
 
                 //0개
@@ -980,37 +1039,37 @@ public class PlayerM : MonoBehaviour
     void UseItem() {
 
         //아이템 작용
-        if (myTem.Count > 0)
+        if (getDBtn1R)
         {
-            if (getDBtn1R)
+
+            if (myTem.Count > 0)
             {
-
-                if (myTem[0] == 0)
+                if (myTem[0] == 4)
                 {
-                    pv.RPC("RPCUse", RpcTarget.All, myTem[0]);
-                    r = true;
-                    isH = true;
-                    SoundM.instance.playS(2, 2);
+                    int ranboxIdx = Random.Range(0, 4);
+                    UseItem(ranboxIdx);
                 }
-                if (myTem[0] == 1)
-                {
-                    f = true;
-                    pv.RPC("RPCUse", RpcTarget.All, myTem[0]);
-                }
+                else if (myTem[0] == 5) {
 
-                if (myTem[0] == 2)
-                {
-                    rb.isKinematic = true;
-                    //블랙홀 지우기
-                    tM.bH = false;
-                    pv.RPC("RPCUse", RpcTarget.All, myTem[0]);
-                }
+                    if (myTem[0] == 5)
+                    {
+                        int boxTrap = Random.Range(0, 4);
+                        if (boxTrap == 0 || boxTrap == 1)
+                        {
+                            int ox = Random.Range(0, 2);
+                            pv.RPC("RPCBlackHole", RpcTarget.All, ox);
+                            pv.RPC("RPCvib", RpcTarget.All);
+                        }
+                        else
+                        {
+                            pv.RPC("RPCRanBoxTrapC", RpcTarget.All, boxTrap, tM.viewID);
+                        }
 
-                if (myTem[0] == 3)
-                {
-                    ps.PlusHp(30);
-                }
+                    }
 
+                }
+                else { UseItem(myTem[0]); }
+                
                 myTem.RemoveAt(0);
                 StartCoroutine(StopFR());
             }
@@ -1018,22 +1077,63 @@ public class PlayerM : MonoBehaviour
         }
 
     }
+    void UseItem(int item) {
+
+        if (item == 0)
+        {
+            pv.RPC("RPCUse", RpcTarget.All, item);
+            r = true;
+            isH = true;
+            SoundM.instance.playS(2, 2);
+        }
+        if (item == 1)
+        {
+            f = true;
+            pv.RPC("RPCUse", RpcTarget.All, item);
+        }
+
+        if (item == 2)
+        {
+            rb.isKinematic = true;
+            //블랙홀 지우기
+            tM.bH = false;
+            pv.RPC("RPCUse", RpcTarget.All, item);
+        }
+
+        if (item == 3)
+        {
+            ps.PlusHp(30);
+        }
+    }
 
     void itemActive() {
 
+ 
         if (f)
         {
             rb.isKinematic = false;
-            rb.AddForce(-pp.handL.forward * ropeSpd * 10);
+            rb.velocity = -pp.handL.forward * fireSpd;
+            if (!spdChange)  fireSpd = Mathf.Lerp(fireSpd, 2, 1 * Time.deltaTime) ; 
+            else fireSpd = Mathf.Lerp(fireSpd, .1f, 3 * Time.deltaTime);
+
             pv.RPC("RPCFireEx", RpcTarget.All);
+            
+
+            if (getDBtn2R
+                //개발로 수정중
+                ||  Input.GetKeyDown(KeyCode.Alpha4)
+                ) {
+                pv.RPC("RPCFireEFStop", RpcTarget.All);
+            }
         }
         else
         {
-
+            spdChange = false;
             if (p != null)
             {
                 pv.RPC("RPCFNull", RpcTarget.All);
             }
+
         }
 
         if (r)
@@ -1055,12 +1155,19 @@ public class PlayerM : MonoBehaviour
         {
             pv.RPC("RPCRLrFalse", RpcTarget.All);
         }
-
+        
     }
 
-    // 아이템 사용 시 복제동기화 함수
-    // 012 로프, 소화기, 쉴드 / 3 후크
     [PunRPC]
+    void RPCFireEFStop() {
+        ParticleSystem ps = p.transform.GetComponent<ParticleSystem>();
+        spdChange = !spdChange;
+        if (spdChange) { ps.Stop(true); }
+        else ps.Play(true);
+    }
+ // 아이템 사용 시 복제동기화 함수
+ // 012 로프, 소화기, 쉴드 / 3 후크
+ [PunRPC]
     void RPCUse(int itIdx) {
 
         GameObject[] item = new GameObject[4];

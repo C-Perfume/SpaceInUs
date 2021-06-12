@@ -6,7 +6,6 @@ using Photon.Pun;
 
 
 public class TrapManager : MonoBehaviourPun
-
 {
 
     public GameObject meteorFactory;
@@ -27,7 +26,7 @@ public class TrapManager : MonoBehaviourPun
     PlayerM pm;
     PhotonView pv;
     NetManager net;
-    int viewID;
+   public int viewID;
 
     void Start()
     {
@@ -43,22 +42,35 @@ public class TrapManager : MonoBehaviourPun
     // 2 메테오 3캔
     public void Create(GameObject clone)
     {
+       
+            if (clone.name.Contains("Meteo"))
+            {
+                SoundM.instance.playS(4, 8);
+                pv.RPC("RPCTrapC", RpcTarget.All, 2, viewID);
+            }
+            if (clone.name.Contains("Can"))
+            {
+                SoundM.instance.playS(4, 7);
+                pv.RPC("RPCTrapC", RpcTarget.All, 3, viewID);
+            }
+            StartCoroutine(Vibrate(.5f));
+            StopCoroutine(Vibrate(5));
+        
+    }
 
-        if (clone.name.Contains("Meteo"))
+    void TrapDir(int type, GameObject obj, GameObject target) {
+        if (type == 2)
         {
-            SoundM.instance.playS(4, 8);
-            pv.RPC("RPCTrapC", RpcTarget.All, 2, viewID);
-
+            obj.GetComponent<MeteoFall>().target = target;
         }
-        if (clone.name.Contains("Can"))
+        else
         {
-            SoundM.instance.playS(4, 7);
-            pv.RPC("RPCTrapC", RpcTarget.All, 3, viewID);
-
+            obj.GetComponent<BottleFall>().target = target;
         }
-        StartCoroutine(Vibrate(.5f));
-        StopCoroutine(Vibrate(5));
 
+        obj.transform.position = transform.position
+            + transform.up * 10
+            + transform.forward * -10;
     }
 
     [PunRPC]
@@ -69,22 +81,10 @@ public class TrapManager : MonoBehaviourPun
         GameObject obj = Instantiate(clone);
         GameObject target = gameObject;
 
-        obj.transform.position = transform.position
-            + transform.up * 10
-            + transform.forward * -10;
 
         if (pv.IsMine)
         {
-
-            if (type == 2)
-            {
-                obj.GetComponent<MeteoFall>().target = target;
-            }
-            else
-            {
-                obj.GetComponent<BottleFall>().target = target;
-            }
-
+            TrapDir(type, obj, target);
         }
         else {
 
@@ -96,24 +96,76 @@ public class TrapManager : MonoBehaviourPun
                 }
             }
 
-            if (type == 2)
-            {
-                obj.GetComponent<MeteoFall>().target = target;
-            }
-            else
-            {
-                obj.GetComponent<BottleFall>().target = target;
-            }
-
+            TrapDir(type, obj, target);
+            
         }
 
     }
 
-    // 블랙홀 생성
-    public void BHole(Value v)
+    [PunRPC]
+    void RPCRanBoxTrapC(int type, int id)
+    {
+        GameObject clone = meteorFactory;
+        if (type == 3) clone = canFactory;
+
+        // 접속 인원 수 만큼 함정 복제
+        for (int i = 0; i < net.playerList.Count ; i++)
+        {
+           
+            // 내가 랜덤박스 쓴 경우
+            if (pv.IsMine)
+            {
+            
+                // 리스트 인원이 내가 아니면
+                if (net.playerList[i] != gameObject 
+                    && net.playerList[i] !=null
+                    )
+                    {
+                
+                    // 타겟은 리스트 상 오브젝트이다
+                    GameObject obj = Instantiate(clone);
+                    GameObject target = net.playerList[i];
+                    TrapDir(type, obj, target);
+                   
+                }
+
+            }
+                //남이 쓴 경우
+            else 
+            {
+                //해당 오브젝트의 뷰아이디와 다르면 함정 타겟이 된다
+                if (net.playerList[i].GetComponent<TrapManager>().viewID != viewID
+                      && net.playerList[i] != null
+                    )
+                {
+                    GameObject obj = Instantiate(clone);
+                    GameObject target = net.playerList[i];
+                    TrapDir(type, obj, target);
+                    //내가 걸렸다면 진동으로 알리기
+                    if (net.playerList[i] == gameObject) {
+                        StartCoroutine(Vibrate(.5f));
+                        StopCoroutine(Vibrate(5));
+                    }
+
+                }
+                
+            }
+
+        }
+
+
+    }
+
+        // 블랙홀 생성
+        public void BHole(Value v)
     {
         pv.RPC("RPCBlackHole", RpcTarget.All, (int)v.tT);
+        StartCoroutine(Vibrate(.5f));
+        StopCoroutine(Vibrate(1));
+    }
 
+    [PunRPC]
+     void RPCvib() {
         StartCoroutine(Vibrate(.5f));
         StopCoroutine(Vibrate(1));
     }
@@ -144,9 +196,13 @@ public class TrapManager : MonoBehaviourPun
         
         for (int i = 0; i < net.playerList.Count; i++)
         {
-            TrapManager tm = net.playerList[i].GetComponent<TrapManager>();
-            tm.bH = true;
-            tm.StartCoroutine(tm.Pull(a));
+            if (net.playerList[i] != null)
+            {
+                TrapManager tm = net.playerList[i].GetComponent<TrapManager>();
+                tm.bH = true;
+                tm.StartCoroutine(tm.Pull(a));
+            }
+        
         }
 
     }
@@ -195,6 +251,7 @@ public class TrapManager : MonoBehaviourPun
             {
                 BottleFall btf = other.gameObject.GetComponent<BottleFall>();
                 StartCoroutine(btf.Black_());
+                print("작동???");
             }
             Destroy(other.gameObject);
         }

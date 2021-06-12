@@ -17,7 +17,6 @@ public class NetManager : MonoBehaviourPunCallbacks
     PhotonView pv;
 
     public List<GameObject> playerList = new List<GameObject>();
-    GameObject a;
     void Start()
     {
         pv = GetComponent<PhotonView>();
@@ -43,7 +42,11 @@ public class NetManager : MonoBehaviourPunCallbacks
         base.OnJoinedLobby();
         print("OnJoinedLobbyzz");
         RoomOptions option = new RoomOptions();
+
+        //개발로 수정 중
+       // option.MaxPlayers = 1;
         option.MaxPlayers = 2;
+        
         PhotonNetwork.JoinOrCreateRoom("JKU", option, TypedLobby.Default);
     }
     public override void OnCreatedRoom()
@@ -69,11 +72,7 @@ public class NetManager : MonoBehaviourPunCallbacks
 
     }
 
-    public void AddPlayer(GameObject pl) {
-       playerList.Add(pl);
-    }
-    
-
+   
     //방나가기
     public void LeaveRoom()
     {

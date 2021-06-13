@@ -40,6 +40,8 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
     //pm에서 사용.. 손 지정하는 글이 너무 김
     public Transform handL;
     public Transform handR;
+    public GameObject[] ud;
+    public GameObject udimg;
 
     void Start()
     {
@@ -48,12 +50,13 @@ public class PlayerPhoton : MonoBehaviourPun, IPunObservable
 
         handL = my[(int)Parts.LHand];
         handR = my[(int)Parts.RHand];
-    
+        udimg = ud[0];
         if (!pv.IsMine)
         {
             syncData = new Sync[my.Length];
             handL = others[(int)Parts.LHand];
             handR = others[(int)Parts.RHand];
+            udimg = ud[1];
         }        
 
         //꼭 플레이나 빌드할 때 ovr카메라를 비활성화 하자

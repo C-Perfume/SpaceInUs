@@ -5181,10 +5181,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 144389895}
-  - {fileID: 1719149349}
   - {fileID: 1556808538}
-  - {fileID: 90890063}
+  - {fileID: 1719149349}
   - {fileID: 4000013021816440}
+  - {fileID: 90890063}
   - {fileID: 1949317317}
   m_Father: {fileID: 4000012030138916}
   m_RootOrder: 0
@@ -9655,8 +9655,7 @@ MonoBehaviour:
   oxyCan: {fileID: 8579832223223586287, guid: de96e38a282967e43b423e5327c5e692, type: 3}
   item: {fileID: 0}
   holds: []
-  items: []
-  item_False: []
+  hold_Idx: 
   free: {fileID: 0}
 --- !u!114 &480365271
 MonoBehaviour:
@@ -29284,7 +29283,7 @@ Transform:
   m_LocalScale: {x: 0.4608801, y: 1.4637941, z: 0.027232604}
   m_Children: []
   m_Father: {fileID: 274598661}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 63.548, y: -6.648, z: 36.918}
 --- !u!65 &1556808539
 BoxCollider:
@@ -42227,7 +42226,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 274598661}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4238405082845607
 Transform:
@@ -46990,7 +46989,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2060654455168080626, guid: 2054dce5e6363774d96472c24c6fbad3, type: 3}
       propertyPath: clips.Array.size
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 2060654455168080626, guid: 2054dce5e6363774d96472c24c6fbad3, type: 3}
       propertyPath: clips.Array.data[9]
@@ -47000,6 +46999,10 @@ PrefabInstance:
       propertyPath: clips.Array.data[10]
       value: 
       objectReference: {fileID: 8300000, guid: 7be84a7b72244f843899ab8b73566b8d, type: 3}
+    - target: {fileID: 2060654455168080626, guid: 2054dce5e6363774d96472c24c6fbad3, type: 3}
+      propertyPath: clips.Array.data[11]
+      value: 
+      objectReference: {fileID: 8300000, guid: 66ac42cbdfc5ba54f8f5cea7ad084f1e, type: 3}
     - target: {fileID: 2060654455168080628, guid: 2054dce5e6363774d96472c24c6fbad3, type: 3}
       propertyPath: m_RootOrder
       value: 5

@@ -18,6 +18,8 @@ public class TrapManager : MonoBehaviourPun
     public bool up = true;
     // 블랙홀 인력유지용
     public bool bH = false;
+    // 방향반대 유지용
+    public bool isUD = false;
     // 인력 방향
     public Vector3 dir;
     // 블랙홀 인력속도
@@ -34,7 +36,6 @@ public class TrapManager : MonoBehaviourPun
         pm = GetComponent<PlayerM>();
         viewID = pv.ViewID;
         net = GameObject.Find("NetManager").GetComponent<NetManager>();
-       
 
     }
 
@@ -46,12 +47,12 @@ public class TrapManager : MonoBehaviourPun
             if (clone.name.Contains("Meteo"))
             {
                 SoundM.instance.playS(4, 8);
-                pv.RPC("RPCTrapC", RpcTarget.All, 2, viewID);
+                pv.RPC("RPCTrapC", RpcTarget.All, 2);
             }
             if (clone.name.Contains("Can"))
             {
                 SoundM.instance.playS(4, 7);
-                pv.RPC("RPCTrapC", RpcTarget.All, 3, viewID);
+                pv.RPC("RPCTrapC", RpcTarget.All, 3);
             }
             StartCoroutine(Vibrate(.5f));
             StopCoroutine(Vibrate(5));
@@ -74,7 +75,7 @@ public class TrapManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    void RPCTrapC(int type, int id) {
+    void RPCTrapC(int type) {
 
         GameObject clone = meteorFactory;
         if (type == 3) clone = canFactory;
@@ -103,7 +104,36 @@ public class TrapManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    void RPCRanBoxTrapC(int type, int id)
+    void RPCRanBoxUD()
+    {
+        // 접속 인원 수 만큼 isUD 상태 바꾸기
+        for (int i = 0; i < net.playerList.Count; i++)
+        {
+          TrapManager tm = net.playerList[i].GetComponent<TrapManager>();
+
+            // 내가 랜덤박스 쓴 경우
+            if (pv.IsMine)
+            {
+                // 리스트 인원이 내가 아니면
+                if (net.playerList[i] != gameObject)
+                {
+                    StartCoroutine(tm.UD());
+                }
+            }
+            //남이 쓴 경우
+            else
+            {
+                //해당 오브젝트의 뷰아이디와 다르면 함정 타겟이 된다
+                if (tm.viewID != viewID)
+                {
+                    StartCoroutine(tm.UD());
+                }
+            }
+        }
+    }
+
+            [PunRPC]
+    void RPCRanBoxTrapC(int type)
     {
         GameObject clone = meteorFactory;
         if (type == 3) clone = canFactory;
@@ -195,12 +225,9 @@ public class TrapManager : MonoBehaviourPun
         
         for (int i = 0; i < net.playerList.Count; i++)
         {
-            if (net.playerList[i] != null)
-            {
                 TrapManager tm = net.playerList[i].GetComponent<TrapManager>();
                 tm.bH = true;
                 tm.StartCoroutine(tm.Pull(a));
-            }
         
         }
 
@@ -213,6 +240,14 @@ public class TrapManager : MonoBehaviourPun
         dir.Normalize();
         yield return new WaitForSeconds(5);
         bH = false;
+    }
+
+    public IEnumerator UD()
+    {
+        SoundM.instance.playS(4, 11);
+        isUD = true;
+        yield return new WaitForSeconds(5);
+        isUD = false;
     }
 
     // 함정에 부딪히면 처리되는 함수

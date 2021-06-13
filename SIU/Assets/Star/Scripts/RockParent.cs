@@ -14,10 +14,11 @@ public class Value
     }
     public enum TrapType
     {
-        BHoleL, // 1 확률
-        BholeR, // 화이트 홀 4
-        Meteor, // 1
-        Can // 4
+        BHoleL,
+        BholeR,
+        Meteor, 
+        UpsideDown,
+        Can
     }
   
     public Type type;
@@ -116,19 +117,20 @@ public class RockParent : MonoBehaviour
         //처음 0, 1, 2번 지정된 값 넣기 스텝 / 화이트홀 / 쉴드
         if (i == 0) { v.type = Value.Type.Step; }
         if (i == 1) { v.type = Value.Type.Trap; tRand = 2; }
-        if (i == 2) { v.type = Value.Type.Item; tRand = 3; }
+        if (i == 2) { v.type = Value.Type.Item; tRand = 10; }
 
-        //트랩설정
+        //트랩설정 1:2:1:6확률
         if (v.type == Value.Type.Trap)
         {
             //1번 우주미아 블랙홀, 2+3번 화이트홀, 4번 메테오, 나머지 캔
             if (tRand == 1) { v.tT = Value.TrapType.BHoleL; }
             else if (tRand == 2 || tRand == 3) { v.tT = Value.TrapType.BholeR; }
             else if (tRand == 4) { v.tT = Value.TrapType.Meteor; }
+            else if (tRand == 5) { v.tT = Value.TrapType.UpsideDown; }
             else { v.tT = Value.TrapType.Can; }
 
         }
-        //아이템 설정
+        //아이템 설정 1:1:1:1:6 확률
         if (v.type == Value.Type.Item)
         {
             // 1번 로프

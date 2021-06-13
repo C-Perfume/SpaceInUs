@@ -117,11 +117,8 @@ public class TrapManager : MonoBehaviourPun
             {
             
                 // 리스트 인원이 내가 아니면
-                if (net.playerList[i] != gameObject 
-                    && net.playerList[i] !=null
-                    )
-                    {
-                
+                if (net.playerList[i] != gameObject )
+                {
                     // 타겟은 리스트 상 오브젝트이다
                     GameObject obj = Instantiate(clone);
                     GameObject target = net.playerList[i];
@@ -134,21 +131,23 @@ public class TrapManager : MonoBehaviourPun
             else 
             {
                 //해당 오브젝트의 뷰아이디와 다르면 함정 타겟이 된다
-                if (net.playerList[i].GetComponent<TrapManager>().viewID != viewID
-                      && net.playerList[i] != null
-                    )
+                if (net.playerList[i].GetComponent<TrapManager>().viewID != viewID)
                 {
                     GameObject obj = Instantiate(clone);
                     GameObject target = net.playerList[i];
                     TrapDir(type, obj, target);
-                    //내가 걸렸다면 진동으로 알리기
-                    if (net.playerList[i] == gameObject) {
-                        StartCoroutine(Vibrate(.5f));
-                        StopCoroutine(Vibrate(5));
-                    }
+
+                    if (type == 2) SoundM.instance.playS(4, 8);
+                    else SoundM.instance.playS(4, 7);
+                    StartCoroutine(Vibrate(.5f));
+                    StopCoroutine(Vibrate(5));
+
+                    //수정필요
+                    ////내가 걸렸다면 진동으로 알리기
+                    //if (target == gameObject) {}
 
                 }
-                
+
             }
 
         }
@@ -251,7 +250,6 @@ public class TrapManager : MonoBehaviourPun
             {
                 BottleFall btf = other.gameObject.GetComponent<BottleFall>();
                 StartCoroutine(btf.Black_());
-                print("작동???");
             }
             Destroy(other.gameObject);
         }

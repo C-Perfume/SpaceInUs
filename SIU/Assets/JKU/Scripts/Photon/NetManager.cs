@@ -44,7 +44,7 @@ public class NetManager : MonoBehaviourPunCallbacks
         RoomOptions option = new RoomOptions();
 
         //개발로 수정 중
-       // option.MaxPlayers = 1;
+       //option.MaxPlayers = 1;
         option.MaxPlayers = 2;
         
         PhotonNetwork.JoinOrCreateRoom("JKU", option, TypedLobby.Default);
@@ -105,6 +105,16 @@ public class NetManager : MonoBehaviourPunCallbacks
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
+
+        //나간 사람의 게임오브젝트를 리스트에서 제거한다.
+        for (int i = 0; i < playerList.Count; i++)
+        {
+            if (otherPlayer.NickName == playerList[i].GetComponent<PhotonView>().Owner.NickName)
+            {
+                playerList.Remove(playerList[i]);
+                break;
+            }
+        }
     }
 }
 //    //로딩 창 보여주기

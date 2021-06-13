@@ -8,9 +8,9 @@ public class Value
 {
     public enum Type
     {
-        Step,//5
+        Step,//4
         Trap,//3
-        Item//2
+        Item//3
     }
     public enum TrapType
     {
@@ -19,25 +19,15 @@ public class Value
         Meteor, // 1
         Can // 4
     }
-    public enum ItemType
-    {
-        RanBox, //0번 1확률
-        Rope, // 1  1
-        FireEx, // 2  1
-        Shield, // 3  1
-        OxyCan // 4~9  6
-
-    }
-
+  
     public Type type;
     public TrapType tT;
-    public ItemType iT;
-
+  
     // 일반, 함정, 아이템, 돌색깔 설정 값
-    public int itemNum = -1;
-
-    // 색상
-    public Material mat;
+    public GameObject rockItem;
+    public bool popUp = false;
+     // 색상
+     public Material mat;
 
 }
 public class RockParent : MonoBehaviour
@@ -53,8 +43,7 @@ public class RockParent : MonoBehaviour
     //setparent용
     public Transform item;
     public List<Value> holds = new List<Value>();
-    public List<GameObject> items = new List<GameObject>();
-    public List<GameObject> item_False = new List<GameObject>();
+    public List<int> hold_Idx = new List<int>();
     public Transform free;
 
     PhotonView pv;
@@ -92,12 +81,12 @@ public class RockParent : MonoBehaviour
                     int rand = Random.Range(1, 11); //랜덤레인지값을 하위 오브젝트 숫자만큼 뽑아내자
                     int tRand = Random.Range(0, 10); //0~9까지 0번이 Ranbox1인용
                     if (maxP > 1) { tRand = Random.Range(1, 11); } // 10번이  Ranbox다인용
-                  //  int colorN = Random.Range(0, 8); // 8가지 색상
+                    int colorN = Random.Range(0, 8); // 8가지 색상
 
                     //뽑아낸 숫자만큼 알피씨를 보냄. RockParents 스크립트의 랜덤값 두개(rand, tRand)
-                    pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand
-                  //      , colorN
-                        );
+                    pv.RPC("RpcRockstep", RpcTarget.AllBuffered, i, rand, tRand, colorN);
+
+
                 }
 
             }
@@ -113,31 +102,25 @@ public class RockParent : MonoBehaviour
 
 
     //포톤용
+    //RockParents에 있는 함수 가져오기 (RPC로 만들기)
     [PunRPC]
-    public void RpcRockstep(int i, int rand, int tRand 
-      // , int colorNum
-        ) //RockParents에 있는 함수 가져오기 (RPC로 만들기)
+    public void RpcRockstep(int i, int rand, int tRand, int colorNum)
     {
         Value v = new Value();
         v.mat = transform.GetChild(i).GetComponent<MeshRenderer>().material;
 
-        if (rand < 6) { v.type = Value.Type.Step; }
-        else if (rand < 9) { v.type = Value.Type.Trap; }
+        if (rand < 5) { v.type = Value.Type.Step; }
+        else if (rand < 8) { v.type = Value.Type.Trap; }
         else { v.type = Value.Type.Item; }
 
-        //처음 0, 1, 2번 지정된 값 넣기 스텝 / 화이트홀 / 산소통
+        //처음 0, 1, 2번 지정된 값 넣기 스텝 / 화이트홀 / 쉴드
         if (i == 0) { v.type = Value.Type.Step; }
         if (i == 1) { v.type = Value.Type.Trap; tRand = 2; }
-        if (i == 2) { v.type = Value.Type.Item; tRand = 10; }
+        if (i == 2) { v.type = Value.Type.Item; tRand = 3; }
 
-        //스텝이면 노란색
-        if (v.type == Value.Type.Step) { v.mat.color = Color.yellow; }
-
-        //트랩이면 빨강색 >> 개발로 수정 중  >> 아이템이랑 같은 색상 만들기
-        else if (v.type == Value.Type.Trap)
+        //트랩설정
+        if (v.type == Value.Type.Trap)
         {
-            v.mat.color = Color.red;
-
             //1번 우주미아 블랙홀, 2+3번 화이트홀, 4번 메테오, 나머지 캔
             if (tRand == 1) { v.tT = Value.TrapType.BHoleL; }
             else if (tRand == 2 || tRand == 3) { v.tT = Value.TrapType.BholeR; }
@@ -145,80 +128,75 @@ public class RockParent : MonoBehaviour
             else { v.tT = Value.TrapType.Can; }
 
         }
-
-        // 아이템이면 파란색
-        else
+        //아이템 설정
+        if (v.type == Value.Type.Item)
         {
-            v.mat.color = Color.blue;
-           
-                // 1번 로프
-                if (tRand == 1)
-            {
-                v.iT = Value.ItemType.Rope;
-                Create(rope, transform.GetChild(i));
-            }
+            // 1번 로프
+            if (tRand == 1) {Create(rope, transform.GetChild(i), v); }
+
             // 2번 소화기
-            else if (tRand == 2)
-            {
-                v.iT = Value.ItemType.FireEx;
-                Create(fireEx, transform.GetChild(i));
-            }
+            else if (tRand == 2) { Create(fireEx, transform.GetChild(i), v); }
+           
             //3번 쉴드
-            else if (tRand == 3)
-            {
-                v.iT = Value.ItemType.Shield;
-                Create(shield, transform.GetChild(i));
-            }
+            else if (tRand == 3){ Create(shield, transform.GetChild(i), v); }
+           
              //0번 ranBox 1인용
-            else if (tRand == 0)
-            {
-                v.iT = Value.ItemType.RanBox;
-                Create(ranBox[0], transform.GetChild(i));
-            }
+            else if (tRand == 0){ Create(ranBox[0], transform.GetChild(i), v); }
+
             //10번 ranBox 다인용
-            else if (tRand == 10)
-            {
-                v.iT = Value.ItemType.RanBox;
-                Create(ranBox[1], transform.GetChild(i));
-            }
+            else if (tRand == 10) { Create(ranBox[1], transform.GetChild(i), v); }
+
             //나머지 산소
-            else
-            {
-                v.iT = Value.ItemType.OxyCan;
-                Create(oxyCan, transform.GetChild(i));
-            }
+            else { Create(oxyCan, transform.GetChild(i), v); }
+           
+
+           // 아이템 집었을 때 어떤 돌멩이의 popup을 꺼줄지 특정하기
+            hold_Idx.Add(i);
         }
 
-        //v.mat.color = Color.black;
-        //if (colorNum == 1) { v.mat.color = Color.red; }
-        //else if (colorNum == 2) { v.mat.color = Color.magenta; }
-        //else if (colorNum == 3) { v.mat.color = Color.yellow; }
-        //else if (colorNum == 4) { v.mat.color = Color.green; }
-        //else if (colorNum == 5) { v.mat.color = Color.cyan; }
-        //else if (colorNum == 6) { v.mat.color = Color.blue; }
-        //else if (colorNum == 7) { v.mat.color = Color.grey; }
+            v.mat.color = Color.black;
+                if (colorNum == 1) { v.mat.color = Color.red; }
+                 else if (colorNum == 2) { v.mat.color = Color.magenta; }
+                 else if (colorNum == 3) { v.mat.color = Color.yellow; }
+                 else if (colorNum == 4) { v.mat.color = Color.green; }
+                 else if (colorNum == 5) { v.mat.color = Color.cyan; }
+                 else if (colorNum == 6) { v.mat.color = Color.blue; }
+                 else if (colorNum == 7) { v.mat.color = Color.grey; }
 
-        
-        holds.Add(v);
+
+            holds.Add(v);
     }
 
     [PunRPC]
     public void RpcIsMaster() { isMaster = true; }
 
-    void Create(GameObject obj, Transform h)
+    void Create(GameObject obj, Transform h, Value v)
     {
         GameObject a = Instantiate(obj);
         a.transform.position = h.position + h.forward * -.05f + h.up * .07f;
         a.transform.SetParent(item);
-        items.Add(a);
+        // 돌맹이 집었을 때 활성화 될 아이템 특정하기
+        v.rockItem = a;
+      
+        // 쉴드, 랜박이면 팝업 활성화 + 아이템리스트에 넣기
+        if (obj == shield || obj == ranBox[0] || obj == ranBox[1]) { v.popUp = true; }
+        // 아니면 비활성화 +비활성화 리스트에 넣기 
+        else { a.SetActive(false);  }
     }
 
-    //아이템 생성
-    public IEnumerator ShowUp()
+    //아이템 30초간 돌잡아도 안나오게 하기
+    public IEnumerator ShowUp(int idx)
     {
-        yield return new WaitForSeconds(30);
-        item_False[0].SetActive(true);
-        items.Add(item_False[0]);
-        item_False.RemoveAt(0);
+        //개발로 수정 중 10초
+        yield return new WaitForSeconds(10);
+        holds[hold_Idx[idx]].popUp = false;
+
+        GameObject a = item.GetChild(idx).gameObject;
+        //쉴드나 랜박이면
+        if (a.name.Contains("Shield")|| a.name.Contains("RanBox")) {
+            //활성화 + 팝업 알리기
+            a.SetActive(true);
+            holds[hold_Idx[idx]].popUp = true;
+        }
     }
 }

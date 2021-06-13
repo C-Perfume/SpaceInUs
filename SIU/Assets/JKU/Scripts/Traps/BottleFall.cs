@@ -55,8 +55,8 @@ public class BottleFall : MonoBehaviour
     public IEnumerator Black_()
 
     {
-        
-            black.gameObject.SetActive(true);
+        print("¿€µø???"+ black.transform.parent.parent.name);
+        black.gameObject.SetActive(true);
 
             yield return new WaitForSeconds(1);
 

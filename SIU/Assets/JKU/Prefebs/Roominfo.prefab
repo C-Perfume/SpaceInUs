@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1073336659400094234}
   - component: {fileID: 1073336659400094235}
   - component: {fileID: 3148694798517757855}
+  - component: {fileID: 3914263995485768283}
   m_Layer: 5
   m_Name: Roominfo
   m_TagString: Button
@@ -148,6 +149,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   info: {fileID: 1073336660080184516}
+--- !u!65 &3914263995485768283
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073336659400094245}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 306.5, y: 238.36, z: 5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1073336660080184518
 GameObject:
   m_ObjectHideFlags: 0

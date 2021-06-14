@@ -29,28 +29,22 @@ public class Connect : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         base.OnJoinedLobby();
-        print("OnJoinedLobbyzz");
         //방 옵션 
         RoomOptions roomOption = new RoomOptions();
         //0은 인원제한없음
-        roomOption.MaxPlayers = byte.Parse("1");
+        roomOption.MaxPlayers = 1;
         roomOption.IsVisible = false;
-
-        PhotonNetwork.JoinOrCreateRoom("SoloMode", roomOption, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom("i"+Random.Range(0, 1000), roomOption, TypedLobby.Default);
     }
     public override void OnCreatedRoom()
     {
         base.OnCreatedRoom();
-        print("CreatedRoom");
     }
 
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        print("joinedroom");
-
-
-        print("나옴");
+        print(PhotonNetwork.CurrentRoom.Name);
         SceneManager.LoadScene("Game");
     }
 }

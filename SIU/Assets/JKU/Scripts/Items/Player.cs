@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
             if (gp.MenuManager.activeSelf) { TimeDamage(0); }
             else
             {
-                TimeDamage(2);
+                TimeDamage(1);
             }
             currtime = 0;
         }

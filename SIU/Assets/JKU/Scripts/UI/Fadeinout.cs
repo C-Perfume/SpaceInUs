@@ -57,6 +57,7 @@ public class Fadeinout : MonoBehaviour
         float bgAlpha = 0;//변동되는 알파값을 담을 변수. 와일 조건문에 넣기위해 따로 만듬. 안그러면 bgColor의 알파값을 계속 조회해서 오기때문에 아주조금의 차이지만 성능이 떨어짐.
         bgColor.a = bgAlpha;//최초에 일단 알파값을 0으로 강제조정해줌. 혹시 모를 예외처리용(컴포넌트에서 알파값이 실수로 1로 설정해놓았다던가).
 
+        bg.SetActive(false);//알파값 다 들어왔으면 끔
         while (bgAlpha < 1)//변동되는 알파값 변수가 1이 넘지 않을 동안 안의 내용 실행
         {
             bgAlpha += Time.deltaTime * 0.5f;
@@ -65,7 +66,6 @@ public class Fadeinout : MonoBehaviour
             yield return null;
         }
 
-        bg.SetActive(false);//알파값 다 들어왔으면 끔
         yield return new WaitForSeconds(1f);//1초 보여줌
 
         while (bgAlpha > 0)//변동되는 알파값 변수가 0보다 클 동안 안의 내용 실행

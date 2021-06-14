@@ -17,6 +17,7 @@ public class UItest : MonoBehaviour
     LineRenderer lr;
     //죽고나서 나타나는 이미지
     public GameObject deadinfo;
+
      void Start()
     {
         lr = GetComponent<LineRenderer>();
@@ -26,21 +27,21 @@ public class UItest : MonoBehaviour
     {
         lr.SetPosition(0, transform.position);
 
-        if (SceneManager.GetActiveScene().name == "ExploScene"
-            || SceneManager.GetActiveScene().name == "Meteo"
-            || SceneManager.GetActiveScene().name == "LostSpace"
-            )
-        {
+        //if (SceneManager.GetActiveScene().name == "ExploScene"
+        //    || SceneManager.GetActiveScene().name == "Meteo"
+        //    || SceneManager.GetActiveScene().name == "LostSpace"
+        //    )
+        //{
             if (deadinfo.activeSelf)
             {
                 lr.enabled = true;
             }
-        }
-
+        //}
+    
         // Debug.DrawRay(transform.position, transform.forward * raycastDistance, Color.green, 0.5f);
 
-        // 충돌 감지 시
-        if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance))
+            // 충돌 감지 시
+            if (Physics.Raycast(transform.position, transform.forward, out hit, raycastDistance))
         {
            
             lr.SetPosition(1, hit.point);

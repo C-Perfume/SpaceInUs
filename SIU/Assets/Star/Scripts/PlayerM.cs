@@ -24,6 +24,7 @@ public class PlayerM : MonoBehaviour
     NetManager net;
     public GameObject hpbar;
    public GameObject readytext;
+   public Transform savetime;
 
     public State state;
 
@@ -276,7 +277,6 @@ public class PlayerM : MonoBehaviour
 
                     if (fStep)
                     {
-                        print("fStep 위치 이동 작동?");
                         transform.position = Vector3.Lerp(transform.position, FootStepTransform.position, 3 * Time.deltaTime);
                         transform.rotation = Quaternion.Lerp(transform.rotation, FootStepTransform.rotation, 3 * Time.deltaTime);
                         StartCoroutine(StopFStep());

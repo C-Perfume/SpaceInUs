@@ -9,18 +9,23 @@ public class loadTime : MonoBehaviour
     float Savetime;
     Text text_timer;
 
+    int minutes;
+    int secends;
+
     //저장한거 찾고 없애기 
     GameObject TimeManager;
     
     void Start()
     {
-        playtime = GameObject.Find("saveTime").GetComponent<saveTime>();
+        playtime = GameObject.Find("Savetime").GetComponent<saveTime>();
         Savetime = playtime.timesave;
         text_timer = GameObject.Find("timeScore").GetComponent<Text>();
 
-       
-        text_timer.text = "Time : " + Savetime.ToString("N2");
-        TimeManager = GameObject.Find("saveTime");
+        minutes = (int)Savetime % 3600 / 60;
+        secends = (int)Savetime % 3600 % 60;
+
+        if (text_timer != null) text_timer.text = "Time : " + minutes + " 분 " + secends + " 초";
+        TimeManager = GameObject.Find("Savetime");
         Destroy(TimeManager);
        
     }

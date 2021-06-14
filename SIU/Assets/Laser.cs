@@ -15,6 +15,8 @@ public class Laser : MonoBehaviour
     public GameObject indi;
     RaycastHit hit; // 충돌된 객체
     GameObject currentObject;   // 가장 최근에 충돌한 객체를 저장하기 위한 객체
+    public GameObject keyboard;   
+    public GameObject keyboard1;   
 
     public float raycastDistance = 100f; // 레이저 포인터 감지 거리
 
@@ -29,7 +31,13 @@ public class Laser : MonoBehaviour
     {
         lr.SetPosition(0, transform.position);
 
-
+        if (keyboard.activeSelf || keyboard1.activeSelf)
+        {
+            lr.enabled = false;
+        }
+        else {
+            lr.enabled = true;
+        }
         // Debug.DrawRay(transform.position, transform.forward * raycastDistance, Color.green, 0.5f);
 
         // 충돌 감지 시
@@ -52,11 +60,11 @@ public class Laser : MonoBehaviour
                     // 버튼에 등록된 onClick 메소드를 실행한다.
                     hit.collider.gameObject.GetComponent<Button>().onClick.Invoke();
                 }
-                else
-                {
-                    hit.collider.gameObject.GetComponent<Button>().OnPointerEnter(null);
-                    currentObject = hit.collider.gameObject;
-                }
+                //else
+                //{
+                //    hit.collider.gameObject.GetComponent<Button>().OnPointerEnter(null);
+                //    currentObject = hit.collider.gameObject;
+                //}
             }
             else
             {
@@ -70,11 +78,11 @@ public class Laser : MonoBehaviour
             indi.gameObject.SetActive(false);
             // 최근 감지된 오브젝트가 Button인 경우
             // 버튼은 현재 눌려있는 상태이므로 이것을 풀어준다.
-            if (currentObject != null)
-            {
-                currentObject.GetComponent<Button>().OnPointerExit(null);
-                currentObject = null;
-            }
+            //if (currentObject != null)
+            //{
+            //    currentObject.GetComponent<Button>().OnPointerExit(null);
+            //    currentObject = null;
+            //}
         }
     }
 

@@ -10535,7 +10535,9 @@ MonoBehaviour:
   Pt: {fileID: 0}
   handL: {fileID: 8733932751249005216}
   handR: {fileID: 8733932751249010340}
-  ud: []
+  ud:
+  - {fileID: 0}
+  - {fileID: 0}
   udimg: {fileID: 0}
 --- !u!1 &8733932752852808786
 GameObject:

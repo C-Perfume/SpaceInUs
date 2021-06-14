@@ -9,8 +9,8 @@ public class Value
     public enum Type
     {
         Step,//4
-        Trap,//3
-        Item//3
+        Trap,//2
+        Item//4
     }
     public enum TrapType
     {
@@ -111,13 +111,13 @@ public class RockParent : MonoBehaviour
         v.mat = transform.GetChild(i).GetComponent<MeshRenderer>().material;
 
         if (rand < 5) { v.type = Value.Type.Step; }
-        else if (rand < 8) { v.type = Value.Type.Trap; }
+        else if (rand < 7) { v.type = Value.Type.Trap; }
         else { v.type = Value.Type.Item; }
 
         //처음 0, 1, 2, 3번 지정된 값 넣기 스텝 / 화이트홀 / 쉴드
         if (i == 0 || i == 1|| i == 2|| i == 3) { v.type = Value.Type.Step; }
-       else if (i == 4 || i == 9 || i == 6 || i == 11) { v.type = Value.Type.Trap; tRand = 2; }
-       else if (i == 8 || i == 5 || i == 10 || i == 7) { v.type = Value.Type.Item; tRand = 3; }
+        if (i == 4 || i == 9 || i == 6 || i == 11) { v.type = Value.Type.Trap; tRand = 2; }
+        if (i == 8 || i == 5 || i == 10 || i == 7) { v.type = Value.Type.Item; tRand = 3; }
 
         //트랩설정 1:2:1:6확률
         if (v.type == Value.Type.Trap)
@@ -150,7 +150,6 @@ public class RockParent : MonoBehaviour
 
             //나머지 산소
             else { Create(oxyCan, transform.GetChild(i), v); }
-           
 
            // 아이템 집었을 때 어떤 돌멩이의 popup을 꺼줄지 특정하기
             hold_Idx.Add(i);

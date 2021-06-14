@@ -114,10 +114,10 @@ public class RockParent : MonoBehaviour
         else if (rand < 8) { v.type = Value.Type.Trap; }
         else { v.type = Value.Type.Item; }
 
-        //처음 0, 1, 2번 지정된 값 넣기 스텝 / 화이트홀 / 쉴드
-        if (i == 0) { v.type = Value.Type.Step; }
-        if (i == 1) { v.type = Value.Type.Trap; tRand = 2; }
-        if (i == 2) { v.type = Value.Type.Item; tRand = 10; }
+        //처음 0, 1, 2, 3번 지정된 값 넣기 스텝 / 화이트홀 / 쉴드
+        if (i == 0 || i == 1|| i == 2|| i == 3) { v.type = Value.Type.Step; }
+       else if (i == 4 || i == 9 || i == 6 || i == 11) { v.type = Value.Type.Trap; tRand = 2; }
+       else if (i == 8 || i == 5 || i == 10 || i == 7) { v.type = Value.Type.Item; tRand = 3; }
 
         //트랩설정 1:2:1:6확률
         if (v.type == Value.Type.Trap)
@@ -128,8 +128,8 @@ public class RockParent : MonoBehaviour
             else if (tRand == 4) { v.tT = Value.TrapType.Meteor; }
             else if (tRand == 5) { v.tT = Value.TrapType.UpsideDown; }
             else { v.tT = Value.TrapType.Can; }
-
         }
+
         //아이템 설정 1:1:1:1:6 확률
         if (v.type == Value.Type.Item)
         {
@@ -189,8 +189,7 @@ public class RockParent : MonoBehaviour
     //아이템 30초간 돌잡아도 안나오게 하기
     public IEnumerator ShowUp(int idx)
     {
-        //개발로 수정 중 10초
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(30);
         holds[hold_Idx[idx]].popUp = false;
 
         GameObject a = item.GetChild(idx).gameObject;

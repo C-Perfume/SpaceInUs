@@ -44,8 +44,8 @@ public class NetManager : MonoBehaviourPunCallbacks
         RoomOptions option = new RoomOptions();
 
         //개발로 수정 중
-       //option.MaxPlayers = 1;
-        option.MaxPlayers = 2;
+       option.MaxPlayers = 1;
+       //    option.MaxPlayers = 2;
         
         PhotonNetwork.JoinOrCreateRoom("JKU", option, TypedLobby.Default);
     }

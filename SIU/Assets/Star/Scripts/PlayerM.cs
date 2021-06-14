@@ -36,9 +36,9 @@ public class PlayerM : MonoBehaviour
     #endregion
    
     #region //문표시 아이콘
-    Transform doorCan;
-    GameObject doorIndi;
-    GameObject doorIndi2;
+    //Transform doorCan;
+    public GameObject doorIndi;
+    public GameObject doorIndi2;
     // 클릭 라인렌더러 양손
     LineRenderer lrL;
     LineRenderer lrR;
@@ -125,6 +125,9 @@ public class PlayerM : MonoBehaviour
     // 클리어 도어로 가기 전 위치조정
     Transform FootStepTransform;
     bool fStep = false;
+
+    goPlay gp;
+
     #endregion
 
     #region 컨트롤러 bool Vector3설정
@@ -161,13 +164,14 @@ public class PlayerM : MonoBehaviour
         ps = GetComponent<Player>();
         lr = GetComponent<LineRenderer>();
 
-        doorCan = GameObject.Find("DoorCanvas").transform;
-        doorIndi = doorCan.GetChild(0).gameObject;
-        doorIndi2 = doorCan.GetChild(1).gameObject;
+        //doorCan = GameObject.Find("DoorCanvas").transform;
+        //doorIndi = doorCan.GetChild(0).gameObject;
+        //doorIndi2 = doorCan.GetChild(1).gameObject;
 
         rb = GetComponent<Rigidbody>();
         lrL = pp.handL.GetComponent<LineRenderer>();
         lrR = pp.handR.GetComponent<LineRenderer>();
+        gp = GetComponent<goPlay>();
         #endregion
 
         if (SceneManager.GetActiveScene().name == "Game")
@@ -285,7 +289,7 @@ public class PlayerM : MonoBehaviour
 
                 Rot();
 
-                if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
+                if (gp.MenuManager.activeSelf) { state = State.GameOver; }
 
 
                 break;
@@ -295,113 +299,113 @@ public class PlayerM : MonoBehaviour
             case State.GameStart:
             #endregion
 
-                #region //치트키
+                 //치트키
 
                 if (getDBtn1L) { SceneManager.LoadScene("Meteo"); }
                 if (getDBtn2L) { SceneManager.LoadScene("Clear"); }
 
+                #region 개발 수정중
+                ////  키보드조작
+                //float v = Input.GetAxis("Vertical");
+                //float h = Input.GetAxis("Horizontal");
+                //float ff = 0;
+                //if (Input.GetKey(KeyCode.Space)) { ff = .1f; }
+                //if (Input.GetKey(KeyCode.LeftControl)) { ff = -.1f; }
+                //Vector3 dir = new Vector3(h, ff, v);
+                //transform.position += dir * 10 * Time.deltaTime;
+                //
 
-                // 개발 수정중 키보드조작
-                float v = Input.GetAxis("Vertical");
-                float h = Input.GetAxis("Horizontal");
-                float ff = 0;
-                if (Input.GetKey(KeyCode.Space)) { ff = .1f; }
-                if (Input.GetKey(KeyCode.LeftControl)) { ff = -.1f; }
-                Vector3 dir = new Vector3(h, ff, v);
-                transform.position += dir * 10 * Time.deltaTime;
+                // //돌집기
+                //if (Input.GetKeyDown(KeyCode.F1)) {
+                //     //차일드2번
+                //    int idx = 2;
+
+                //    //속성이 아이템이면
+                //    if (rp.holds[idx].type == Value.Type.Item)
+                //    {
+                //        //팝업이 안된 경우
+                //       if(!rp.holds[idx].popUp)
+                //        {
+                //            //rpc로 바꾸기
+                //            pv.RPC("RpcPopUp", RpcTarget.All, idx);
+
+                //        }
+
+                //    }
+
+                //}
+                ////아이템 집기
+                //if (Input.GetKeyDown(KeyCode.Alpha1))
+                //{
+                //    if (rp.holds[2].popUp)
+                //    {
+                //        pv.RPC("RpcItem", RpcTarget.All, 1, 0);
+                //    }
+                //}
+                ////아이템 인벤 보관
+                //if (Input.GetKeyDown(KeyCode.Alpha2)) 
+                //{
+                //    if (myTem.Count < 2)
+                //    {
+                //        if (catchItem != null)
+                //        {
+                //            SoundM.instance.playS(1, 10);
+                //            pv.RPC("RPCFind", RpcTarget.All, 1);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        pv.RPC("RPCFree", RpcTarget.AllBuffered, 1, 1);
+                //        print("걸린게 없어서  공중부양");
+                //    }
+                //}
+                ////사용
+                // if (Input.GetKeyDown(KeyCode.Alpha3))
+                //{
+                //    if (myTem.Count > 0)
+                //    {
+                //        //1인용
+                //        if (myTem[0] == 4)
+                //        {
+                //            int ranboxIdx = Random.Range(0, 4);
+                //            UseItem(ranboxIdx);
+                //            pv.RPC("RPCUse", RpcTarget.All, 4);
+                //        }
+                //        //2인용
+                //        else if (myTem[0] == 5)
+                //        {
+
+                //            int boxTrap = 4;
+                //                //Random.Range(0, 5);
+                //            pv.RPC("RPCUse", RpcTarget.All, 5);
+                //            if (boxTrap == 0 || boxTrap == 1)
+                //            {
+                //                int ox = Random.Range(0, 2);
+                //                pv.RPC("RPCBlackHole", RpcTarget.All, ox);
+                //                pv.RPC("RPCvib", RpcTarget.All);
+                //            }
+                //            else if (boxTrap == 4)
+                //            {
+                //                pv.RPC("RPCRanBoxUD", RpcTarget.All);
+                //            }
+                //            else
+                //            {
+                //                pv.RPC("RPCRanBoxTrapC", RpcTarget.All, boxTrap);
+                //            }
+
+                //        }
+                //        else { UseItem(myTem[0]); }
+
+                //        myTem.RemoveAt(0);
+                //        StartCoroutine(StopFR());
+                //    }
+
+                //}
                 #endregion
 
-                 //돌집기
-                if (Input.GetKeyDown(KeyCode.F1)) {
-                     //차일드2번
-                    int idx = 2;
-
-                    //속성이 아이템이면
-                    if (rp.holds[idx].type == Value.Type.Item)
-                    {
-                        //팝업이 안된 경우
-                       if(!rp.holds[idx].popUp)
-                        {
-                            //rpc로 바꾸기
-                            pv.RPC("RpcPopUp", RpcTarget.All, idx);
-                            
-                        }
-                    
-                    }
-                   
-                }
-                //아이템 집기
-                if (Input.GetKeyDown(KeyCode.Alpha1))
-                {
-                    if (rp.holds[2].popUp)
-                    {
-                        pv.RPC("RpcItem", RpcTarget.All, 1, 0);
-                    }
-                }
-                //아이템 인벤 보관
-                if (Input.GetKeyDown(KeyCode.Alpha2)) 
-                {
-                    if (myTem.Count < 2)
-                    {
-                        if (catchItem != null)
-                        {
-                            SoundM.instance.playS(1, 10);
-                            pv.RPC("RPCFind", RpcTarget.All, 1);
-                        }
-                    }
-                    else
-                    {
-                        pv.RPC("RPCFree", RpcTarget.AllBuffered, 1, 1);
-                        print("걸린게 없어서  공중부양");
-                    }
-                }
-                //사용
-                 if (Input.GetKeyDown(KeyCode.Alpha3))
-                {
-                    if (myTem.Count > 0)
-                    {
-                        //1인용
-                        if (myTem[0] == 4)
-                        {
-                            int ranboxIdx = Random.Range(0, 4);
-                            UseItem(ranboxIdx);
-                            pv.RPC("RPCUse", RpcTarget.All, 4);
-                        }
-                        //2인용
-                        else if (myTem[0] == 5)
-                        {
-
-                            int boxTrap = 4;
-                                //Random.Range(0, 5);
-                            pv.RPC("RPCUse", RpcTarget.All, 5);
-                            if (boxTrap == 0 || boxTrap == 1)
-                            {
-                                int ox = Random.Range(0, 2);
-                                pv.RPC("RPCBlackHole", RpcTarget.All, ox);
-                                pv.RPC("RPCvib", RpcTarget.All);
-                            }
-                            else if (boxTrap == 4)
-                            {
-                                pv.RPC("RPCRanBoxUD", RpcTarget.All);
-                            }
-                            else
-                            {
-                                pv.RPC("RPCRanBoxTrapC", RpcTarget.All, boxTrap);
-                            }
-
-                        }
-                        else { UseItem(myTem[0]); }
-
-                        myTem.RemoveAt(0);
-                        StartCoroutine(StopFR());
-                    }
-
-                }
-                
-
                 #region a
-                    //플로팅 개발로 수정중
-                    if (floating) { }  //Float();
+                //플로팅 개발로 수정중
+                if (floating) { }  //Float();
 
                 if (!tm.bH) { Grab(); }
                 SetFree();
@@ -414,16 +418,13 @@ public class PlayerM : MonoBehaviour
                 //블랙홀 인력
                 if (tm.bH) transform.position += tm.dir * tm.pullSpd * Time.deltaTime;
                 pv.RPC("UDstate", RpcTarget.All);
-//                if (tm.isUD) pp.udimg.SetActive(true);
-  //              else pp.udimg.SetActive(false);
-
-                ////들어갔다 나가면 오류 싱글톤이라 그런건가?
-                //if (goPlay.instance.MenuManager.activeSelf) { state = State.GameOver; }
-                //else
-                //{
-                //    lrL.enabled = false;
-                //    lrR.enabled = false;
-                //}
+                
+                if (gp.MenuManager.activeSelf) { state = State.GameOver; }
+                else
+                {
+                    lrL.enabled = false;
+                    lrR.enabled = false;
+                }
 
                 break;
             #endregion
@@ -432,7 +433,7 @@ public class PlayerM : MonoBehaviour
             case State.GameOver:
                 ClickLR();
 
-                if (!goPlay.instance.MenuManager.activeSelf)
+                if (!gp.MenuManager.activeSelf)
                 {
                     if (SceneManager.GetActiveScene().name == "Ready")
                     {
@@ -464,7 +465,6 @@ public class PlayerM : MonoBehaviour
     void Float()
     {
         transform.position += (transform.up - transform.forward) * 0.02f * Time.deltaTime;
-
     }
 
 
@@ -794,7 +794,7 @@ public class PlayerM : MonoBehaviour
             rb.isKinematic = true;
 
             if (tm.bH) { transform.position += tm.dir * tm.pullSpd * Time.deltaTime; }
-            else if (tm.isUD) { transform.position += (-origin+handG.position ) + (hitTFN.position - originP); ; }
+            else if (tm.isUD) { transform.position += (-origin + handG.position) + (hitTFN.position - originP); }
             else { transform.position += (origin - handG.position) + (hitTFN.position - originP); }
 
         }
@@ -805,7 +805,7 @@ public class PlayerM : MonoBehaviour
             rb.isKinematic = true;
 
             if (tm.bH) { transform.position += tm.dir * tm.pullSpd * Time.deltaTime; }
-            else if (tm.isUD) { transform.position += -origin + handG.position ; }
+            else if (tm.isUD) { transform.position -= origin - handG.position; }
             else
             {
                 transform.position += origin - handG.position;
@@ -1026,8 +1026,8 @@ public class PlayerM : MonoBehaviour
         if (hitTFN == hold)
         {
             rb.isKinematic = false;
-            rb.velocity = -transform.TransformDirection(ve) * vPower;
-
+            if (tm.isUD) rb.velocity = transform.TransformDirection(ve) * vPower;
+            else rb.velocity = -transform.TransformDirection(ve) * vPower;
         }
 
 
@@ -1267,11 +1267,11 @@ public class PlayerM : MonoBehaviour
         if (itIdx == 0) { clone = hook; handG = pp.handR; }
         if (itIdx == 1) { clone = particle; handG = pp.handL; }
         if (itIdx == 3) { clone = hookP; handG = h.transform; }
-        if (itIdx == 4 || itIdx == 5) { clone = ranEFT[itIdx-4]; }
+        if (itIdx == 4 || itIdx == 5) { clone = ranEFT[itIdx-4]; handG = pp.handR; }
 
         item = Instantiate(clone);
         item.transform.position = handG.position;
-        if (itIdx == 4 || itIdx == 5) item.transform.position = handG.position + handG.forward*.5f;
+        if (itIdx == 4 || itIdx == 5) item.transform.position = handG.position +  handG.up * .1f;
         item.transform.forward = handG.forward;
         if (itIdx == 3) item.transform.forward = -handG.forward;
 

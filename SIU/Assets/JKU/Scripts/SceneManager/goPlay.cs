@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class goPlay : MonoBehaviour
 {
-    public static goPlay instance;
     public GameObject MenuManager;
     public GameObject hpBar;
     public bool a = false;
@@ -13,7 +12,6 @@ public class goPlay : MonoBehaviour
     GameObject rock;
     void Start()
     {
-        instance = this;
         rock = GameObject.Find("Rock_map");
     }
 

@@ -15,64 +15,81 @@ public class NetManager : MonoBehaviourPunCallbacks
     //{
     //}
     PhotonView pv;
-
     public List<GameObject> playerList = new List<GameObject>();
     void Start()
     {
         pv = GetComponent<PhotonView>();
         PhotonNetwork.GameVersion = ver;
-        PhotonNetwork.ConnectUsingSettings();
-    }
-
-    public override void OnConnected()
-    {
-        base.OnConnected();
-        print("OnConnected");
-    }
-
-    public override void OnConnectedToMaster()
-    {
-        base.OnConnectedToMaster();
-        PhotonNetwork.NickName = "Player" + Random.Range(0, 1000);
-       PhotonNetwork.JoinLobby();
-    }
-
-    public override void OnJoinedLobby()
-    {
-        base.OnJoinedLobby();
-        print("OnJoinedLobbyzz");
-        RoomOptions option = new RoomOptions();
-
-        //개발로 수정 중
-       //option.MaxPlayers = 1;
-        option.MaxPlayers = 2;
-        
-        PhotonNetwork.JoinOrCreateRoom("JKU", option, TypedLobby.Default);
-    }
-    public override void OnCreatedRoom()
-    {
-        base.OnCreatedRoom();
-        print("CreatedRoom");
-    }
-
-    public override void OnJoinedRoom()
-    {
-        base.OnJoinedRoom();
-        print("joinedroom");
-
-
+       
         if (PhotonNetwork.IsMasterClient)//방장일때
         {
             PhotonNetwork.Instantiate("Player", new Vector3(0, 0, -2), Quaternion.identity);
         }
         else
         {
-             PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
+            PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
         }
 
+//        PhotonNetwork.ConnectUsingSettings();
     }
 
-   
+    //public override void OnConnected()
+    //{
+    //    base.OnConnected();
+    //    print("OnConnected");
+    //}
+
+    //public override void OnConnectedToMaster()
+    //{
+    //    base.OnConnectedToMaster();
+    //    PhotonNetwork.NickName = "Player" + Random.Range(0, 1000);
+    //   PhotonNetwork.JoinLobby();
+    //}
+
+    //public override void OnJoinedLobby()
+    //{
+    //    base.OnJoinedLobby();
+    //    print("OnJoinedLobbyzz");
+    //    RoomOptions option = new RoomOptions();
+
+    //    //개발로 수정 중
+    //   //option.MaxPlayers = 1;
+    //    option.MaxPlayers = 4;
+        
+    //    PhotonNetwork.JoinOrCreateRoom("JKaU", option, TypedLobby.Default);
+    //}
+    //public override void OnCreatedRoom()
+    //{
+    //    base.OnCreatedRoom();
+    //    print("CreatedRoom");
+    //}
+
+    //public override void OnJoinedRoom()
+    //{
+    //    base.OnJoinedRoom();
+    //    print("joinedroom");
+
+
+    //    if (PhotonNetwork.IsMasterClient)//방장일때
+    //    {
+    //        PhotonNetwork.Instantiate("Player", new Vector3(0, 0, -2), Quaternion.identity);
+    //    }
+    //    else
+    //    {
+    //        PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
+    //    }
+
+    //}
+    
+    //[PunRPC]
+    //void RpcSetInit(Vector3 pos, Quaternion rot)
+    //{
+    //    model.SetActive(true);
+    //    transform.position = pos;
+    //    transform.rotation = rot;
+    //}
+
+
     //방나가기
     public void LeaveRoom()
     {

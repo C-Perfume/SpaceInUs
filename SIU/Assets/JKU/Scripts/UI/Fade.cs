@@ -4,22 +4,26 @@ using UnityEngine;
 using UnityEngine.UI;
 public class Fade : MonoBehaviour
 {
-
-    public GameObject loading;
-    public Image loadingBg;
-
-
-    void Update()
+    Image im;
+    Color color;
+    private void Start()
     {
-        if (loading.activeSelf == true)
+        color = new Color(im.color.r, im.color.g, im.color.b, im.color.a);
+        StartCoroutine(Co_ChangeAlpha());
+    }
+    private void Update()
+    {
+        //  color.a += Time.deltaTime * 0.5f;
+    }
+
+
+    IEnumerator Co_ChangeAlpha()
+    {
+        while (true)
         {
-            Color bgColor = loadingBg.color;
-            bgColor.a += Time.deltaTime * 0.5f;
-            loadingBg.color = bgColor;
-            if (bgColor.a <= 0)
-            {
-                loading.SetActive(false);
-            }
+            color.a = Mathf.PingPong(Time.time, 1f);
+            im.color = color;
+            yield return null;
         }
     }
 }

@@ -789,22 +789,17 @@ public class PlayerM : MonoBehaviour
         int idx = hitTFN.GetSiblingIndex();
 
         //플레이어 잡으면
-        if (hitTFN.name.Contains("Player")) {
+        if (hitTFN.name.Contains("Player") && hitTFN !=transform) {
             floating = false;
             rb.isKinematic = true;
 
             if (tm.bH) { transform.position += tm.dir * tm.pullSpd * Time.deltaTime; }
-            else if (tm.isUD) { transform.position += origin + handG.position; }
-            else
-            {
-                transform.position += (origin - handG.position) + (hitTFN.position - originP);
-            }
+            else if (tm.isUD) { transform.position += (origin + handG.position) + (hitTFN.position - originP); ; }
+            else { transform.position += (origin - handG.position) + (hitTFN.position - originP); }
 
         }
         // 홀드 잡고 있는 중
-        if (hitTFN.IsChildOf(rock)
-            
-            )
+        if (hitTFN.IsChildOf(rock))
         {
             floating = false;
             rb.isKinematic = true;

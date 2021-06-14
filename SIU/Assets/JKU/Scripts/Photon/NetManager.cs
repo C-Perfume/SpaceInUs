@@ -15,7 +15,6 @@ public class NetManager : MonoBehaviourPunCallbacks
     //{
     //}
     PhotonView pv;
-
     public List<GameObject> playerList = new List<GameObject>();
     void Start()
     {
@@ -45,9 +44,9 @@ public class NetManager : MonoBehaviourPunCallbacks
 
         //개발로 수정 중
        //option.MaxPlayers = 1;
-        option.MaxPlayers = 2;
+        option.MaxPlayers = 4;
         
-        PhotonNetwork.JoinOrCreateRoom("JKU", option, TypedLobby.Default);
+        PhotonNetwork.JoinOrCreateRoom("JKaU", option, TypedLobby.Default);
     }
     public override void OnCreatedRoom()
     {
@@ -64,15 +63,32 @@ public class NetManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)//방장일때
         {
             PhotonNetwork.Instantiate("Player", new Vector3(0, 0, -2), Quaternion.identity);
+
+            ////빈자리 찾기
+            //Transform tr = GameManager.instance.GetEmptyTr();
+
+
+
+            ////그 pos값을 rpc 전달하면 -> 그 pos값으로 세팅
+            //photonView.RPC("RpcSetInit", RpcTarget.AllBuffered, tr.position, tr.rotation);
+
         }
         else
         {
-             PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
+            PhotonNetwork.Instantiate("Player", new Vector3(0, 0, 0), Quaternion.identity);
         }
 
     }
+    
+    //[PunRPC]
+    //void RpcSetInit(Vector3 pos, Quaternion rot)
+    //{
+    //    model.SetActive(true);
+    //    transform.position = pos;
+    //    transform.rotation = rot;
+    //}
 
-   
+
     //방나가기
     public void LeaveRoom()
     {

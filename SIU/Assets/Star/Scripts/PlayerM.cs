@@ -29,6 +29,7 @@ public class PlayerM : MonoBehaviour
 
     #region//걷기 잡기
     Vector3 origin;
+    Vector3 originP;
     Vector3 pos;
     bool walkL = false;
     bool walkR = false;
@@ -477,6 +478,7 @@ public class PlayerM : MonoBehaviour
             walkR = false;
             walkL = true;
             origin = pp.handL.position;
+            
             SoundM.instance.playS(1, 0);
 
         }
@@ -723,22 +725,22 @@ public class PlayerM : MonoBehaviour
             if (hitsL.Length > 0)
             {
                 SoundM.instance.playS(0, 5);
+                hitTF[0] = hitsL[0].transform;
+                originP = hitTF[0].position;
             }
 
             walkR = false;
             walkL = true;
             origin = pp.handL.position;
+
             tm.up = true;
 
         }
 
         if (walkL)
         {
-
             if (hitsL.Length > 0)
             {
-                hitTF[0] = hitsL[0].transform;
-
                 if (hitTF[0].gameObject.name.Contains("Big")) { }
                 Grab(hitTF[0], ref pp.handL, pp.handR, ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
 
@@ -751,6 +753,8 @@ public class PlayerM : MonoBehaviour
             if (hitsR.Length > 0)
             {
                 SoundM.instance.playS(0, 5);
+                hitTF[1] = hitsR[0].transform;
+                originP = hitTF[1].position;
             }
 
             walkR = true;
@@ -784,9 +788,22 @@ public class PlayerM : MonoBehaviour
     {
         int idx = hitTFN.GetSiblingIndex();
 
+        //플레이어 잡으면
+        if (hitTFN.name.Contains("Player")) {
+            floating = false;
+            rb.isKinematic = true;
+
+            if (tm.bH) { transform.position += tm.dir * tm.pullSpd * Time.deltaTime; }
+            else if (tm.isUD) { transform.position += origin + handG.position; }
+            else
+            {
+                transform.position += (origin - handG.position) + (hitTFN.position - originP);
+            }
+
+        }
         // 홀드 잡고 있는 중
         if (hitTFN.IsChildOf(rock)
-            || hitTFN.name.Contains("Player")
+            
             )
         {
             floating = false;
@@ -805,8 +822,6 @@ public class PlayerM : MonoBehaviour
 
             if (Holdpre == Hold) { tm.up = false; }
 
-            //내가 잡은게 플레이어가 아닌경우
-            if (!hitTFN.name.Contains("Player")) {
 
                 //트랩이면
                 if (rp.holds[idx].type == Value.Type.Trap)
@@ -853,7 +868,6 @@ public class PlayerM : MonoBehaviour
                         
                     }
                 }
-            }
 
         }
         else

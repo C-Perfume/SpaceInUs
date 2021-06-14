@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/JKU/Scenes/Connect.unity
     guid: 6086081c7520acb42afd5a2312c51280
-  - enabled: 0
+  - enabled: 1
     path: Assets/JKU/Scenes/LobbyScene.unity
     guid: c5037d78d0e5f374cb0b6b7a25f52c46
   - enabled: 1

@@ -24,7 +24,7 @@ public class Flashboom : MonoBehaviour
         flashbang.gameObject.SetActive(true);
         OVRInput.SetControllerVibration(1, 1, OVRInput.Controller.LTouch);
         OVRInput.SetControllerVibration(1, 1, OVRInput.Controller.RTouch);
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(3.5f);
         imagetext.gameObject.SetActive(true);
     }
 }

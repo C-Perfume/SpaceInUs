@@ -172,10 +172,6 @@ public class TrapManager : MonoBehaviourPun
                     StartCoroutine(Vibrate(.5f));
                     StopCoroutine(Vibrate(5));
 
-                    //수정필요
-                    ////내가 걸렸다면 진동으로 알리기
-                    //if (target == gameObject) {}
-
                 }
 
             }

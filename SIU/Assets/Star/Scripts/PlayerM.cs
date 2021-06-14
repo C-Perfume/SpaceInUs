@@ -24,7 +24,9 @@ public class PlayerM : MonoBehaviour
     NetManager net;
     public GameObject hpbar;
    public GameObject readytext;
-   public Transform savetime;
+    saveTime save;
+    public Transform saveText;
+
 
     public State state;
 
@@ -165,14 +167,11 @@ public class PlayerM : MonoBehaviour
         ps = GetComponent<Player>();
         lr = GetComponent<LineRenderer>();
 
-        //doorCan = GameObject.Find("DoorCanvas").transform;
-        //doorIndi = doorCan.GetChild(0).gameObject;
-        //doorIndi2 = doorCan.GetChild(1).gameObject;
-
         rb = GetComponent<Rigidbody>();
         lrL = pp.handL.GetComponent<LineRenderer>();
         lrR = pp.handR.GetComponent<LineRenderer>();
         gp = GetComponent<goPlay>();
+      
         #endregion
 
         if (SceneManager.GetActiveScene().name == "Game")
@@ -190,6 +189,12 @@ public class PlayerM : MonoBehaviour
             hpbar.SetActive(false);
 
         StartCoroutine(WaitforStart());
+            if (pv.IsMine)
+            {
+                save = GameObject.Find("Savetime").GetComponent<saveTime>();
+                save.text = saveText;
+            }
+            
         }
 
         else if (SceneManager.GetActiveScene().name == "Ready")
@@ -255,7 +260,7 @@ public class PlayerM : MonoBehaviour
         {
             #region Wait
             case State.Wait:
-
+                if (gp.MenuManager.activeSelf) { state = State.GameOver; }
                 break;
             #endregion
 
@@ -297,15 +302,14 @@ public class PlayerM : MonoBehaviour
 
             #region GameStart
             case State.GameStart:
-            #endregion
 
-                 //치트키
+                #region  키보드조작 주석
 
                 if (getDBtn1L) { SceneManager.LoadScene("Meteo"); }
                 if (getDBtn2L) { SceneManager.LoadScene("Clear"); }
+                if (Input.GetKeyDown(KeyCode.Alpha1)) { SceneManager.LoadScene("LostSpace"); }
+                if (Input.GetKeyDown(KeyCode.Alpha2)) { SceneManager.LoadScene("ExploScene"); }
 
-                #region 개발 수정중
-                ////  키보드조작
                 //float v = Input.GetAxis("Vertical");
                 //float h = Input.GetAxis("Horizontal");
                 //float ff = 0;
@@ -313,99 +317,11 @@ public class PlayerM : MonoBehaviour
                 //if (Input.GetKey(KeyCode.LeftControl)) { ff = -.1f; }
                 //Vector3 dir = new Vector3(h, ff, v);
                 //transform.position += dir * 10 * Time.deltaTime;
-                //
-
-                // //돌집기
-                //if (Input.GetKeyDown(KeyCode.F1)) {
-                //     //차일드2번
-                //    int idx = 2;
-
-                //    //속성이 아이템이면
-                //    if (rp.holds[idx].type == Value.Type.Item)
-                //    {
-                //        //팝업이 안된 경우
-                //       if(!rp.holds[idx].popUp)
-                //        {
-                //            //rpc로 바꾸기
-                //            pv.RPC("RpcPopUp", RpcTarget.All, idx);
-
-                //        }
-
-                //    }
-
-                //}
-                ////아이템 집기
-                //if (Input.GetKeyDown(KeyCode.Alpha1))
-                //{
-                //    if (rp.holds[2].popUp)
-                //    {
-                //        pv.RPC("RpcItem", RpcTarget.All, 1, 0);
-                //    }
-                //}
-                ////아이템 인벤 보관
-                //if (Input.GetKeyDown(KeyCode.Alpha2)) 
-                //{
-                //    if (myTem.Count < 2)
-                //    {
-                //        if (catchItem != null)
-                //        {
-                //            SoundM.instance.playS(1, 10);
-                //            pv.RPC("RPCFind", RpcTarget.All, 1);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        pv.RPC("RPCFree", RpcTarget.AllBuffered, 1, 1);
-                //        print("걸린게 없어서  공중부양");
-                //    }
-                //}
-                ////사용
-                // if (Input.GetKeyDown(KeyCode.Alpha3))
-                //{
-                //    if (myTem.Count > 0)
-                //    {
-                //        //1인용
-                //        if (myTem[0] == 4)
-                //        {
-                //            int ranboxIdx = Random.Range(0, 4);
-                //            UseItem(ranboxIdx);
-                //            pv.RPC("RPCUse", RpcTarget.All, 4);
-                //        }
-                //        //2인용
-                //        else if (myTem[0] == 5)
-                //        {
-
-                //            int boxTrap = 4;
-                //                //Random.Range(0, 5);
-                //            pv.RPC("RPCUse", RpcTarget.All, 5);
-                //            if (boxTrap == 0 || boxTrap == 1)
-                //            {
-                //                int ox = Random.Range(0, 2);
-                //                pv.RPC("RPCBlackHole", RpcTarget.All, ox);
-                //                pv.RPC("RPCvib", RpcTarget.All);
-                //            }
-                //            else if (boxTrap == 4)
-                //            {
-                //                pv.RPC("RPCRanBoxUD", RpcTarget.All);
-                //            }
-                //            else
-                //            {
-                //                pv.RPC("RPCRanBoxTrapC", RpcTarget.All, boxTrap);
-                //            }
-
-                //        }
-                //        else { UseItem(myTem[0]); }
-
-                //        myTem.RemoveAt(0);
-                //        StartCoroutine(StopFR());
-                //    }
-
-                //}
                 #endregion
 
                 #region a
-                //플로팅 개발로 수정중
-                if (floating) { }  //Float();
+
+                if (floating) Float();
 
                 if (!tm.bH) { Grab(); }
                 SetFree();
@@ -426,7 +342,16 @@ public class PlayerM : MonoBehaviour
                     lrR.enabled = false;
                 }
 
+                //아이템 swap
+                if (myTem.Count == 2) {
+                    if (getDBtn2R) { 
+                        int save = myTem[0];
+                        myTem[0] = myTem[1];
+                        myTem[1] = save;
+                    }
+                }
                 break;
+            #endregion
             #endregion
 
             #region GameOver
@@ -443,16 +368,14 @@ public class PlayerM : MonoBehaviour
                     }
                     else
                     {
+                        if (net.playerList.Count < maxP) { state = State.Wait; }
                         state = State.GameStart;
-
                     }
                 }
 
                 break;
                 #endregion
         }
-
-
 
     }
 
@@ -716,48 +639,42 @@ public class PlayerM : MonoBehaviour
 
     void Grab()
     {
-        Collider[] hitsL = Physics.OverlapSphere(pp.handL.position, 0.01f);
-        Collider[] hitsR = Physics.OverlapSphere(pp.handR.position, 0.01f);
 
         if (getDBtnIdxL)
         {
-
+            Collider[] hitsL = Physics.OverlapSphere(pp.handL.position, 0.01f);
             if (hitsL.Length > 0)
             {
-                SoundM.instance.playS(0, 5);
                 hitTF[0] = hitsL[0].transform;
-                originP = hitTF[0].position;
+                SoundM.instance.playS(0, 5);
+                if (hitTF[0] == pp.others[3]) originP = hitTF[0].position;
+                walkL = true;
             }
 
             walkR = false;
-            walkL = true;
             origin = pp.handL.position;
 
             tm.up = true;
 
         }
 
-        if (walkL)
+        if (walkL )
         {
-            if (hitsL.Length > 0)
-            {
-                if (hitTF[0].gameObject.name.Contains("Big")) { }
-                Grab(hitTF[0], ref pp.handL, pp.handR, ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
-
-            }
+            walkL = Grab(hitTF[0], ref pp.handL, pp.handR, ref catchHoldL, ref catchHoldR, ref catchHoldLpre);
         }
 
         // 오른손 움직임
         if (getDBtnIdxR)
         {
+            Collider[] hitsR = Physics.OverlapSphere(pp.handR.position, 0.01f);
             if (hitsR.Length > 0)
             {
                 SoundM.instance.playS(0, 5);
                 hitTF[1] = hitsR[0].transform;
-                originP = hitTF[1].position;
+                if (hitTF[1] == pp.others[3]) originP = hitTF[1].position;
+                 walkR = true;
             }
 
-            walkR = true;
             walkL = false;
             origin = pp.handR.position;
 
@@ -767,49 +684,27 @@ public class PlayerM : MonoBehaviour
 
         if (walkR)
         {
-
-
-            if (hitsR.Length > 0)
-            {
-                hitTF[1] = hitsR[0].transform;
-
-                if (hitTF[1].gameObject.name.Contains("Big")) { print("문제0 big"); }
-
-                Grab(hitTF[1], ref pp.handR, pp.handL, ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
-
-            }
-
+            walkR= Grab(hitTF[1], ref pp.handR, pp.handL, ref catchHoldR, ref catchHoldL, ref catchHoldRpre);
         }
 
     }
 
     //개발로 수정중 레퍼런스 안넣으면 왜 작동 안하는건지 알기
-    void Grab(Transform hitTFN, ref Transform handG, Transform otherH, ref Transform Hold, ref Transform Hold2, ref Transform Holdpre)
+    bool Grab(Transform hitTFN, ref Transform handG, Transform otherH, ref Transform Hold, ref Transform Hold2, ref Transform Holdpre)
     {
         int idx = hitTFN.GetSiblingIndex();
 
-        //플레이어 잡으면
-        if (hitTFN.name.Contains("Player") && hitTFN !=transform) {
-            floating = false;
-            rb.isKinematic = true;
 
-            if (tm.bH) { transform.position += tm.dir * tm.pullSpd * Time.deltaTime; }
-            else if (tm.isUD) { transform.position += (-origin + handG.position) + (hitTFN.position - originP); }
-            else { transform.position += (origin - handG.position) + (hitTFN.position - originP); }
-
-        }
         // 홀드 잡고 있는 중
         if (hitTFN.IsChildOf(rock))
         {
             floating = false;
             rb.isKinematic = true;
 
-            if (tm.bH) { transform.position += tm.dir * tm.pullSpd * Time.deltaTime; }
-            else if (tm.isUD) { transform.position -= origin - handG.position; }
-            else
-            {
-                transform.position += origin - handG.position;
-            }
+            // 손동작 반대
+            if (tm.isUD) { transform.position -= origin - handG.position; }
+            //돌 집고 움직이기
+            else { transform.position += origin - handG.position; }
 
             Hold = hitTFN;
             if (Hold2 != null &&
@@ -818,52 +713,52 @@ public class PlayerM : MonoBehaviour
             if (Holdpre == Hold) { tm.up = false; }
 
 
-                //트랩이면
-                if (rp.holds[idx].type == Value.Type.Trap)
+            //트랩이면
+            if (rp.holds[idx].type == Value.Type.Trap)
+            {
+
+                if (tm.up)
                 {
 
-                    if (tm.up)
+                    if (rp.holds[idx].tT == Value.TrapType.BHoleL
+                        || rp.holds[idx].tT == Value.TrapType.BholeR
+                        )
                     {
-
-                        if (rp.holds[idx].tT == Value.TrapType.BHoleL
-                            || rp.holds[idx].tT == Value.TrapType.BholeR
-                            )
-                        {
-                            tm.BHole(rp.holds[idx]);
-                        }
-
-                        else
-                        if (rp.holds[idx].tT == Value.TrapType.Meteor)
-                        {
-                            tm.Create(tm.meteorFactory);
-                        }
-                        else
-                        if (rp.holds[idx].tT == Value.TrapType.UpsideDown)
-                        { 
-                            StartCoroutine(tm.UD()); 
-                        }
-                        else 
-                        {
-                            tm.Create(tm.canFactory);
-                        }
-                        
-                        tm.up = false;
-
+                        tm.BHole(rp.holds[idx]);
                     }
-                }
 
-                //아이템돌이면
-                if (rp.holds[idx].type == Value.Type.Item)
+                    else
+                    if (rp.holds[idx].tT == Value.TrapType.Meteor)
+                    {
+                        tm.Create(tm.meteorFactory);
+                    }
+                    else
+                    if (rp.holds[idx].tT == Value.TrapType.UpsideDown)
+                    {
+                        StartCoroutine(tm.UD());
+                    }
+                    else
+                    {
+                        tm.Create(tm.canFactory);
+                    }
+
+                    tm.up = false;
+
+                }
+            }
+
+            //아이템돌이면
+            if (rp.holds[idx].type == Value.Type.Item)
+            {
+                //팝업이 안된 경우
+                if (!rp.holds[idx].popUp)
                 {
-                    //팝업이 안된 경우
-                    if (!rp.holds[idx].popUp)
-                    {
-                        //rpc로 바꾸기
-                        pv.RPC("RpcPopUp", RpcTarget.All, idx);
-                        
-                    }
-                }
+                    //rpc로 바꾸기
+                    pv.RPC("RpcPopUp", RpcTarget.All, idx);
 
+                }
+            }
+            return true;
         }
         else
         {
@@ -877,23 +772,38 @@ public class PlayerM : MonoBehaviour
             if (hitTFN.IsChildOf(rp.item))
             {
                 pv.RPC("RpcItem", RpcTarget.All, hand, idx);
+                return false;
             }
 
             // 던져진 아이템이나 다른 손 아이템을 잡으면
             if (hitTFN.IsChildOf(rp.free))
             {
                 pv.RPC("RPCFreeItem", RpcTarget.All, pa, hand, idx);
+                return false;
             }
             if (hitTFN.IsChildOf(otherH))
             {
                 pa = 1;
                 pv.RPC("RPCFreeItem", RpcTarget.All, pa, hand, idx);
+                return false;
             }
+
+            //플레이어를 잡으면
+            if (hitTFN == pp.others[3])
+            {
+                floating = false;
+                rb.isKinematic = true;
+
+                // 거꾸로 상태면 손동작 반대
+                if (tm.isUD) { transform.position += (-origin + handG.position) + (hitTFN.position - originP); }
+                //그외 잡은 캐릭터를 따라간다.
+                else { transform.position += (origin - handG.position) + (hitTFN.position - originP); }
+            }
+            return true;
+
         }
 
     }
-
-
 
 
     [PunRPC]
@@ -1207,10 +1117,7 @@ public class PlayerM : MonoBehaviour
             pv.RPC("RPCFireEx", RpcTarget.All);
             
 
-            if (getDBtn2R
-                //개발로 수정중
-                ||  Input.GetKeyDown(KeyCode.Alpha4)
-                ) {
+            if (getDBtn2R) {
                 pv.RPC("RPCFireEFStop", RpcTarget.All);
             }
         }

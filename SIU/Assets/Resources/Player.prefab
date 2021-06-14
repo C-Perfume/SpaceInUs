@@ -8815,7 +8815,6 @@ GameObject:
   - component: {fileID: 7319669023199975325}
   - component: {fileID: 7319669023199975314}
   - component: {fileID: 7319669023199975315}
-  - component: {fileID: 7319669023415633885}
   - component: {fileID: 7917979881557019647}
   - component: {fileID: 4724792513674611002}
   - component: {fileID: 7319669023199975313}
@@ -8823,6 +8822,7 @@ GameObject:
   - component: {fileID: 7319669023199975312}
   - component: {fileID: 8970415600813354691}
   - component: {fileID: 8723619156973439327}
+  - component: {fileID: 7537019849607619025}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -8960,20 +8960,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!136 &7319669023415633885
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7319669023199975324}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.25
-  m_Height: 1.19
-  m_Direction: 1
-  m_Center: {x: 0, y: -0.12, z: 0}
 --- !u!114 &7917979881557019647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9041,7 +9027,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05d580536de4d0a418b5cd048f3a20b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 100
+  maxHp: 150
   currentHp: 0
   HpBar: {fileID: 7319669024258035635}
 --- !u!114 &7319669023199975318
@@ -9058,7 +9044,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hpbar: {fileID: 7319669023545509552}
   readytext: {fileID: 2640139576991682930}
-  savetime: {fileID: 7319669025057807267}
+  saveText: {fileID: 7319669025057807264}
   state: 0
   doorIndi: {fileID: 8635827409877567999}
   doorIndi2: {fileID: 2708721451741953185}
@@ -9130,6 +9116,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 7319669023199975324}
+--- !u!135 &7537019849607619025
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7319669023199975324}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7319669023314408048
 GameObject:
   m_ObjectHideFlags: 0

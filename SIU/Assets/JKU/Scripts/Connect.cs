@@ -45,7 +45,7 @@ public class Connect : MonoBehaviourPunCallbacks
     {
         base.OnJoinedRoom();
         print(PhotonNetwork.CurrentRoom.Name);
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Ready");
     }
 }
 

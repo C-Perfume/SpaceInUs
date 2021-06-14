@@ -74,24 +74,10 @@ public class Player : MonoBehaviour
             Destroy(SavTime);
             //print("Chock to death");
            
-            //수정중에 죽지말자..
-            //SceneManager.LoadScene("LostSpace");
+            SceneManager.LoadScene("LostSpace");
         }
 
-        #region canvas GameOver
-
-        //if (canvas_.activeself == true)
-        //{
-        //    color bgcolor = loadingbg.color;
-        //    bgcolor.a += time.deltatime * 0.5f;
-        //    loadingbg.color = bgcolor;
-        //    if (bgcolor.a <= 0)
-        //    {
-        //        loading.setactive(false);
-        //    }
-        //}
-
-        #endregion
+        
     }
 
     void TimeDamage(int Damage)

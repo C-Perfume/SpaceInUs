@@ -116,17 +116,17 @@ public class RockParent : MonoBehaviour
 
         //처음 0, 1, 2, 3번 지정된 값 넣기 스텝 / 화이트홀 / 쉴드
         if (i == 0 || i == 1|| i == 2|| i == 3) { v.type = Value.Type.Step; }
-        if (i == 4 || i == 9 || i == 6 || i == 11) { v.type = Value.Type.Trap; tRand = 2; }
+        if (i == 4 || i == 9 || i == 6 || i == 11) { v.type = Value.Type.Trap; tRand = 6; }
         if (i == 8 || i == 5 || i == 10 || i == 7) { v.type = Value.Type.Item; tRand = 3; }
 
         //트랩설정 1:2:1:6확률
         if (v.type == Value.Type.Trap)
         {
-            //1번 우주미아 블랙홀, 2+3번 화이트홀, 4번 메테오, 나머지 캔
+            //1번 우주미아 블랙홀, 2번 화이트홀, 4번 메테오, 3,5 거꾸로 나머지 캔
             if (tRand == 1) { v.tT = Value.TrapType.BHoleL; }
-            else if (tRand == 2 || tRand == 3) { v.tT = Value.TrapType.BholeR; }
+            else if (tRand == 2) { v.tT = Value.TrapType.BholeR; }
             else if (tRand == 4) { v.tT = Value.TrapType.Meteor; }
-            else if (tRand == 5) { v.tT = Value.TrapType.UpsideDown; }
+            else if (tRand == 5 || tRand == 3) { v.tT = Value.TrapType.UpsideDown; }
             else { v.tT = Value.TrapType.Can; }
         }
 

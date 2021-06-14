@@ -27,16 +27,10 @@ public class UItest : MonoBehaviour
     {
         lr.SetPosition(0, transform.position);
 
-        //if (SceneManager.GetActiveScene().name == "ExploScene"
-        //    || SceneManager.GetActiveScene().name == "Meteo"
-        //    || SceneManager.GetActiveScene().name == "LostSpace"
-        //    )
-        //{
             if (deadinfo.activeSelf)
             {
                 lr.enabled = true;
             }
-        //}
     
         // Debug.DrawRay(transform.position, transform.forward * raycastDistance, Color.green, 0.5f);
 

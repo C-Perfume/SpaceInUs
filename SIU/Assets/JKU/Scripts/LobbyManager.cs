@@ -108,13 +108,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         Debug.LogWarning("방 생성 실패");
     }
 
-    //방 접속하기
-    public void JoinRoom()
-    {
-      //  PhotonNetwork.JoinRandomRoom();
-        PhotonNetwork.JoinRoom(roomNameInput.text);
-      //   PhotonNetwork.LoadLevel("Game");
-    }
+    //방 접속하기 //바로 접속하기 때문에 지금은 호출되지 않음.
+    //public void JoinRoom()
+    //{
+    //  //  PhotonNetwork.JoinRandomRoom();
+    //    PhotonNetwork.JoinRoom(roomNameInput.text);
+      
+    //  //   PhotonNetwork.LoadLevel("Game");
+    //}
 
     //방 접속실패
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -222,7 +223,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     }
     void OnClickRoominfo(string roomName)
     {
-        roomNameInput.text = roomName;
+           // roomNameInput.text = roomName;
+        PhotonNetwork.JoinRoom(roomName);
     }
 
     void OnchangedRoomName(string roomName)
@@ -241,7 +243,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         //    joinBtn.interactable = false; //join 버튼의 interactable비활성화
         //}
         #endregion
-        joinBtn.interactable = roomName.Length > 0;
+    //    joinBtn.interactable = roomName.Length > 0;
 
         //roomName이 바뀌었을 경우 방 생성 창이 활성화 되도록 하는 것.
         OnchangedmaxUser(maxUserInput.text);

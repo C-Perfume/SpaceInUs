@@ -11,7 +11,7 @@ public class Laser : MonoBehaviour
     //public GameObject MalletR;
 
     // 클릭 라인렌더러 양손
-  
+
     public GameObject indi;
     RaycastHit hit; // 충돌된 객체
     GameObject currentObject;   // 가장 최근에 충돌한 객체를 저장하기 위한 객체
@@ -64,29 +64,31 @@ public class Laser : MonoBehaviour
             }
         }
 
-        //else
-        //{
-        //    lr.SetPosition(1, transform.forward * raycastDistance);
-        //    indi.gameObject.SetActive(false);
-        //    // 최근 감지된 오브젝트가 Button인 경우
-        //    // 버튼은 현재 눌려있는 상태이므로 이것을 풀어준다.
-        //    if (currentObject != null)
-        //    {
-        //        currentObject.GetComponent<Button>().OnPointerExit(null);
-        //        currentObject = null;
-        //    }
-        //}
-
-        //if (OVRInput.GetDown(OVRInput.Button.Start, OVRInput.Controller.LTouch))
-        //{
-        //    //a = !a;
-        //    key.SetActive(!a);
-        //    MalletL.SetActive(!a);
-        //    MalletR.SetActive(!a);
-        //    //lr.enabled = !a;
-        //    key2.SetActive(!a);
-        //}
+        else
+        {
+            lr.SetPosition(1, transform.forward * raycastDistance);
+            indi.gameObject.SetActive(false);
+            // 최근 감지된 오브젝트가 Button인 경우
+            // 버튼은 현재 눌려있는 상태이므로 이것을 풀어준다.
+            if (currentObject != null)
+            {
+                currentObject.GetComponent<Button>().OnPointerExit(null);
+                currentObject = null;
+            }
+        }
     }
-  
+
+
+    //if (OVRInput.GetDown(OVRInput.Button.Start, OVRInput.Controller.LTouch))
+    //{
+    //    //a = !a;
+    //    key.SetActive(!a);
+    //    MalletL.SetActive(!a);
+    //    MalletR.SetActive(!a);
+    //    //lr.enabled = !a;
+    //    key2.SetActive(!a);
+    //}
 }
+
+
 

@@ -332,7 +332,7 @@ public class PlayerM : MonoBehaviour
 
 
                 //블랙홀 인력
-                if (tm.bH) transform.position += tm.dir * tm.pullSpd * Time.deltaTime;
+                if (tm.bH) { transform.position += tm.dir * tm.pullSpd * Time.deltaTime; }
                 pv.RPC("UDstate", RpcTarget.All);
                 
                 if (gp.MenuManager.activeSelf) { state = State.GameOver; }
@@ -702,7 +702,9 @@ public class PlayerM : MonoBehaviour
             rb.isKinematic = true;
 
             // 손동작 반대
-            if (tm.isUD) { transform.position -= origin - handG.position; }
+            if (tm.isUD) { transform.position += (-origin*.1f - handG.position);
+                return false;
+            }
             //돌 집고 움직이기
             else { transform.position += origin - handG.position; }
 
@@ -755,7 +757,7 @@ public class PlayerM : MonoBehaviour
                 {
                     //rpc로 바꾸기
                     pv.RPC("RpcPopUp", RpcTarget.All, idx);
-
+                    return false;
                 }
             }
             return true;
@@ -795,7 +797,9 @@ public class PlayerM : MonoBehaviour
                 rb.isKinematic = true;
 
                 // 거꾸로 상태면 손동작 반대
-                if (tm.isUD) { transform.position += (-origin + handG.position) + (hitTFN.position - originP); }
+                if (tm.isUD) { transform.position += (-origin * .1f - handG.position) + (hitTFN.position - originP);
+                    return false;
+                }
                 //그외 잡은 캐릭터를 따라간다.
                 else { transform.position += (origin - handG.position) + (hitTFN.position - originP); }
             }

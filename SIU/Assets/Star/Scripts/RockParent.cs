@@ -116,7 +116,7 @@ public class RockParent : MonoBehaviour
 
         //Ã³À½ 0, 1, 2, 3¹ø ÁöÁ¤µÈ °ª ³Ö±â ½ºÅÜ / È­ÀÌÆ®È¦ / ½¯µå
         if (i == 0 || i == 1|| i == 2|| i == 3) { v.type = Value.Type.Step; }
-        if (i == 4 || i == 9 || i == 6 || i == 11) { v.type = Value.Type.Trap; tRand = 6; }
+        if (i == 4 || i == 9 || i == 6 || i == 11) { v.type = Value.Type.Trap; tRand = 3; }
         if (i == 8 || i == 5 || i == 10 || i == 7) { v.type = Value.Type.Item; tRand = 3; }
 
         //Æ®·¦¼³Á¤ 1:2:1:6È®·ü

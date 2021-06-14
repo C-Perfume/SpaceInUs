@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
             if (gp.MenuManager.activeSelf) { TimeDamage(0); }
             else
             {
-                TimeDamage(1);
+                TimeDamage(2);
             }
             currtime = 0;
         }
@@ -56,7 +56,7 @@ public class Player : MonoBehaviour
         if (rb.isKinematic == true)
             {
 
-            if (!tM.bH || !pm.r) { 
+            if (!tM.bH || !pm.r || !tM.isUD) { 
             
                 if (mspeed > 5)
                 {

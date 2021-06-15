@@ -27,7 +27,6 @@ public class ExploParticle : MonoBehaviour
     IEnumerator explo()
     {
         
-        yield return new WaitForSeconds(3);
         Explo1.gameObject.SetActive(false);
         if (Explo1.gameObject.activeSelf == false)
         {

@@ -702,7 +702,7 @@ public class PlayerM : MonoBehaviour
             rb.isKinematic = true;
 
             // 손동작 반대
-            if (tm.isUD) { transform.position += (-origin*.1f - handG.position);
+            if (tm.isUD) { transform.position += (-origin*.1f - handG.position * .1f);
                 return false;
             }
             //돌 집고 움직이기
@@ -797,7 +797,7 @@ public class PlayerM : MonoBehaviour
                 rb.isKinematic = true;
 
                 // 거꾸로 상태면 손동작 반대
-                if (tm.isUD) { transform.position += (-origin * .1f - handG.position) + (hitTFN.position - originP);
+                if (tm.isUD) { transform.position += (-origin * .1f - handG.position * .1f) + (hitTFN.position - originP);
                     return false;
                 }
                 //그외 잡은 캐릭터를 따라간다.
